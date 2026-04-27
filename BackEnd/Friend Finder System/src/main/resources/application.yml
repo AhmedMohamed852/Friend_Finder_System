@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: Friend Finder System
+
+
+  messages:
+    basename: i18n/messages
+
+  datasource:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@//localhost:1521/orclpdb
+    username: hr
+    password: hr
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+
+
+server:
+  port: 8081
