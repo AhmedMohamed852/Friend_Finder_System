@@ -1,5 +1,6 @@
 package ahmed.com.springboot.friend_finder_system.dto;
 
+import ahmed.com.springboot.friend_finder_system.dto.DtoSimble.User_Simple_Dto;
 import ahmed.com.springboot.friend_finder_system.eNum.NotificationType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -27,10 +28,10 @@ public class NotificationDto {
     //______________relations_______________________________
 
     @NotBlank(message = "triggered by id is required")
-    private Long triggeredById;
+    private User_Simple_Dto triggeredBy;
 
-    @NotBlank(message = "user id is required")
-    private Long userId;
+/*    @NotBlank(message = "user id is required")
+    private User_Simple_Dto user;*/
 
 
 }

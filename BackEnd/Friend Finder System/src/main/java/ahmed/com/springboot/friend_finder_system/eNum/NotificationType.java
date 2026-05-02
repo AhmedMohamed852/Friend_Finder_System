@@ -2,6 +2,7 @@ package ahmed.com.springboot.friend_finder_system.eNum;
 
 public enum NotificationType {
     FRIEND_REQUEST,      // طلب صداقة جديد
+    FRIEND_REJECT,      // طلب صداقة جديد
     FRIEND_ACCEPTED,     // تم قبول طلبك
     NEW_MESSAGE,         // رسالة جديدة
     POST_LIKED,          // إعجاب على منشورك
