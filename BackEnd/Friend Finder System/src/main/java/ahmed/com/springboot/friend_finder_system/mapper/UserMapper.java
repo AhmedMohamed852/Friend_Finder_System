@@ -1,7 +1,7 @@
 package ahmed.com.springboot.friend_finder_system.mapper;
 
 import ahmed.com.springboot.friend_finder_system.dto.UserDto;
-import org.apache.catalina.User;
+import ahmed.com.springboot.friend_finder_system.models.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 

@@ -31,4 +31,6 @@ public class NotificationDto {
 
     @NotBlank(message = "user id is required")
     private Long userId;
+
+
 }

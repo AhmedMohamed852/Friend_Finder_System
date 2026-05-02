@@ -5,9 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.catalina.User;
-
-import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,13 +13,14 @@ public class FriendshipDto {
 
     private Long id;
 
-    private Long userId1;
+    @NotNull(message = "User1 Id is required")
+    private Long user1;
+
+    @NotNull(message = "User2 Id is required")
+    private Long user2;
 
 
-    private Long userId2;
-
-
-    @NotNull(message = "Status is required")
+//    @NotNull(message = "Status is required")
     private FriendshipStatus status;
 
 

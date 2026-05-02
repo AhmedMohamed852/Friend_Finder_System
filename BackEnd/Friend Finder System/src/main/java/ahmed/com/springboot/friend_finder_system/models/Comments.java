@@ -12,7 +12,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Table(name = "comments")
-public class Comment extends BaseEntity{
+public class Comments extends BaseEntity{
 
     @Column(name = "content" , nullable = false)
     private String content;
@@ -36,12 +36,12 @@ public class Comment extends BaseEntity{
     @EqualsAndHashCode.Exclude
     @ManyToOne
     @JoinColumn(name = "parent_comment_id")
-    private Comment parentComment;
+    private Comments parentComment;
 
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "parentComment")
     @Column(name = "replies")
-    private Set<Comment> replies = new HashSet<>();
+    private Set<Comments> replies = new HashSet<>();
 }

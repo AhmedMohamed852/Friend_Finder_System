@@ -15,25 +15,30 @@ public class UserDto {
     private Long id;
 
     @NotBlank(message = "Username is required")
+    @NotNull(message = "Username is required")
     @Size(max = 50)
     private String username;
 
 
     @NotBlank(message = "First Name is required")
+    @NotNull(message = "First Name is required")
     @Size(max = 50)
     private String firstName;
 
     @NotBlank(message = "Last Name is required")
+    @NotNull(message = "Last Name is required")
     @Size(max = 50)
     private String lastName;
 
 
     @NotBlank(message = "Email is required")
+    @NotNull(message = "Email is required")
     @Email(message = "Please enter a valid email")
     private String email;
 
 
     @NotBlank(message = "Password is required")
+    @NotNull(message = "Password is required")
     @Size(min = 8 , message = "Password must be at least 8 characters long")
     private String password;
 
@@ -42,6 +47,7 @@ public class UserDto {
 
 
     @Past(message = "Date of birth must be in the past")
+    @NotNull(message = "Date of birth is required")
     private LocalDate dateOfBirth;
 
     private String profilePicture;

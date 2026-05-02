@@ -20,6 +20,7 @@ public class Friendship extends BaseEntity{
     private User user1;
 
 
+
     @ManyToOne
     @JoinColumn(name = "user_2_id")
     private User user2;

@@ -46,7 +46,7 @@ public class Post extends BaseEntity {
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "post")
     @Column(name = "comments")
-    private Set<Comment> comments = new HashSet<>();
+    private Set<Comments> comments = new HashSet<>();
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

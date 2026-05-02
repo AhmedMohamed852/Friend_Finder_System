@@ -57,7 +57,7 @@ public class User extends BaseEntity {
 
     // _______________relations__________________________________
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "user_interests", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "interest_id"))
     private Set<Interests> interests = new HashSet<>();
 
@@ -85,7 +85,7 @@ public class User extends BaseEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "author")
-    private Set<Comment> comments = new HashSet<>();
+    private Set<Comments> comments = new HashSet<>();
 
 
     @ToString.Exclude
