@@ -17,7 +17,7 @@ public class Notification extends  BaseEntity{
 
     private String content;
 
-    private boolean isRead;
+    private boolean isRead = false;
 
     @Enumerated(EnumType.STRING)
     private NotificationType type;

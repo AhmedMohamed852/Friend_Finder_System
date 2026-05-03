@@ -1,8 +1,9 @@
 package ahmed.com.springboot.friend_finder_system.service.impl;
 
-import ahmed.com.springboot.friend_finder_system.dto.DtoSimble.User_Simple_Dto;
+
 import ahmed.com.springboot.friend_finder_system.dto.NotificationDto;
 import ahmed.com.springboot.friend_finder_system.eNum.NotificationType;
+import ahmed.com.springboot.friend_finder_system.mapper.MapperSimble.ToUserSimpleMapper;
 import ahmed.com.springboot.friend_finder_system.mapper.NotificationMapper;
 import ahmed.com.springboot.friend_finder_system.mapper.UserSimpleMapper;
 import ahmed.com.springboot.friend_finder_system.models.Notification;
@@ -12,6 +13,8 @@ import ahmed.com.springboot.friend_finder_system.repo.User_Repo;
 import ahmed.com.springboot.friend_finder_system.service.Notification_Service;
 import ahmed.com.springboot.friend_finder_system.service.User_Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -27,11 +30,9 @@ public class Notification_Service_Impl implements Notification_Service {
     private  final NotificationMapper notificationMapper;
     private final User_Service  user_Service;
     private final UserSimpleMapper userSimpleMapper;
-
-
-
-
-
+    private final ToUserSimpleMapper toUserSimpleMapper;
+    private final User_Repo user_Repo;
+    private final ResourceBundleMessageSource messageSource;  // ✅ Inject MessageSource
 
 
 
@@ -56,7 +57,7 @@ public class Notification_Service_Impl implements Notification_Service {
 
         if(myId == null || userId == null)
         {
-            throw new RuntimeException("error.must.be.not.null.argument(id)");
+            throw new RuntimeException("error.must.be.not.null.argument.id");
         }
 
         if (notification_Repo.existsByUser_IdAndTriggeredBy_Id_AndType(userId ,myId , NotificationType.FRIEND_REQUEST)){
@@ -73,8 +74,13 @@ public class Notification_Service_Impl implements Notification_Service {
         notification.setUser(user);
         notification.setTriggeredBy(userSender);
         notification.setType(NotificationType.FRIEND_REQUEST);
-        notification.setRead(false);
-        notification.setContent("I sent you "+userSender.getFirstName()+" " + userSender.getLastName() +" a friend request.");
+
+
+       // ✅ Use message key
+        String content = messageSource.getMessage("notification.friend.request",
+        new Object[]{userSender.getFirstName(), userSender.getLastName()},
+        LocaleContextHolder.getLocale());
+        notification.setContent(content);
 
         notification_Repo.save(notification);
 
@@ -90,7 +96,7 @@ public class Notification_Service_Impl implements Notification_Service {
 
         if(myId == null || userId == null)
         {
-            throw new RuntimeException("error.must.be.not.null.argument(id)");
+            throw new RuntimeException("error.must.be.not.null.argument.id");
         }
 
         if(notification_Repo.existsByUser_IdAndTriggeredBy_IdAndType(myId , userId ,NotificationType.FRIEND_ACCEPTED )){
@@ -106,8 +112,13 @@ public class Notification_Service_Impl implements Notification_Service {
         notification.setUser(user);
         notification.setTriggeredBy(userSender);
         notification.setType(NotificationType.FRIEND_ACCEPTED);
-        notification.setRead(false);
-        notification.setContent("You are now friends with "+userSender.getFirstName()+" " + userSender.getLastName() +".");
+
+
+        String content = messageSource.getMessage("notification.friend.accepted",
+        new Object[]{userSender.getFirstName(), userSender.getLastName()},
+        LocaleContextHolder.getLocale());
+        notification.setContent(content);
+
 
         notification_Repo.save(notification);
 
@@ -130,19 +141,22 @@ public class Notification_Service_Impl implements Notification_Service {
         }
 
 
-        User userSender = userSimpleMapper.toEntity(user_Service.simple_User(myId));
+        User sender = user_Repo.findById(myId).orElseThrow(() -> new RuntimeException("error.user.not.found"));
 
-        User user = userSimpleMapper.toEntity(user_Service.simple_User(userId));
+        User receiver = user_Repo.findById(userId).orElseThrow(() -> new RuntimeException("error.user.not.found"));
 
         Notification notification = new Notification();
-        notification.setUser(user);
-        notification.setTriggeredBy(userSender);
+        notification.setUser(receiver);
+        notification.setTriggeredBy(sender);
         notification.setType(NotificationType.FRIEND_REJECT);
-        notification.setRead(false);
-        notification.setContent("You rejected "+userSender.getFirstName()+" " + userSender.getLastName() +" friend request.");
+
+
+        String content = messageSource.getMessage("notification.friend.rejected",
+        new Object[]{sender.getFirstName(), sender.getLastName()},
+        LocaleContextHolder.getLocale());
+        notification.setContent(content);
 
         notification_Repo.save(notification);
-
 
     }
 
@@ -159,8 +173,6 @@ public class Notification_Service_Impl implements Notification_Service {
 
 
 
-
-
     //TODO:_______________ Create Comment Notification ____________________________
     @Override
     public void createCommentNotification(Long postId, Long commentId, Long userId) {
@@ -173,42 +185,20 @@ public class Notification_Service_Impl implements Notification_Service {
     @Override
     public List<NotificationDto> getUserNotifications(Long userId)
     {
-        Optional<List<Notification>> notifications = notification_Repo.findAllByUser_Id(userId);
-        if(Objects.isNull(notifications) || notifications.get().isEmpty())
-        {
-            throw new RuntimeException("ou.Are.Not.Found.Any.Notifications");
+        List<Notification> notifications = notification_Repo.findAllByUser_Id(userId)
+        .orElse(Collections.emptyList());
 
+        if (notifications.isEmpty()) {
+            return Collections.emptyList();
         }
 
-        List<Notification> notification = notifications.get();
-
-
-        List<NotificationDto> notificationDto =  notification.stream().map(notifications1 ->
-        {
-            NotificationDto notificationDto1 = new NotificationDto();
-
-            User_Simple_Dto triggeredBy = new User_Simple_Dto();
-
-            triggeredBy.setId(notifications1.getTriggeredBy().getId());
-            triggeredBy.setFirstName(notifications1.getTriggeredBy().getFirstName());
-            triggeredBy.setLastName(notifications1.getTriggeredBy().getLastName());
-            triggeredBy.setProfilePicture(notifications1.getTriggeredBy().getProfilePicture());
-
-            notificationDto1.setId(notifications1.getId());
-            notificationDto1.setTriggeredBy(triggeredBy);
-            notificationDto1.setType(notifications1.getType());
-            notificationDto1.setContent(notifications1.getContent());
-            notificationDto1.setRead(notifications1.isRead());
-
-            return notificationDto1;
-        }).toList();
+        List<NotificationDto> notificationDto =  notifications.stream().map(notification -> {
+        notification.setTriggeredBy(toUserSimpleMapper.toUser(user_Service.simple_User(notification.getTriggeredBy().getId())));
+        return notificationMapper.toDto(notification);}).toList();
 
 
         return notificationDto;
     }
-
-
-
 
 
 
@@ -217,7 +207,6 @@ public class Notification_Service_Impl implements Notification_Service {
     public void markAsRead(Long notificationId, Long userId) {
 
     }
-
 
 
 

@@ -141,6 +141,8 @@ public class Friendship_Service_Impl implements Friendship_Service {
         friendship.setRespondedAt(LocalDateTime.now());
 
         friendShip_Repo.save(friendship);
+
+        notification_Service.createFriendRejectNotification(  friendship.getUser2().getId() , friendship.getUser1().getId());
     }
 
 
