@@ -16,4 +16,6 @@ public interface FriendShip_Repo extends JpaRepository<Friendship, Long> {
     boolean existsByUser1IdAndUser2_Id(Long user1Id, Long user2Id);
 
     Optional<List<Friendship>> findAllByUser2_IdAndStatus(Long user2Id, FriendshipStatus status);
+
+    List<Friendship> findByUser1_IdOrUser2_IdAndStatus(Long user1Id, Long user2Id, FriendshipStatus status);
 }

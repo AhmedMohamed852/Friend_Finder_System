@@ -19,9 +19,6 @@ public class Post extends BaseEntity {
     @Column(name = "content" , nullable = false)
     private String content;
 
-    @Column(name = "image_or_video")
-    private String imageOrVideo;
-
     @Column(name = "count_likes")
     private Integer countLikes;
 
@@ -52,5 +49,16 @@ public class Post extends BaseEntity {
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "post")
     private Set<Like> likes = new HashSet<>();
+
+
+
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Media> media = new HashSet<>();
+
+
+
 
 }

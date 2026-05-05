@@ -3,6 +3,7 @@ package ahmed.com.springboot.friend_finder_system.service;
 import ahmed.com.springboot.friend_finder_system.dto.DtoSimble.UpdateProfileDto;
 import ahmed.com.springboot.friend_finder_system.dto.DtoSimble.User_Simple_Dto;
 import ahmed.com.springboot.friend_finder_system.dto.UserDto;
+import ahmed.com.springboot.friend_finder_system.models.User;
 
 public interface User_Service {
 
@@ -15,6 +16,8 @@ public interface User_Service {
     User_Simple_Dto simple_User(Long id);
 
     void updateProfile(UpdateProfileDto userDto);
+
+    UserDto getUserById(Long id);
 
 
     void deleteAccount(Long id);

@@ -52,6 +52,8 @@ public class UserDto {
 
     private String profilePicture;
 
+    private String CoverPhoto;
+
     @Size(max = 500)
     private String bio;
 

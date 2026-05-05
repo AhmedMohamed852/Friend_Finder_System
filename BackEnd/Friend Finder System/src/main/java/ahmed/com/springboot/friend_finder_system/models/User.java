@@ -46,6 +46,8 @@ public class User extends BaseEntity {
 
     private String profilePicture;
 
+    private String CoverPhoto;
+
     @Column(name = "bio" )
     private String bio;
 

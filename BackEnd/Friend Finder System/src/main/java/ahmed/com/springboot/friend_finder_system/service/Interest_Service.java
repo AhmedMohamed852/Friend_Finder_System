@@ -8,7 +8,7 @@ public interface Interest_Service {
 
     List<InterestsDto> getAllInterests();
 
-    void setListInterests(List<InterestsDto> interestsDto);
+    void setListInterests(List<InterestsDto> interestsDto , Long id);
 
     List<InterestsDto> getInterestsById(Long id);
 

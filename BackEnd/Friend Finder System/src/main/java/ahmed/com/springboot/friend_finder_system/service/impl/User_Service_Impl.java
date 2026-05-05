@@ -123,6 +123,20 @@ public class User_Service_Impl implements User_Service {
     }
 
 
+    //TODO:_______________ Get User By Id ____________________________
+    @Override
+    public UserDto getUserById(Long id) {
+        if(id == null)
+        {
+            throw new RuntimeException("error.user.id.is.required");
+        }
+        if(!user_Repo.existsById(id))
+        {
+            throw new RuntimeException("error.user.not.found");
+        }
+        return userMapper.toDto(user_Repo.findById(id).orElseThrow(() -> new RuntimeException("error.user.not.found")));
+    }
+
 
     //TODO:_______________ Delete My Account ____________________________
     @Override

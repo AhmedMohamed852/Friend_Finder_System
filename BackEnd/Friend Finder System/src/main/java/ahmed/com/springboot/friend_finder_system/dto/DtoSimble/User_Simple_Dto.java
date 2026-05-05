@@ -15,6 +15,10 @@ public class User_Simple_Dto {
 
     private String profilePicture;
 
+    private String CoverPhoto;
+
     private String firstName;
     private String lastName;
+
+    private String city;
 }
