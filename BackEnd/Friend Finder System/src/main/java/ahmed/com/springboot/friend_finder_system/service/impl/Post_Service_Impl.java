@@ -1,5 +1,6 @@
 package ahmed.com.springboot.friend_finder_system.service.impl;
 
+import ahmed.com.springboot.friend_finder_system.Vm.Post_Response_Vm;
 import ahmed.com.springboot.friend_finder_system.dto.PostDto;
 import ahmed.com.springboot.friend_finder_system.mapper.MediaMapper;
 import ahmed.com.springboot.friend_finder_system.mapper.PostMapper;
@@ -12,10 +13,13 @@ import ahmed.com.springboot.friend_finder_system.repo.Post_Repo;
 import ahmed.com.springboot.friend_finder_system.service.Post_Service;
 import ahmed.com.springboot.friend_finder_system.service.User_Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+
+
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,7 +32,6 @@ public class Post_Service_Impl implements Post_Service {
 
     private final Post_Repo post_Repo;
     private final PostMapper postMapper;
-    private final Media_Repo media_Repo;
     private final MediaMapper mediaMapper;
     private final User_Service user_Service;
     private final UserMapper userMapper;
@@ -43,11 +46,6 @@ public class Post_Service_Impl implements Post_Service {
     //TODO:_______________ Create New Post ____________________________
     @Override
     public void creatPost(PostDto postDto, Long userId) {
-
-        if(Objects.isNull(postDto))
-        {
-            throw new RuntimeException("error.post.not.found");
-        }
 
         Post post = postMapper.toEntity(postDto);
 
@@ -67,28 +65,98 @@ public class Post_Service_Impl implements Post_Service {
         post_Repo.save(post);
     }
 
-    @Override
-    public void updatePost(PostDto postDto) {
 
+    //TODO:_______________ Update Post ____________________________
+    @Override
+    public void updatePost(PostDto postDto , Long userId) {
+
+        if(postDto.getId() == null)
+        {
+            throw new RuntimeException("error.post.id.is.required");
+        }
+         post_Repo.findById(postDto.getId()).orElseThrow(() -> new RuntimeException("error.post.not.found"));
+
+        Post post = postMapper.toEntity(postDto);
+
+        if(Objects.nonNull(postDto.getMedia()))
+        {
+            Set<Media> media = postDto.getMedia().stream().map(mediaa ->
+            {
+                Media newMedia = mediaMapper.toEntity(mediaa);
+                newMedia.setPost(post);
+                return newMedia;
+            }).collect(Collectors.toSet());
+            post.setMedia(media);
+        }
+
+        User author = userMapper.toEntity(user_Service.getUserById(userId));
+        post.setAuthor(author);
+        post_Repo.save(post);
     }
 
+
+
+    //TODO:_______________ Delete Post ____________________________
     @Override
     public void deletePost(Long id) {
 
+        Post post = post_Repo.findById(id).orElseThrow(() -> new RuntimeException("error.post.not.found"));
+        post_Repo.delete(post);
     }
 
+
+
+    //TODO:_______________ Get Post By ID ____________________________
     @Override
     public PostDto getPostById(Long id) {
-        return null;
+
+        if(id == null)
+        {
+            throw new RuntimeException("error.post.id.is.required");
+        }
+        if(!post_Repo.existsById(id))
+        {
+            throw new RuntimeException("error.post.not.found");
+        }
+        Post post = post_Repo.findById(id).orElseThrow(() -> new RuntimeException("error.post.not.found"));
+        return postMapper.toDto(post);
+
     }
 
+
+
+
+    //TODO:_______________ Get User Posts ____________________________
     @Override
-    public PostDto getPostByUserId(Long userId) {
-        return null;
+    public Post_Response_Vm getUserPosts(Long userId, int pageNumber) {
+
+
+        validatePageNumberAndSize(pageNumber, 5);
+
+        Pageable pageable = PageRequest.of(pageNumber - 1, 5);
+
+        Page<Post> posts = post_Repo.findAll(pageable);
+
+
+        if (posts.getContent().isEmpty())
+        {
+           throw new RuntimeException("error.post.not.found");
+        }
+
+        return new Post_Response_Vm(postMapper.toDtoList(posts.getContent()),posts.getTotalElements());
+
     }
 
-    @Override
-    public List<PostDto> getUserPosts(Long userId, Pageable pageable) {
-        return List.of();
+
+
+//TODO _________________validatePageNumberAndSize______________________
+//TODO ________________________________________________________________
+    boolean validatePageNumberAndSize(int pageNumber, int pageSize)
+    {
+        if (pageNumber < 1 || pageSize <= 0)
+        {
+            throw new IllegalArgumentException("page.number.invalid");
+        }
+        return true;
     }
 }

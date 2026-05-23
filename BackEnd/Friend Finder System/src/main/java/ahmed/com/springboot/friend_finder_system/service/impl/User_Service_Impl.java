@@ -14,6 +14,7 @@ import ahmed.com.springboot.friend_finder_system.service.Role_Service;
 import ahmed.com.springboot.friend_finder_system.service.User_Service;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -29,6 +30,7 @@ public class User_Service_Impl implements User_Service {
     private final Role_Service roleService;
     private final RolesMapper rolesMapper;
     private final UserSimpleMapper userSimpleMapper;
+    private final PasswordEncoder passwordEncoder;
 
 
 
@@ -52,6 +54,7 @@ public class User_Service_Impl implements User_Service {
         RolesDto roles = roleService.getRole(RoleType.USER);
         roles.setName(RoleType.USER);
         user.setRoles(Set.of(rolesMapper.toEntity(roles)));
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
 
         user_Repo.save(user);
@@ -93,6 +96,14 @@ public class User_Service_Impl implements User_Service {
     }
 
 
+    //TODO:_______________ Show My Profile ____________________________
+    @Override
+    public UserDto getUserByUserName(String username) {
+        User user = user_Repo.findByUsername(username).orElseThrow(() -> new RuntimeException("user.not.found"));
+        UserDto userDto = userMapper.toDto(user);
+        return userDto;
+
+    }
 
 
     //TODO:_______________ Update My Profile ____________________________

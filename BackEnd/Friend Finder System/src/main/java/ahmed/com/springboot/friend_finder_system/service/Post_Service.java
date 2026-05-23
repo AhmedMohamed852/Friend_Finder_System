@@ -1,6 +1,6 @@
 package ahmed.com.springboot.friend_finder_system.service;
 
-import ahmed.com.springboot.friend_finder_system.dto.LikeDto;
+import ahmed.com.springboot.friend_finder_system.Vm.Post_Response_Vm;
 import ahmed.com.springboot.friend_finder_system.dto.PostDto;
 import org.springframework.data.domain.Pageable;
 
@@ -10,16 +10,14 @@ public interface Post_Service {
 
     void creatPost(PostDto postDto , Long userId);
 
-    void updatePost(PostDto postDto);
+    void updatePost(PostDto postDto, Long userId);
 
     void deletePost(Long id);
 
     PostDto getPostById(Long id);
 
-    PostDto getPostByUserId(Long userId);
 
-
-   List<PostDto> getUserPosts(Long userId, Pageable pageable);
+    Post_Response_Vm getUserPosts(Long userId, int pageNumber);
 
  //  List<PostDto> getAllPosts(Pageable pageable);
 

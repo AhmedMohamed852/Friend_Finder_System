@@ -1,10 +1,13 @@
 package ahmed.com.springboot.friend_finder_system.dto;
 
 import ahmed.com.springboot.friend_finder_system.eNum.Gender;
+import ahmed.com.springboot.friend_finder_system.models.Roles;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @AllArgsConstructor
@@ -64,6 +67,9 @@ public class UserDto {
     private String city;
 
     // _______________relations__________________________________
+
+
+    private Set<RolesDto> roles = new HashSet<>();
 
 
 
