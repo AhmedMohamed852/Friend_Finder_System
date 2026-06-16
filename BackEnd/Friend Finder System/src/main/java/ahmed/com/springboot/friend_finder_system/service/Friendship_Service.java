@@ -10,9 +10,9 @@ public interface Friendship_Service {
 
 
 
-    void sendFriendRequest(FriendshipDto friendshipDto);
+    void sendFriendRequest(Long user2);
 
-    List<FriendShipRequestsDto> getFriendshipsByUser1Id(Long user1Id);
+    List<FriendShipRequestsDto> getFriendshipsByUser1Id();
 
     void acceptFriendRequest(Long Friendship_Id);
 

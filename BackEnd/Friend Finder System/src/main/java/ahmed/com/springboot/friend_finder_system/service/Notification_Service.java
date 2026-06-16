@@ -8,17 +8,17 @@ public interface Notification_Service {
 
    void createNotification(NotificationDto notificationDTO);
 
-    void createFriendRequestNotification(Long myId , Long userId); // الشخص الي رايحله الرساله (UserID)
+    void createFriendRequestNotification( Long userId); // الشخص الي رايحله الرساله (UserID)
 
-    void createFriendAcceptNotification(Long myId , Long userId);
+    void createFriendAcceptNotification( Long userId);
 
-    void createFriendRejectNotification(Long myId , Long userId);
+    void createFriendRejectNotification( Long userId);
 
-    void createPostLikedNotification(Long postId, Long userId);
+    void createPostLikedNotification(Long postId);
 
     void createCommentNotification(Long postId, Long commentId, Long userId);
 
-    List<NotificationDto> getUserNotifications(Long userId);
+    List<NotificationDto> getUserNotifications();
 
     void markAsRead(Long notificationId, Long userId);
 

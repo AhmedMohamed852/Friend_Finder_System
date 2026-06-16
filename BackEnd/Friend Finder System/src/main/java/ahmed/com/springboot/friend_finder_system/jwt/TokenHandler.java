@@ -8,6 +8,7 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -17,6 +18,7 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 @Component
+//@RequiredArgsConstructor
 public class TokenHandler {
 
 
@@ -28,13 +30,14 @@ public class TokenHandler {
 
     private JwtParser jwtParser;
 
-    private User_Service user_service;
+    private  User_Service user_service;
 
 
-   public TokenHandler(JwtToken jwtToken)
+   public TokenHandler(JwtToken jwtToken, User_Service userService)
     {
         this.secretKey = jwtToken.getSecret();
         this.duration = jwtToken.getExpiration();
+        user_service = userService;
 
         Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 

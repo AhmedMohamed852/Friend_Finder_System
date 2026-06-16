@@ -4,12 +4,8 @@ import ahmed.com.springboot.friend_finder_system.Vm.LoginRequestVM;
 import ahmed.com.springboot.friend_finder_system.Vm.LoginResponseVM;
 import ahmed.com.springboot.friend_finder_system.dto.UserDto;
 import ahmed.com.springboot.friend_finder_system.jwt.TokenHandler;
-import ahmed.com.springboot.friend_finder_system.mapper.RolesMapper;
-import ahmed.com.springboot.friend_finder_system.mapper.UserMapper;
-import ahmed.com.springboot.friend_finder_system.mapper.UserSimpleMapper;
-import ahmed.com.springboot.friend_finder_system.repo.User_Repo;
+
 import ahmed.com.springboot.friend_finder_system.service.AuthService;
-import ahmed.com.springboot.friend_finder_system.service.Role_Service;
 import ahmed.com.springboot.friend_finder_system.service.User_Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

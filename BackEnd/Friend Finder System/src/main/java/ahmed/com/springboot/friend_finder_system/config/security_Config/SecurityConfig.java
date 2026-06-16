@@ -4,6 +4,7 @@ import ahmed.com.springboot.friend_finder_system.config.AuthFilter.AuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,12 +21,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+
     private final AuthFilter authFilter;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+
 
     @Bean
     public SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
@@ -34,7 +33,8 @@ public class SecurityConfig {
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .formLogin(form -> form.disable())
         .httpBasic(Customizer.withDefaults())
-        .authorizeHttpRequests(authorize -> authorize.requestMatchers("/api/auth/**").permitAll().anyRequest().authenticated())
+        .authorizeHttpRequests(authorize -> authorize.requestMatchers("/api/auth/**" , "/swagger-ui/**" ,"/v3/api-docs/**")
+                .permitAll().anyRequest().authenticated())
         .addFilterBefore(authFilter , UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

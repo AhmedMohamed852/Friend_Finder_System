@@ -9,8 +9,6 @@ public interface User_Service {
 
     void register(UserDto userDto);
 
-    void login(String username, String password);
-
     UserDto profile(Long id);
 
     UserDto getUserByUserName(String username);
@@ -19,10 +17,10 @@ public interface User_Service {
 
     void updateProfile(UpdateProfileDto userDto);
 
-    UserDto getUserById(Long id);
+    UserDto getUserById(Long UserId);
 
 
-    void deleteAccount(Long id);
+    void deleteAccount();
 
     boolean existsById(Long id);
 

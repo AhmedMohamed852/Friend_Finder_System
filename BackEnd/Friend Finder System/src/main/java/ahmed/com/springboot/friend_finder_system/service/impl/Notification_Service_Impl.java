@@ -2,19 +2,25 @@ package ahmed.com.springboot.friend_finder_system.service.impl;
 
 
 import ahmed.com.springboot.friend_finder_system.dto.NotificationDto;
+import ahmed.com.springboot.friend_finder_system.dto.UserDto;
 import ahmed.com.springboot.friend_finder_system.eNum.NotificationType;
 import ahmed.com.springboot.friend_finder_system.mapper.MapperSimble.ToUserSimpleMapper;
 import ahmed.com.springboot.friend_finder_system.mapper.NotificationMapper;
+import ahmed.com.springboot.friend_finder_system.mapper.PostMapper;
+import ahmed.com.springboot.friend_finder_system.mapper.UserMapper;
 import ahmed.com.springboot.friend_finder_system.mapper.UserSimpleMapper;
 import ahmed.com.springboot.friend_finder_system.models.Notification;
+import ahmed.com.springboot.friend_finder_system.models.Post;
 import ahmed.com.springboot.friend_finder_system.models.User;
 import ahmed.com.springboot.friend_finder_system.repo.Notification_Repo;
 import ahmed.com.springboot.friend_finder_system.repo.User_Repo;
 import ahmed.com.springboot.friend_finder_system.service.Notification_Service;
+import ahmed.com.springboot.friend_finder_system.service.Post_Service;
 import ahmed.com.springboot.friend_finder_system.service.User_Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -28,10 +34,13 @@ public class Notification_Service_Impl implements Notification_Service {
 
     private final Notification_Repo notification_Repo;
     private  final NotificationMapper notificationMapper;
-    private final User_Service  user_Service;
+    private final User_Service userService;
+    private final UserMapper userMapper;
     private final UserSimpleMapper userSimpleMapper;
     private final ToUserSimpleMapper toUserSimpleMapper;
     private final User_Repo user_Repo;
+    private final Post_Service postService;
+    private final PostMapper postMapper;
     private final ResourceBundleMessageSource messageSource;  // ✅ Inject MessageSource
 
 
@@ -53,20 +62,20 @@ public class Notification_Service_Impl implements Notification_Service {
 
     //TODO:_______________ Create FriendRequest Notification ____________________________
     @Override
-    public void createFriendRequestNotification(Long myId , Long userId) {
+    public void createFriendRequestNotification( Long userId) {
 
-        if(myId == null || userId == null)
+        if( userId == null)
         {
             throw new RuntimeException("error.must.be.not.null.argument.id");
         }
 
-        if (notification_Repo.existsByUser_IdAndTriggeredBy_Id_AndType(userId ,myId , NotificationType.FRIEND_REQUEST)){
+        if (notification_Repo.existsByUser_IdAndTriggeredBy_Id_AndType(userId ,currentUser() , NotificationType.FRIEND_REQUEST)){
             throw new RuntimeException("error.this.notification.exist");
         }
 
-        User userSender = userSimpleMapper.toEntity(user_Service.simple_User(myId));
+        User userSender = userSimpleMapper.toEntity(userService.simple_User(currentUser()));
 
-        User user = userSimpleMapper.toEntity(user_Service.simple_User(userId));
+        User user = userSimpleMapper.toEntity(userService.simple_User(userId));
 
 
         Notification notification = new Notification();
@@ -92,21 +101,21 @@ public class Notification_Service_Impl implements Notification_Service {
 
     //TODO:_______________ Create FriendAccept Notification ____________________________
     @Override
-    public void createFriendAcceptNotification(Long myId , Long userId) {
+    public void createFriendAcceptNotification( Long userId) {
 
-        if(myId == null || userId == null)
+        if( userId == null)
         {
             throw new RuntimeException("error.must.be.not.null.argument.id");
         }
 
-        if(notification_Repo.existsByUser_IdAndTriggeredBy_IdAndType(myId , userId ,NotificationType.FRIEND_ACCEPTED )){
+        if(notification_Repo.existsByUser_IdAndTriggeredBy_IdAndType(currentUser() , userId ,NotificationType.FRIEND_ACCEPTED )){
             throw new RuntimeException("error.this.notification.exist");
         }
 
 
-        User userSender = userSimpleMapper.toEntity(user_Service.simple_User(myId));
+        User userSender = userSimpleMapper.toEntity(userService.simple_User(currentUser()));
 
-        User user = userSimpleMapper.toEntity(user_Service.simple_User(userId));
+        User user = userSimpleMapper.toEntity(userService.simple_User(userId));
 
         Notification notification = new Notification();
         notification.setUser(user);
@@ -129,19 +138,19 @@ public class Notification_Service_Impl implements Notification_Service {
 
     //TODO:_______________ Create FriendReject Notification ____________________________
     @Override
-    public void createFriendRejectNotification(Long myId , Long userId)
+    public void createFriendRejectNotification(Long userId)
     {
-        if(myId == null || userId == null)
+        if( userId == null)
         {
             throw new RuntimeException("error.must.be.not.null.argument(id)");
         }
 
-        if(notification_Repo.existsByUser_IdAndTriggeredBy_IdAndType(myId , userId ,NotificationType.FRIEND_REJECT)){
+        if(notification_Repo.existsByUser_IdAndTriggeredBy_IdAndType(currentUser() , userId ,NotificationType.FRIEND_REJECT)){
             throw new RuntimeException("error.this.notification.exist");
         }
 
 
-        User sender = user_Repo.findById(myId).orElseThrow(() -> new RuntimeException("error.user.not.found"));
+        User sender = user_Repo.findById(currentUser()).orElseThrow(() -> new RuntimeException("error.user.not.found"));
 
         User receiver = user_Repo.findById(userId).orElseThrow(() -> new RuntimeException("error.user.not.found"));
 
@@ -166,8 +175,35 @@ public class Notification_Service_Impl implements Notification_Service {
 
     //TODO:_______________ Create PostLiked Notification ____________________________
     @Override
-    public void createPostLikedNotification(Long postId, Long userId)
+    public void createPostLikedNotification(Long postId)
     {
+        Post post = postMapper.toEntity(postService.getPostById(postId));
+
+
+        // todo ==> we have Exception hir ______________
+        if(notification_Repo.existsByUser_IdAndTriggeredBy_IdAndPostIdAndType( currentUser() ,post.getAuthor().getId() , post.getId() ,NotificationType.POST_LIKED)){
+
+           // throw new RuntimeException("error.this.notification.exist");
+            return;
+        }
+
+        User user = userMapper.toEntity(userService.getUserById(post.getAuthor().getId()));
+        User currentUser = userMapper.toEntity(userService.getUserById(currentUser()));
+
+        Notification notification = new Notification();
+        notification.setUser(currentUser);
+        notification.setTriggeredBy(user);
+        notification.setType(NotificationType.POST_LIKED);
+        notification.setPostId(post.getId());
+
+
+        String content = messageSource.getMessage("notification.post.liked",
+        new Object[]{user.getFirstName(), user.getLastName()},
+        LocaleContextHolder.getLocale());
+        notification.setContent(content);
+
+        notification_Repo.save(notification);
+
 
     }
 
@@ -183,9 +219,10 @@ public class Notification_Service_Impl implements Notification_Service {
 
     //TODO:_______________ Get User Notification ____________________________
     @Override
-    public List<NotificationDto> getUserNotifications(Long userId)
+    public List<NotificationDto> getUserNotifications()
     {
-        List<Notification> notifications = notification_Repo.findAllByUser_Id(userId)
+
+        List<Notification> notifications = notification_Repo.findAllByUser_Id(currentUser())
         .orElse(Collections.emptyList());
 
         if (notifications.isEmpty()) {
@@ -193,7 +230,7 @@ public class Notification_Service_Impl implements Notification_Service {
         }
 
         List<NotificationDto> notificationDto =  notifications.stream().map(notification -> {
-        notification.setTriggeredBy(toUserSimpleMapper.toUser(user_Service.simple_User(notification.getTriggeredBy().getId())));
+        notification.setTriggeredBy(toUserSimpleMapper.toUser(userService.simple_User(notification.getTriggeredBy().getId())));
         return notificationMapper.toDto(notification);}).toList();
 
 
@@ -214,5 +251,15 @@ public class Notification_Service_Impl implements Notification_Service {
     @Override
     public void deleteNotification(Long notificationId) {
 
+    }
+
+
+    //TODO:_______________ Get CurrentUser ____________________________
+    public Long currentUser()
+    {
+        UserDto currentUser = (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = currentUser.getId();
+
+        return userId;
     }
 }

@@ -2,7 +2,7 @@ package ahmed.com.springboot.friend_finder_system.config.AuthFilter;
 
 import ahmed.com.springboot.friend_finder_system.dto.UserDto;
 import ahmed.com.springboot.friend_finder_system.jwt.TokenHandler;
-import ahmed.com.springboot.friend_finder_system.service.AuthService;
+import ahmed.com.springboot.friend_finder_system.service.User_Service;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,6 +28,7 @@ public class AuthFilter extends OncePerRequestFilter {
 
 
     private final TokenHandler tokenHandler;
+    private final  User_Service userService;
 
 
 
@@ -35,7 +36,8 @@ public class AuthFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException
     {
-        return request.getRequestURI().contains("/api/auth");
+        String uri = request.getRequestURI();
+        return uri.startsWith("/api/auth") || uri.startsWith("/swagger-ui") || uri.startsWith("/v3/api-docs") || uri.startsWith("/swagger-ui.html") ;
     }
 
 
@@ -55,7 +57,7 @@ public class AuthFilter extends OncePerRequestFilter {
         UserDto userDto = tokenHandler.validateToken(token);
 
         List<SimpleGrantedAuthority> roles = userDto.getRoles().stream().map(rolesDto ->
-            new SimpleGrantedAuthority("Role_" + rolesDto.getName())).collect(Collectors.toList());
+            new SimpleGrantedAuthority("ROLE_" + rolesDto.getName())).collect(Collectors.toList());
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDto, null, roles);
         SecurityContextHolder.getContext().setAuthentication(authentication);

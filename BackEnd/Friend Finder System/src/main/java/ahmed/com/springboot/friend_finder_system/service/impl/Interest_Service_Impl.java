@@ -1,6 +1,7 @@
 package ahmed.com.springboot.friend_finder_system.service.impl;
 
 import ahmed.com.springboot.friend_finder_system.dto.InterestsDto;
+import ahmed.com.springboot.friend_finder_system.dto.UserDto;
 import ahmed.com.springboot.friend_finder_system.mapper.InterestsMapper;
 import ahmed.com.springboot.friend_finder_system.mapper.UserMapper;
 import ahmed.com.springboot.friend_finder_system.models.Interests;
@@ -10,6 +11,7 @@ import ahmed.com.springboot.friend_finder_system.repo.User_Repo;
 import ahmed.com.springboot.friend_finder_system.service.Interest_Service;
 import ahmed.com.springboot.friend_finder_system.service.User_Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -37,7 +39,7 @@ public class Interest_Service_Impl implements Interest_Service {
     @Override
     public List<InterestsDto> getAllInterests() {
        List<Interests> interests = interests_Repo.findAll();
-       if(!interests.isEmpty())
+       if(interests.isEmpty())
        {
            throw new RuntimeException("error.interests.not.found");
        }
@@ -48,14 +50,14 @@ public class Interest_Service_Impl implements Interest_Service {
 
     //TODO:_______________ Set List Of Interests For User ____________________________
     @Override
-    public void setListInterests(List<InterestsDto> interestsDto, Long id) {
+    public void setListInterests(List<InterestsDto> interestsDto) {
 
-        if(Objects.isNull(interestsDto) || interestsDto.isEmpty() || id == null)
+        if(Objects.isNull(interestsDto) || interestsDto.isEmpty() )
         {
             throw new RuntimeException("error.interests.not.found");
         }
 
-       User user =  userMapper.toEntity(user_Service.getUserById(id));
+       User user =  userMapper.toEntity(user_Service.getUserById(getUserId()));
 
         Set<Interests> interests = interestsDto.stream().map(dto -> {
           return interests_Repo.findByCategory(dto.getCategory());
@@ -78,5 +80,16 @@ public class Interest_Service_Impl implements Interest_Service {
         List<Interests> interests = interests_Repo.findByUsers_Id(id);
 
         return interestsMapper.toDtoList(interests);
+    }
+
+
+
+
+    public Long getUserId()
+    {
+        UserDto currentUser = (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = currentUser.getId();
+
+        return userId;
     }
 }

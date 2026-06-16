@@ -12,6 +12,13 @@ spring:
     username: hr
     password: hr
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: "123456"
+      client-name: "my-redis-client"
+
   jpa:
     hibernate:
       ddl-auto: update

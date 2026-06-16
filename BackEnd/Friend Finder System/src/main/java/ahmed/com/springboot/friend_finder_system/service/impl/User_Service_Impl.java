@@ -14,6 +14,7 @@ import ahmed.com.springboot.friend_finder_system.service.Role_Service;
 import ahmed.com.springboot.friend_finder_system.service.User_Service;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,7 @@ public class User_Service_Impl implements User_Service {
     private final Role_Service roleService;
     private final RolesMapper rolesMapper;
     private final UserSimpleMapper userSimpleMapper;
-    private final PasswordEncoder passwordEncoder;
+    private final  PasswordEncoder passwordEncoder;
 
 
 
@@ -63,22 +64,22 @@ public class User_Service_Impl implements User_Service {
 
 
     //TODO:_______________ Login To My Account ____________________________
-    @Override
+/*    @Override
     public void login(String username, String password)
     {
         if(!(user_Repo.existsByUsername(username) && user_Repo.existsByPassword(password)))
         {
             throw new RuntimeException("error.invalid.username.or.password");
         }
-    /*
+    *//*
 
         if (!passwordEncoder.matches(password, user.getPassword()))
         {
         throw new InvalidCredentialsException("error.invalid.username.or.password");
          }
-     */
+     *//*
         // return Token
-    }
+    }*/
 
 
     //TODO:_______________ Show My Profile ____________________________
@@ -136,34 +137,27 @@ public class User_Service_Impl implements User_Service {
 
     //TODO:_______________ Get User By Id ____________________________
     @Override
-    public UserDto getUserById(Long id) {
-        if(id == null)
-        {
-            throw new RuntimeException("error.user.id.is.required");
-        }
-        if(!user_Repo.existsById(id))
+    public UserDto getUserById(Long userId) {
+
+        if(!user_Repo.existsById(userId))
         {
             throw new RuntimeException("error.user.not.found");
         }
-        return userMapper.toDto(user_Repo.findById(id).orElseThrow(() -> new RuntimeException("error.user.not.found")));
+        return userMapper.toDto(user_Repo.findById(userId).orElseThrow(() -> new RuntimeException("error.user.not.found")));
     }
 
 
     //TODO:_______________ Delete My Account ____________________________
     @Override
-    public void deleteAccount(Long id)
+    public void deleteAccount()
     {
-        if(id == null)
-        {
-            throw new RuntimeException("error.user.id.is.required");
-        }
 
-        if(!user_Repo.existsById(id))
+        if(!user_Repo.existsById(getUserId()))
         {
             throw new RuntimeException("error.user.not.found");
         }
 
-        user_Repo.deleteById(id);
+        user_Repo.deleteById(getUserId());
     }
 
 
@@ -188,5 +182,17 @@ public class User_Service_Impl implements User_Service {
         User_Simple_Dto user_Simple_Dto = userSimpleMapper.toDto(user);
 
         return user_Simple_Dto;
+    }
+
+
+
+
+
+    public Long getUserId()
+    {
+        UserDto currentUser = (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = currentUser.getId();
+
+        return userId;
     }
 }

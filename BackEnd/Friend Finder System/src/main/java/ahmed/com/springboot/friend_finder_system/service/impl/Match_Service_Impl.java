@@ -2,6 +2,7 @@ package ahmed.com.springboot.friend_finder_system.service.impl;
 
 import ahmed.com.springboot.friend_finder_system.dto.DtoSimble.User_Simple_Dto;
 import ahmed.com.springboot.friend_finder_system.dto.MatchDto;
+import ahmed.com.springboot.friend_finder_system.dto.UserDto;
 import ahmed.com.springboot.friend_finder_system.eNum.FriendshipStatus;
 import ahmed.com.springboot.friend_finder_system.models.Friendship;
 import ahmed.com.springboot.friend_finder_system.models.Interests;
@@ -11,6 +12,8 @@ import ahmed.com.springboot.friend_finder_system.repo.User_Repo;
 import ahmed.com.springboot.friend_finder_system.service.Match_Service;
 import ahmed.com.springboot.friend_finder_system.service.User_Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -46,10 +49,11 @@ public class Match_Service_Impl implements Match_Service {
 
 
     @Override
-    public List<User_Simple_Dto> findPotentialFriends(Long currentUserId) {
+    @Cacheable(value = "potentialFriends" , key = "'#userId'")
+    public List<User_Simple_Dto> findPotentialFriends(Long userId) {
 
         // Get Current User Info
-        User current_user = user_Repo.findById(currentUserId)
+        User current_user = user_Repo.findById(getUserId())
                 .orElseThrow(() -> new RuntimeException("error.user.not.found"));
 
 
@@ -63,7 +67,7 @@ public class Match_Service_Impl implements Match_Service {
 
 
         List<MatchDto> matchresult = allUsers.stream().
-                filter(user -> !user.getId().equals(currentUserId))
+                filter(user -> !user.getId().equals(getUserId()))
 
                 .filter(user -> !currentFriendIds.contains(user.getId()))
 
@@ -210,6 +214,15 @@ public class Match_Service_Impl implements Match_Service {
         matchDto.setSameCity(sameCity);
 
         return matchDto;
+    }
+
+
+    public Long getUserId()
+    {
+        UserDto currentUser = (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = currentUser.getId();
+
+        return userId;
     }
 
 

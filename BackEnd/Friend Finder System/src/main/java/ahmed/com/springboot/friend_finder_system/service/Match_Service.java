@@ -9,7 +9,7 @@ import java.util.Set;
 
 public interface Match_Service {
 
-    List<User_Simple_Dto> findPotentialFriends(Long currentUser );
+    List<User_Simple_Dto> findPotentialFriends(Long userId);
 
  //   Set<Long> getCurrentFriendIds (Long currentUser);
 

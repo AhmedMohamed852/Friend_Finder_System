@@ -8,16 +8,18 @@ import java.util.List;
 
 public interface Post_Service {
 
-    void creatPost(PostDto postDto , Long userId);
+    void creatPost(PostDto postDto);
 
-    void updatePost(PostDto postDto, Long userId);
+    void updatePost(PostDto postDto);
 
     void deletePost(Long id);
 
     PostDto getPostById(Long id);
 
+    void savePost(PostDto postDto);
 
-    Post_Response_Vm getUserPosts(Long userId, int pageNumber);
+
+    Post_Response_Vm getUserPosts( int pageNumber);
 
  //  List<PostDto> getAllPosts(Pageable pageable);
 

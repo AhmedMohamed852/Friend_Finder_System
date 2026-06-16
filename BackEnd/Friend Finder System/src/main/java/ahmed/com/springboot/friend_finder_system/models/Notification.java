@@ -22,6 +22,8 @@ public class Notification extends  BaseEntity{
     @Enumerated(EnumType.STRING)
     private NotificationType type;
 
+    private Long postId;
+
     //______________ Relationships _________________
 
 

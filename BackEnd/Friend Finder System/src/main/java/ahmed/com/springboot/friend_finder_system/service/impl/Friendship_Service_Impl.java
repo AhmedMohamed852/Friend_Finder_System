@@ -2,6 +2,7 @@ package ahmed.com.springboot.friend_finder_system.service.impl;
 
 import ahmed.com.springboot.friend_finder_system.dto.DtoSimble.FriendShipRequestsDto;
 import ahmed.com.springboot.friend_finder_system.dto.FriendshipDto;
+import ahmed.com.springboot.friend_finder_system.dto.UserDto;
 import ahmed.com.springboot.friend_finder_system.eNum.FriendshipStatus;
 import ahmed.com.springboot.friend_finder_system.mapper.FriendshipMapper;
 import ahmed.com.springboot.friend_finder_system.mapper.UserMapper;
@@ -12,6 +13,7 @@ import ahmed.com.springboot.friend_finder_system.service.Friendship_Service;
 import ahmed.com.springboot.friend_finder_system.service.Notification_Service;
 import ahmed.com.springboot.friend_finder_system.service.User_Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -45,20 +47,20 @@ public class Friendship_Service_Impl implements Friendship_Service {
 
     //TODO:_______________ Send Friend Request ____________________________
     @Override
-    public void sendFriendRequest(FriendshipDto friendshipDto)
+    public void sendFriendRequest(Long User_Received)
     {
-        if(!user_Service.existsById(friendshipDto.getUser1() ) || !user_Service.existsById(friendshipDto.getUser2()))
+        if(!user_Service.existsById(User_Received))
         {
             throw new RuntimeException("error.user.not.found");
         }
 
-        if(friendShip_Repo.existsByUser1IdAndUser2_Id(friendshipDto.getUser1(),friendshipDto.getUser2()))
+        if(friendShip_Repo.existsByUser1IdAndUser2_Id(getUserId(),User_Received))
         {
             throw new RuntimeException("error.friendship.already.exists");
         }
 
-        User userSender = userMapper.toEntity(user_Service.profile(friendshipDto.getUser1()));
-        User user2 = userMapper.toEntity(user_Service.profile(friendshipDto.getUser2()));
+        User userSender = userMapper.toEntity(user_Service.profile(getUserId()));
+        User user2 = userMapper.toEntity(user_Service.profile(User_Received));
 
         Friendship friendship = new Friendship();
         friendship.setUser1(userSender);
@@ -68,16 +70,16 @@ public class Friendship_Service_Impl implements Friendship_Service {
 
         friendShip_Repo.save(friendship);
 
-        notification_Service.createFriendRequestNotification(userSender.getId() , user2.getId());
+        notification_Service.createFriendRequestNotification(user2.getId());
 
     }
 
 
     //TODO:_______________ Get Friendship Requests ____________________________
     @Override
-    public List<FriendShipRequestsDto> getFriendshipsByUser1Id(Long user2Id) {
+    public List<FriendShipRequestsDto> getFriendshipsByUser1Id() {
 
-        Optional<List<Friendship>> friendshipDtoList = friendShip_Repo.findAllByUser2_IdAndStatus(user2Id ,FriendshipStatus.PENDING);
+        Optional<List<Friendship>> friendshipDtoList = friendShip_Repo.findAllByUser2_IdAndStatus(getUserId() ,FriendshipStatus.PENDING);
 
         if(friendshipDtoList.isEmpty() || Objects.isNull(friendshipDtoList.get())) {
             throw new RuntimeException("error.friendships.not.exists");
@@ -120,7 +122,7 @@ public class Friendship_Service_Impl implements Friendship_Service {
 
         friendShip_Repo.save(friendship);
 
-        notification_Service.createFriendAcceptNotification(  friendship.getUser2().getId() , friendship.getUser1().getId());
+        notification_Service.createFriendAcceptNotification(friendship.getUser2().getId());
 
     }
 
@@ -142,7 +144,7 @@ public class Friendship_Service_Impl implements Friendship_Service {
 
         friendShip_Repo.save(friendship);
 
-        notification_Service.createFriendRejectNotification(  friendship.getUser2().getId() , friendship.getUser1().getId());
+        notification_Service.createFriendRejectNotification(friendship.getUser2().getId());
     }
 
 
@@ -170,5 +172,15 @@ public class Friendship_Service_Impl implements Friendship_Service {
             return true;
         }
         return false;
+    }
+
+
+
+    public Long getUserId()
+    {
+        UserDto currentUser = (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = currentUser.getId();
+
+        return userId;
     }
 }
