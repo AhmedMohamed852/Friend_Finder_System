@@ -1,0 +1,36 @@
+<div class="sidebar-wrap">
+
+  <div class="panel-card profile-card" (click)="goToMyProfile()">
+    @if (profile?.profilePicture) {
+      <img [src]="profile!.profilePicture" alt="avatar" class="avatar-img">
+    } @else {
+      <div class="avatar">👤</div>
+    }
+
+    @if (profile) {
+      <h3>{{ profile.firstName }} {{ profile.lastName }}</h3>
+      <p>📍 {{ profile.city }}</p>
+    } @else if (loading) {
+      <h3 class="placeholder-text">Loading...</h3>
+    }
+  </div>
+
+  <div class="panel-card">
+    <nav>
+      <a routerLink="/home" routerLinkActive="active">🏠 Home</a>
+
+      <a routerLink="/my-friends" routerLinkActive="active">👥 Friends</a>
+
+      <a href="#">💬 Messages</a>
+      <a href="#">👥 Groups</a>
+    </nav>
+  </div>
+
+  <div class="panel-card">
+    <h4 class="section-title">Online Friends</h4>
+    <div class="friend-item"><div class="avatar-sm">👤</div><span>Sarah Johnson</span><span class="dot green"></span></div>
+    <div class="friend-item"><div class="avatar-sm">👤</div><span>Daniel Kim</span><span class="dot green"></span></div>
+    <div class="friend-item"><div class="avatar-sm">👤</div><span>Aarah Gener</span><span class="dot green"></span></div>
+  </div>
+
+</div>

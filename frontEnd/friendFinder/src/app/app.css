@@ -1,0 +1,46 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  background: #f0f5f4;
+}
+
+.layout {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  width: 100%;
+  max-width: 1350px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+app-left-bar {
+  flex: 0 0 240px;
+  width: 240px;
+  display: block;
+}
+
+app-right-bar {
+  flex: 0 0 280px;
+  width: 280px;
+  display: block;
+}
+
+.main-content {
+  flex: 1;
+  max-width: 680px;
+  min-width: 0;
+}
+
+/* لما مفيش sidebars (login/signup) */
+.main-content.no-sidebars {
+  max-width: 100%;
+  width: 100%;
+}

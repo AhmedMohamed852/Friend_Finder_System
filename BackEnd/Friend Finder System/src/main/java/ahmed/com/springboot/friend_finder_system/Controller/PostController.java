@@ -140,10 +140,10 @@ public class PostController {
             }
     )
     @PreAuthorize("hasRole('USER')")
-    @GetMapping("getUserPosts")
-    public ResponseEntity<Post_Response_Vm> getUserPosts()
+    @GetMapping("getHomeFeed/{pageNumber}")
+    public ResponseEntity<Post_Response_Vm> getUserPosts(@PathVariable int pageNumber)
     {
-        return ResponseEntity.ok(post_Service.getUserPosts(1));
+        return ResponseEntity.ok(post_Service.findHomeFeed(pageNumber));
     }
     //TODO:_______________ Get Post  ____________________________
     @Operation(
@@ -180,5 +180,23 @@ public class PostController {
     {
         return ResponseEntity.ok(post_Service.getPostById(id));
     }
+
+    //TODO:_______________ Get Posts By ID ____________________________
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("getPosts/{id}/{PageNumber}")
+    public ResponseEntity<Post_Response_Vm> getPostsByUserId(
+
+            @Parameter(
+                    description = "Post ID",
+                    example = "1",
+                    required = true
+            )
+            @PathVariable Long id ,
+            @PathVariable int PageNumber
+    )
+    {
+        return ResponseEntity.ok(post_Service.getPostsById(id , PageNumber));
+    }
+
 
 }

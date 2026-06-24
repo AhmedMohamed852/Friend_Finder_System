@@ -1,0 +1,79 @@
+<div class="auth-container">
+  <div class="auth-card-wrapper">
+
+    <!-- Decorative pieces that assemble into the card shape on load -->
+    <div class="bg-shapes" aria-hidden="true">
+      <span class="shape shape-tl"></span>
+      <span class="shape shape-tr"></span>
+      <span class="shape shape-bl"></span>
+      <span class="shape shape-br"></span>
+    </div>
+
+    <div class="auth-card">
+
+      <div class="auth-side-banner">
+        <div class="banner-graphic">🔒</div>
+
+        <div class="banner-overlay">
+          <h2>Welcome Back!</h2>
+          <p>Connect with professional developers and expand your technical network safely.</p>
+          <div class="tech-badge">🔑 Secure Gateway Verified</div>
+        </div>
+      </div>
+
+      <div class="auth-form-section">
+        <div class="form-header">
+          <h3>Sign In</h3>
+          <p>Enter your username to access your dashboard</p>
+        </div>
+
+        @if (errorMessage) {
+          <div class="alert-error">⚠️ {{ errorMessage }}</div>
+        }
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+          <div class="form-group">
+            <label>Username</label>
+            <input
+              type="text"
+              formControlName="username"
+              placeholder="Ahmed"
+              [ngClass]="{'input-error': loginForm.get('username')?.touched && loginForm.get('username')?.invalid}"
+            >
+            @if (loginForm.get('username')?.touched && loginForm.get('username')?.invalid) {
+              <div class="error-msg">Username is required.</div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              formControlName="password"
+              placeholder="••••••••"
+              [ngClass]="{'input-error': loginForm.get('password')?.touched && loginForm.get('password')?.invalid}"
+            >
+            @if (loginForm.get('password')?.touched && loginForm.get('password')?.invalid) {
+              <div class="error-msg">Password is required.</div>
+            }
+          </div>
+
+          <button type="submit" class="auth-btn" [disabled]="loading">
+            @if (!loading) {
+              <span>Login</span>
+            } @else {
+              <span>Logging in...</span>
+            }
+          </button>
+
+        </form>
+
+        <div class="auth-footer">
+          Don't have an account? <a routerLink="/signup">Create one</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

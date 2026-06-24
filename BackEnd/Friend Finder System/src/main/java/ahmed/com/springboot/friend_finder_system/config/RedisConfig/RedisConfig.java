@@ -16,7 +16,7 @@ public class RedisConfig {
     @Bean
     public RedisCacheConfiguration cacheConfiguration() {
         return RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofSeconds(300)) // 5 minutes (مش ساعة)
+                .entryTtl(Duration.ofSeconds(10)) // 5 minutes (مش ساعة)
                 .serializeValuesWith(
                         RedisSerializationContext.SerializationPair
                                 .fromSerializer(RedisSerializer.json())

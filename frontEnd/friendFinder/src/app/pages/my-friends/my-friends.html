@@ -1,0 +1,34 @@
+<div class="friends-container" style="padding: 20px; max-width: 640px; margin: 0 auto;">
+
+
+  <div class="friends-header" style="margin-bottom: 16px;">
+    <h3 style="font-size: 18px; font-weight: 700; color: #1a1a2e;">My Friends ({{ friends?.length || 0 }})</h3>
+  </div>
+
+  @if (loading) {
+    <div class="status-msg">🔄 Loading your friends list...</div>
+  }
+
+  @if (!loading) {
+    <div class="friends-grid">
+      @for (friend of friends; track friend.Friendship_Id) {
+        <div class="friend-card animate-fade" (click)="viewProfile(friend.userSenderId)">
+          <div class="card-avatar">
+            @if (friend.profilePicture) {
+              <img [src]="friend.profilePicture" alt="Friend Photo">
+            } @else {
+              <div class="avatar-placeholder">👨‍💻</div>
+            }
+          </div>
+          <div class="card-info">
+            <h4>{{ friend.firstName }} {{ friend.last_Name }}</h4>
+            <span class="status-badge">Friend</span>
+          </div>
+          <button class="profile-btn">View Profile</button>
+        </div>
+      } @empty {
+        <div class="status-msg">✨ You haven't added any friends yet (Array is empty).</div>
+      }
+    </div>
+  }
+</div>

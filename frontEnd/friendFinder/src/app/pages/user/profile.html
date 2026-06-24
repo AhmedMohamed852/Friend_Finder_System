@@ -1,0 +1,107 @@
+<div class="profile-page">
+
+  @if (loadingProfile) {
+    <div class="status-msg">🔄 Loading profile...</div>
+  }
+
+  @if (errorProfile) {
+    <div class="status-msg error-text">⚠️ {{ errorProfile }}</div>
+  }
+
+  @if (user) {
+    <div class="cover-photo" [style.backgroundImage]="user.coverPhoto ? 'url(' + user.coverPhoto + ')' : null">
+      @if (!user.coverPhoto) {
+        <div class="cover-placeholder"></div>
+      }
+    </div>
+
+    <div class="identity-card">
+      <div class="avatar-wrap">
+        @if (user.profilePicture) {
+          <img [src]="user.profilePicture" class="profile-avatar" alt="Avatar">
+        } @else {
+          <div class="profile-avatar-placeholder">👤</div>
+        }
+      </div>
+
+      <h1>{{ fullName }}</h1>
+      <span class="username">&#64;{{ user.username }}</span>
+
+      @if (user.bio) {
+        <p class="bio">{{ user.bio }}</p>
+      }
+
+      <div class="info-pills">
+        @if (user.city || user.country) {
+          <span class="pill">📍 {{ user.city }}{{ user.city && user.country ? ', ' : '' }}{{ user.country }}</span>
+        }
+        @if (user.gender) {
+          <span class="pill">⚧ {{ user.gender }}</span>
+        }
+        @if (user.dateOfBirth) {
+          <span class="pill">🎂 {{ user.dateOfBirth }}</span>
+        }
+      </div>
+    </div>
+
+    <div class="profile-posts-section">
+      <h2 class="section-title">Posts</h2>
+
+      @if (errorPosts && posts.length === 0) {
+        <div class="status-msg error-text">⚠️ {{ errorPosts }}</div>
+      }
+
+      @for (post of posts; track post.id) {
+        <div class="post-card animate-fade">
+          <div class="post-header">
+            @if (user.profilePicture) {
+              <img [src]="user.profilePicture" alt="Author">
+            } @else {
+              <div class="post-avatar-sm">👤</div>
+            }
+            <div>
+              <strong>{{ fullName }}</strong>
+              <span>{{ post.timeAgo }}</span>
+            </div>
+          </div>
+
+          @if (post.content) {
+            <p>{{ post.content }}</p>
+          }
+
+          @if (post.postImage) {
+            <img [src]="post.postImage" alt="post" class="post-img">
+          }
+
+          <div class="post-actions">
+            <button class="like-btn" [class.liked]="post.liked" (click)="toggleLike(post)">
+              <span>{{ post.liked ? '❤️' : '🤍' }}</span>
+              <span>Like</span>
+              <span>({{ post.countLikes }})</span>
+            </button>
+
+            <button
+              class="comment-stat-btn"
+              (click)="goToPostDetails(post.id)">
+              💬 Comment ({{ post.countComments || 0 }})
+            </button>
+
+          </div>
+        </div>
+      } @empty {
+        @if (!loadingPosts) {
+          <div class="status-msg">✨ No posts yet</div>
+        }
+      }
+
+      @if (hasMorePosts && posts.length > 0) {
+        <div #scrollAnchor class="scroll-anchor"></div>
+      }
+
+      @if (loadingPosts) {
+        <div class="status-msg">🔄 Loading more posts...</div>
+      }
+    </div>
+  }
+
+</div>

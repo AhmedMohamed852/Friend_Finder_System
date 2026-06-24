@@ -2,6 +2,7 @@ package ahmed.com.springboot.friend_finder_system.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.engine.internal.Cascade;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -41,7 +42,7 @@ public class Comments extends BaseEntity{
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "parentComment")
-    @Column(name = "replies")
+    @OneToMany(mappedBy = "parentComment" ,cascade = CascadeType.ALL)
+    @Column(name = "replies" )
     private Set<Comments> replies = new HashSet<>();
 }

@@ -1,0 +1,49 @@
+<nav class="navbar">
+  <div class="nav-container">
+
+    <!-- اللوجو مع أنيميشن النبض الهادئ للكلمة الثانية -->
+    <a routerLink="/home" class="nav-logo">
+      <span class="logo-icon">🔗</span>
+      <span class="logo-text">Friend <span class="pulse-word">Finder</span></span>
+    </a>
+
+    @if (isLoggedIn()) {
+      <!-- 🔍 حقل البحث المدمج في المنتصف -->
+      <div class="nav-search-bar">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Search for tech minds, posts, or tags...">
+      </div>
+    }
+
+    <div class="nav-actions">
+      @if (isLoggedIn()) {
+        <div class="nav-links">
+          <a routerLink="/home" routerLinkActive="active" class="nav-link">
+            <span class="nav-icon">🏠</span>
+            <span class="link-text">Home</span>
+          </a>
+          <a routerLink="/create-post" routerLinkActive="active" class="nav-link nav-link-create">
+            <span class="nav-icon">➕</span>
+            <span class="link-text">New Post</span>
+          </a>
+
+          <!-- 🔔 زر الإشعارات الجديد مع الـ Badge -->
+          <button class="nav-btn-icon" aria-label="Notifications">
+            <span class="nav-icon">🔔</span>
+            <span class="notification-badge">3</span>
+          </button>
+        </div>
+
+        <button (click)="onLogout()" class="btn-logout">
+          <span class="nav-icon">🚪</span>
+          <span>Logout</span>
+        </button>
+      } @else {
+        <div class="auth-actions">
+          <a routerLink="/login" class="btn-login">Sign In</a>
+          <a routerLink="/signup" class="btn-signup">Register</a>
+        </div>
+      }
+    </div>
+  </div>
+</nav>

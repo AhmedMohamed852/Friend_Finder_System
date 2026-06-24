@@ -1,0 +1,94 @@
+<div class="right-panel">
+
+  <div class="panel-card">
+    <div class="panel-header">
+      <h4>People You May Know</h4>
+      <button class="refresh-btn" (click)="loadMatches()" [disabled]="loading" title="Refresh">
+        <span [class.spinning]="loading">🔄</span>
+      </button>
+    </div>
+
+    @if (loading) {
+      <div class="status-msg">🔄 Loading suggestions...</div>
+    }
+
+    @if (error) {
+      <div class="status-msg error-text">⚠️ {{ error }}</div>
+    }
+
+    @if (!loading) {
+      @for (person of matches; track person.id) {
+        <div class="person animate-fade">
+          @if (person.profilePicture) {
+            <img [src]="person.profilePicture" class="avatar-img" alt="User Avatar" (click)="openProfile(person.id)" style="cursor: pointer;">
+          } @else {
+            <div class="avatar-sm" (click)="openProfile(person.id)" style="cursor: pointer;">👨‍💻</div>
+          }
+
+          <div class="person-info" (click)="openProfile(person.id)" style="cursor: pointer;">
+            <strong>{{ person.firstName }} {{ person.lastName }}</strong>
+            <small>📍 {{ person.city }}, {{ person.country }}</small>
+          </div>
+
+          @if (!person.isMock) {
+            @if (!person.isPending) {
+              <button class="add-btn" (click)="addFriend(person)">Add Friend</button>
+            } @else {
+              <button class="cancel-btn" (click)="cancelRequest(person)">Cancel Request</button>
+            }
+          }
+
+        </div>
+      } @empty {
+        <div class="status-msg">✨ No new suggestions found</div>
+      }
+    }
+  </div>
+
+  <div class="panel-card">
+    <div class="tabs-container">
+      <button [class.active]="activeTab === 'received'" (click)="switchTab('received')">
+        Received ({{ friendRequests.length }})
+      </button>
+      <button [class.active]="activeTab === 'sent'" (click)="switchTab('sent')">
+        Sent ({{ sentRequests.length }})
+      </button>
+    </div>
+
+    @if (activeTab === 'received') {
+      @for (request of friendRequests; track request.Friendship_Id) {
+        <div class="person animate-fade">
+          <img [src]="request.profilePicture || 'https://randomuser.me/api/portraits/men/default.jpg'" class="avatar-img" alt="User Avatar" (click)="openProfile(request.userSenderId)">
+          <div class="person-info" (click)="openProfile(request.userSenderId)">
+            <strong>{{ request.firstName }} {{ request.last_Name }}</strong>
+            <small>Wants to be friends</small>
+          </div>
+          <div class="action-group">
+            <button class="accept-btn" (click)="acceptRequest(request)" title="Accept">✔</button>
+            <button class="reject-btn" (click)="rejectRequest(request)" title="Reject">✖</button>
+          </div>
+        </div>
+      } @empty {
+        <div class="status-msg">🎉 No pending incoming requests</div>
+      }
+    }
+
+    @if (activeTab === 'sent') {
+      @for (req of sentRequests; track req.Friendship_Id) {
+        <div class="person animate-fade">
+          <img [src]="req.profilePicture || 'https://randomuser.me/api/portraits/men/default.jpg'" class="avatar-img" alt="User Avatar" (click)="openProfile(req.id)">
+          <div class="person-info" (click)="openProfile(req.id)">
+            <strong>{{ req.firstName }} {{ req.last_Name }}</strong>
+            <small>Waiting for approval...</small>
+          </div>
+          <button class="cancel-btn-sm" (click)="cancelSentRequestDirect(req.Friendship_Id)">Cancel</button>
+        </div>
+      } @empty {
+        <div class="status-msg">🕊️ You haven't sent any pending requests</div>
+      }
+    }
+
+    <button class="add-requests-btn">View All Activity</button>
+  </div>
+
+</div>

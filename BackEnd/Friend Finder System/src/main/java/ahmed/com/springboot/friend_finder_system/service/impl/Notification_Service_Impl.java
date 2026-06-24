@@ -18,6 +18,7 @@ import ahmed.com.springboot.friend_finder_system.service.Notification_Service;
 import ahmed.com.springboot.friend_finder_system.service.Post_Service;
 import ahmed.com.springboot.friend_finder_system.service.User_Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,6 +40,7 @@ public class Notification_Service_Impl implements Notification_Service {
     private final UserSimpleMapper userSimpleMapper;
     private final ToUserSimpleMapper toUserSimpleMapper;
     private final User_Repo user_Repo;
+    @Lazy
     private final Post_Service postService;
     private final PostMapper postMapper;
     private final ResourceBundleMessageSource messageSource;  // ✅ Inject MessageSource

@@ -84,16 +84,21 @@ public class User_Service_Impl implements User_Service {
 
     //TODO:_______________ Show My Profile ____________________________
     @Override
-    public UserDto profile(Long id)
+    public UserDto profile()
     {
-        if(id == null)
-        {
-            throw new RuntimeException("error.user.id.is.required");
-        }
 
-       User user = user_Repo.findById(id).orElseThrow(() -> new RuntimeException("error.user.not.found"));
+       User user = user_Repo.findById(getUserId()).orElseThrow(() -> new RuntimeException("error.user.not.found"));
 
         return userMapper.toDto(user);
+    }
+
+
+    //TODO:_______________ Simpl Profile ____________________________
+    @Override
+    public User_Simple_Dto simpleProfile() {
+
+        User user = user_Repo.findById(getUserId()).orElseThrow(() -> new RuntimeException("error.user.not.found"));
+        return userSimpleMapper.toDto(user);
     }
 
 

@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -49,6 +50,8 @@ public class PostDto {
     )
     private Integer countComments;
 
+    private LocalDateTime createdDate;
+
     @Schema(
             description = "Post privacy level",
             example = "PUBLIC"
@@ -60,4 +63,7 @@ public class PostDto {
             accessMode = Schema.AccessMode.READ_ONLY
     )
     private UserDto author;
+
+    Boolean likedIs;
+
 }

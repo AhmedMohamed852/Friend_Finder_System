@@ -16,10 +16,11 @@ public interface Post_Service {
 
     PostDto getPostById(Long id);
 
+    Post_Response_Vm getPostsById(Long id, int pageNumber);
+
     void savePost(PostDto postDto);
 
-
-    Post_Response_Vm getUserPosts( int pageNumber);
+    Post_Response_Vm findHomeFeed( int pageNumber);
 
  //  List<PostDto> getAllPosts(Pageable pageable);
 

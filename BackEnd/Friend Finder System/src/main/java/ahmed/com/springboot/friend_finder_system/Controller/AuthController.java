@@ -20,6 +20,7 @@ import java.net.URISyntaxException;
 @RestController
 @RequestMapping("/api/auth/")
 @RequiredArgsConstructor
+@CrossOrigin()
 @Tag(
         name = "Authentication",
         description = "Authentication APIs for registration and login"

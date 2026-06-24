@@ -15,11 +15,11 @@ import ahmed.com.springboot.friend_finder_system.service.Post_Service;
 import ahmed.com.springboot.friend_finder_system.service.User_Service;
 import jdk.dynalink.linker.LinkerServices;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -31,13 +31,10 @@ public class Like_Service_Impl implements Like_Service {
 
 
     private final Like_Repo likeRepo;
-    private final LikeMapper likeMapper;
     private final Post_Service postService;
     private final PostMapper postMapper;
-    private final User_Service userService;
     private final UserMapper userMapper;
     private final Notification_Service notificationService;
-    private final NotificationMapper notificationMapper;
 
     //TODO:_______________ Implement Service Methods ____________________________
 
@@ -88,6 +85,15 @@ public class Like_Service_Impl implements Like_Service {
 
 
 
+    }
+    //TODO:_______________ is Liked By Me ____________________________
+    @Override
+    public boolean isLikedByMe(Long postId) {
+        return likeRepo.existsByPostIdAndUserId(postId, currentUser());
+    }
+
+    public Set<Long> getLikedPostIds(List<Long> postIds, Long userId) {
+        return new HashSet<>(likeRepo.findLikedPostIds(userId, postIds));
     }
 
 

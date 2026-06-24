@@ -1,0 +1,76 @@
+<div class="cp-wrapper">
+  <div class="cp-card">
+
+    <div class="cp-header">
+      <h2>Create Post</h2>
+      <p class="cp-subtitle">Share something with your network</p>
+    </div>
+
+    @if (error) {
+      <div class="cp-alert">
+        <span class="cp-alert-icon">⚠</span>
+        <span>{{ error }}</span>
+      </div>
+    }
+
+    <div class="cp-author">
+      <div class="cp-avatar">👤</div>
+      <div class="cp-author-info">
+        <strong>Your Post</strong>
+        <select [(ngModel)]="privacy" class="cp-privacy-pill">
+          <option value="PUBLIC">🌍 Public</option>
+          <option value="FRIENDS">👥 Friends</option>
+          <option value="PRIVATE">🔒 Only Me</option>
+        </select>
+      </div>
+    </div>
+
+    <textarea
+      [(ngModel)]="content"
+      placeholder="What's on your mind?"
+      rows="5"
+      class="cp-textarea"
+    ></textarea>
+
+    @if (imageUrl) {
+      <div class="cp-preview-wrapper">
+        <img [src]="imageUrl" alt="preview" class="cp-preview-img">
+        <button class="cp-remove-img" (click)="imageUrl = ''">✕</button>
+      </div>
+    }
+
+    @if (uploading) {
+      <div class="cp-uploading">
+        <span class="cp-spinner"></span>
+        Uploading media...
+      </div>
+    }
+
+    <div class="cp-toolbar">
+      <label class="cp-tool-btn">
+        <span class="cp-tool-icon">🖼️</span>
+        <span>Photo/Video</span>
+        <input
+          type="file"
+          accept="image/*,video/*"
+          (change)="onFileSelected($event)"
+          hidden
+        >
+      </label>
+    </div>
+
+    <button
+      class="cp-submit-btn"
+      (click)="submitPost()"
+      [disabled]="loading || uploading"
+    >
+      @if (loading) {
+        <span class="cp-spinner light"></span>
+        <span>Posting...</span>
+      } @else {
+        <span>Post</span>
+      }
+    </button>
+
+  </div>
+</div>

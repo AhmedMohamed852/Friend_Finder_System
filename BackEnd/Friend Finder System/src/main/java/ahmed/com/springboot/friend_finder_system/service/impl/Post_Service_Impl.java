@@ -9,6 +9,7 @@ import ahmed.com.springboot.friend_finder_system.mapper.UserMapper;
 import ahmed.com.springboot.friend_finder_system.models.Media;
 import ahmed.com.springboot.friend_finder_system.models.Post;
 import ahmed.com.springboot.friend_finder_system.models.User;
+import ahmed.com.springboot.friend_finder_system.repo.Like_Repo;
 import ahmed.com.springboot.friend_finder_system.repo.Post_Repo;
 import ahmed.com.springboot.friend_finder_system.service.Post_Service;
 import ahmed.com.springboot.friend_finder_system.service.User_Service;
@@ -20,7 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 
-
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -36,6 +37,9 @@ public class Post_Service_Impl implements Post_Service {
     private final MediaMapper mediaMapper;
     private final User_Service user_Service;
     private final UserMapper userMapper;
+    //@Lazy
+   // private final Like_Service likeService;
+    private final Like_Repo likeRepo;
 
 
 
@@ -100,7 +104,6 @@ public class Post_Service_Impl implements Post_Service {
     //TODO:_______________ Add Like To Post ____________________________
     @Override
     public void savePost(PostDto postDto) {
-
         Post post = postMapper.toEntity(postDto);
         post_Repo.save(post);
 
@@ -135,26 +138,65 @@ public class Post_Service_Impl implements Post_Service {
     }
 
 
-
-    //TODO:_______________ Get User Posts ____________________________
+    //TODO:_______________ Get Posts By ID ____________________________
     @Override
-    public Post_Response_Vm getUserPosts(int pageNumber) {
+    public Post_Response_Vm getPostsById(Long id , int pageNumber) {
 
+        if(!post_Repo.existsByAuthorId(id))
+        {
+            throw new RuntimeException("error.user.id.not.found");
+        }
 
         validatePageNumberAndSize(pageNumber, 5);
 
         Pageable pageable = PageRequest.of(pageNumber - 1, 5);
 
-        Page<Post> posts = post_Repo.findAllByAuthorId(getUserId(),pageable);
-
+        Page<Post> posts = post_Repo.findAllByAuthorId(id,pageable);
 
         if (posts.getContent().isEmpty())
         {
-           throw new RuntimeException("error.post.not.found");
+            throw new RuntimeException("error.post.not.found");
         }
 
-        return new Post_Response_Vm(postMapper.toDtoList(posts.getContent()),posts.getTotalElements());
+        posts.getContent().stream().forEach(post -> post.getAuthor().setPassword(null));
 
+        List<PostDto> postDtoList = postMapper.toDtoList(posts.getContent());
+
+        // جلب كل اللايكس بتاعة اليوزر الحالي على البوستات دي بـ query واحد بس
+        List<Long> postIds = postDtoList.stream().map(PostDto::getId).toList();
+        Set<Long> likedPostIds = likeRepo.findLikedPostIds( getUserId() , postIds);
+
+        postDtoList.forEach(dto -> dto.setLikedIs(likedPostIds.contains(dto.getId())));
+
+        return new Post_Response_Vm(postDtoList, posts.getTotalElements());
+    }
+
+
+    //TODO:_______________ Get User Posts ____________________________
+    @Override
+    public Post_Response_Vm findHomeFeed(int pageNumber) {
+
+        validatePageNumberAndSize(pageNumber, 5);
+
+        Pageable pageable = PageRequest.of(pageNumber - 1, 5);
+
+        Page<Post> posts = post_Repo.findHomeFeed(getUserId(), pageable);
+
+        if (posts.getContent().isEmpty()) {
+            throw new RuntimeException("error.post.not.found");
+        }
+
+        posts.getContent().forEach(post -> post.getAuthor().setPassword(null));
+
+        List<PostDto> postDtoList = postMapper.toDtoList(posts.getContent());
+
+        // جلب كل اللايكس بتاعة اليوزر الحالي على البوستات دي بـ query واحد بس
+        List<Long> postIds = postDtoList.stream().map(PostDto::getId).toList();
+        Set<Long> likedPostIds = likeRepo.findLikedPostIds( getUserId() , postIds);
+
+        postDtoList.forEach(dto -> dto.setLikedIs(likedPostIds.contains(dto.getId())));
+
+        return new Post_Response_Vm(postDtoList, posts.getTotalElements());
     }
 
 
@@ -167,6 +209,8 @@ public class Post_Service_Impl implements Post_Service {
         {
             throw new IllegalArgumentException("page.number.invalid");
         }
+
+
         return true;
     }
 

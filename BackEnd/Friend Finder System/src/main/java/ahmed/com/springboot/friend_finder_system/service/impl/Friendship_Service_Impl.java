@@ -59,8 +59,8 @@ public class Friendship_Service_Impl implements Friendship_Service {
             throw new RuntimeException("error.friendship.already.exists");
         }
 
-        User userSender = userMapper.toEntity(user_Service.profile(getUserId()));
-        User user2 = userMapper.toEntity(user_Service.profile(User_Received));
+        User userSender = userMapper.toEntity(user_Service.getUserById(getUserId()));
+        User user2 = userMapper.toEntity(user_Service.getUserById(User_Received));
 
         Friendship friendship = new Friendship();
         friendship.setUser1(userSender);
@@ -104,6 +104,71 @@ public class Friendship_Service_Impl implements Friendship_Service {
 
 
         return result;
+    }
+
+
+    //TODO:_______________ Get Sent Friendship Requests ____________________________
+    @Override
+    public List<FriendShipRequestsDto> getSentFriendships() {
+        Optional<List<Friendship>> friendshipDtoList = friendShip_Repo.findAllByUser1_IdAndStatus(getUserId() ,FriendshipStatus.PENDING);
+
+        if(friendshipDtoList.isEmpty() || Objects.isNull(friendshipDtoList.get())) {
+            throw new RuntimeException("error.friendships.not.exists");
+        }
+
+
+
+        List<FriendShipRequestsDto> result = friendshipDtoList.orElseThrow(() ->
+                new RuntimeException("No Data")) .stream().map( friendship ->
+        {
+            FriendShipRequestsDto  friendShipRequestsDto = new FriendShipRequestsDto();
+
+            friendShipRequestsDto.setFriendship_Id(friendship.getId());
+            friendShipRequestsDto.setUserSenderId(friendship.getUser2().getId());
+            friendShipRequestsDto.setFirstName(friendship.getUser2().getFirstName());
+            friendShipRequestsDto.setLast_Name(friendship.getUser2().getLastName());
+            friendShipRequestsDto.setProfilePicture(friendship.getUser2().getProfilePicture());
+
+            return friendShipRequestsDto;
+
+        }).toList();
+
+
+        return result;
+    }
+
+    //TODO:_______________ Get My Friends ____________________________
+    //TODO:_______________ Get My Friends ____________________________
+    @Override
+    public List<FriendShipRequestsDto> getMyFriends() {
+
+        Optional<List<Friendship>> friendshipDtoList = friendShip_Repo.findByStatusAndUser1_IdOrStatusAndUser2_Id(
+                FriendshipStatus.ACCEPTED, getUserId(), FriendshipStatus.ACCEPTED, getUserId());
+
+        if (friendshipDtoList.isEmpty() || Objects.isNull(friendshipDtoList.get())) {
+            throw new RuntimeException("error.friendships.not.exists");
+        }
+
+        List<FriendShipRequestsDto> result = friendshipDtoList.get().stream().map(friendship -> {
+
+            FriendShipRequestsDto friendShipRequestsDto = new FriendShipRequestsDto();
+
+            User otherUser = getUserId().equals(friendship.getUser1().getId())
+                    ? friendship.getUser2()
+                    : friendship.getUser1();
+
+            friendShipRequestsDto.setFriendship_Id(friendship.getId());
+            friendShipRequestsDto.setUserSenderId(otherUser.getId());
+            friendShipRequestsDto.setFirstName(otherUser.getFirstName());
+            friendShipRequestsDto.setLast_Name(otherUser.getLastName());
+            friendShipRequestsDto.setProfilePicture(otherUser.getProfilePicture());
+
+            return friendShipRequestsDto;
+
+        }).toList();
+
+        List<FriendShipRequestsDto> finalResult = result.stream().toList();
+        return finalResult;
     }
 
     //TODO:_______________ Accept Friendship Request ____________________________

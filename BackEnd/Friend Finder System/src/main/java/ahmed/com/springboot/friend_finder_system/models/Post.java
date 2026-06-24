@@ -55,7 +55,7 @@ public class Post extends BaseEntity {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = {CascadeType.MERGE ,CascadeType.PERSIST })
     private Set<Media> media = new HashSet<>();
 
 

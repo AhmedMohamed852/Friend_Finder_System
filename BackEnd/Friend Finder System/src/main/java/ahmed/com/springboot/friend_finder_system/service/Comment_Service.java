@@ -1,21 +1,23 @@
 package ahmed.com.springboot.friend_finder_system.service;
 
+import ahmed.com.springboot.friend_finder_system.Vm.CommentRequest_Vm;
+import ahmed.com.springboot.friend_finder_system.Vm.UpdateCommentRequest_Vm;
 import ahmed.com.springboot.friend_finder_system.dto.CommentDto;
 
 import java.util.List;
 
 public interface Comment_Service {
 
-    void createComment(Long postId, String comment);
+    Void createComment(CommentRequest_Vm commentRequestVm);
 
     void deleteComment(Long commentId);
 
-    void updateComment(Long commentId, String newComment);
+    void updateComment(UpdateCommentRequest_Vm CommentRequestVm);
 
-    void replyToComment(Long commentId, String reply);
+    void replyToComment(UpdateCommentRequest_Vm commentRequestVm);
 
-    List<CommentDto> getComments(Long postId);
+    List<CommentDto> getComments(Long postId, int pageNumber);
 
-    List<CommentDto> getReplies(Long commentId);
+    List<CommentDto> getReplies(Long commentId , int pageNumber);
 
 }

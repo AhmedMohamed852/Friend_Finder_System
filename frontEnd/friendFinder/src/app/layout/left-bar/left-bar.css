@@ -1,0 +1,157 @@
+:host {
+  display: block;
+}
+
+.sidebar-wrap {
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  position: fixed;
+  top: 76px;
+  left: 16px;
+  max-height: calc(100vh - 92px);
+  overflow-y: auto;
+}
+
+.panel-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e8f5f3;
+}
+
+/* Profile Card */
+.profile-card {
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.profile-card:hover {
+  background: #f0faf9;
+}
+
+.avatar,
+.avatar-img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  margin: 0 auto 8px;
+  flex-shrink: 0;
+}
+
+.avatar {
+  background: linear-gradient(135deg, #1a9e8f, #0d6b5e);
+  color: white;
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-img {
+  object-fit: cover;
+  display: block;
+}
+
+.profile-card h3 {
+  margin: 8px 0 2px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0d2b26;
+}
+
+.profile-card p {
+  color: #7a9e99;
+  font-size: 11.5px;
+}
+
+.placeholder-text {
+  color: #a0c4be;
+  font-weight: 400;
+}
+
+/* Nav */
+nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #0d2b26;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s;
+}
+
+nav a.active {
+  background: #e8f5f3;
+  color: #0d6b5e;
+}
+
+nav a:hover {
+  background: #f0faf9;
+}
+
+/* Section title */
+.section-title {
+  margin: 0 0 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e8f5f3;
+  color: #0d2b26;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Online Friends */
+.friend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+}
+
+.friend-item + .friend-item {
+  border-top: 1px solid #e8f5f3;
+}
+
+.avatar-sm {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1a9e8f, #0d6b5e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  color: white;
+  flex-shrink: 0;
+}
+
+.friend-item span {
+  font-size: 13px;
+  color: #0d2b26;
+  flex: 1;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  min-width: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot.green {
+  background: #42b72a;
+}

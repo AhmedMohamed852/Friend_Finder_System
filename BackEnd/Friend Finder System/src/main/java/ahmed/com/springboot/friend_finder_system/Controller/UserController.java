@@ -1,6 +1,7 @@
 package ahmed.com.springboot.friend_finder_system.Controller;
 
 import ahmed.com.springboot.friend_finder_system.dto.DtoSimble.UpdateProfileDto;
+import ahmed.com.springboot.friend_finder_system.dto.DtoSimble.User_Simple_Dto;
 import ahmed.com.springboot.friend_finder_system.dto.UserDto;
 import ahmed.com.springboot.friend_finder_system.helper.MessageResponse;
 import ahmed.com.springboot.friend_finder_system.service.User_Service;
@@ -17,7 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 @Tag(
         name = "User Controller",
@@ -134,8 +135,8 @@ public class UserController {
     // TODO               SWAGGER }     <---------------------
 
     @PreAuthorize("hasRole('USER')")
-    @GetMapping("/profile/{id}")
-    public ResponseEntity<UserDto> profile(
+    @GetMapping("/user/{id}")
+    public ResponseEntity<UserDto> getUserBuId(
 
             @Parameter(
                     description = "User ID",
@@ -145,7 +146,29 @@ public class UserController {
             @PathVariable Long id
     ) {
 
-        return ResponseEntity.ok(user_Service.profile(id));
+        return ResponseEntity.ok(user_Service.getUserById(id));
+    }
+
+
+
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/profile")
+    public ResponseEntity<UserDto> profile(
+
+    ) {
+
+        return ResponseEntity.ok(user_Service.profile());
+    }
+
+
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/simpleProfile")
+    public ResponseEntity<User_Simple_Dto> simpleProfile(
+    ) {
+
+        return ResponseEntity.ok(user_Service.simpleProfile());
     }
 
 }

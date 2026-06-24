@@ -14,6 +14,11 @@ public interface Friendship_Service {
 
     List<FriendShipRequestsDto> getFriendshipsByUser1Id();
 
+    List<FriendShipRequestsDto> getSentFriendships();
+
+
+    List<FriendShipRequestsDto> getMyFriends();
+
     void acceptFriendRequest(Long Friendship_Id);
 
     void rejectFriendRequest(Long Friendship_Id);

@@ -113,6 +113,22 @@ public class FriendShipController {
     public ResponseEntity<List<FriendShipRequestsDto>> showFriendshipRequests() {
         return ResponseEntity.ok(friendship_service.getFriendshipsByUser1Id());
     }
+    //TODO:_______________ Sent Friendship Requests ____________________________
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/SentFriendshipRequests")
+    public ResponseEntity<List<FriendShipRequestsDto>> SentFriendshipRequests() {
+        return ResponseEntity.ok(friendship_service.getSentFriendships());
+    }
+
+    //TODO:_______________ Get My Friends ____________________________
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/getMyFriends")
+    public ResponseEntity<List<FriendShipRequestsDto>> getMyFriends() {
+        return ResponseEntity.ok(friendship_service.getMyFriends());
+    }
+
 
 
 

@@ -1,0 +1,19 @@
+<app-header></app-header>
+
+<div class="layout">
+
+  @if (isLoggedIn()) {
+    <app-left-bar></app-left-bar>
+  }
+
+  <div class="main-content" [class.no-sidebars]="!isLoggedIn()">
+    <router-outlet></router-outlet>
+  </div>
+
+  @if (isLoggedIn()) {
+    <app-right-bar></app-right-bar>
+  }
+
+</div>
+
+<app-footer></app-footer>

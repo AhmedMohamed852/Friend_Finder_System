@@ -1,0 +1,250 @@
+.cp-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 32px 16px;
+  min-height: 100%;
+}
+
+.cp-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 28px;
+  width: 100%;
+  max-width: 540px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f0f0f3;
+}
+
+.cp-header {
+  margin-bottom: 20px;
+}
+
+.cp-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 4px;
+}
+
+.cp-subtitle {
+  font-size: 13px;
+  color: #9094a6;
+  margin: 0;
+}
+
+.cp-alert {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.cp-alert-icon {
+  font-size: 14px;
+}
+
+.cp-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.cp-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6c63ff, #4f46e5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: white;
+  flex-shrink: 0;
+}
+
+.cp-author-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cp-author-info strong {
+  font-size: 14px;
+  color: #1a1a2e;
+}
+
+.cp-privacy-pill {
+  border: 1px solid #e4e4ec;
+  background: #f7f7fb;
+  border-radius: 16px;
+  padding: 3px 10px;
+  font-size: 12px;
+  color: #5b5f73;
+  cursor: pointer;
+  width: fit-content;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.cp-privacy-pill:focus {
+  border-color: #6c63ff;
+}
+
+.cp-textarea {
+  width: 100%;
+  border: none;
+  background: transparent;
+  resize: none;
+  font-family: inherit;
+  font-size: 15px;
+  color: #1a1a2e;
+  line-height: 1.5;
+  padding: 4px 0 16px;
+  margin-bottom: 4px;
+}
+
+.cp-textarea::placeholder {
+  color: #b4b7c5;
+}
+
+.cp-textarea:focus {
+  outline: none;
+}
+
+.cp-preview-wrapper {
+  position: relative;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #efeff4;
+}
+
+.cp-preview-img {
+  width: 100%;
+  max-height: 320px;
+  object-fit: cover;
+  display: block;
+}
+
+.cp-remove-img {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.55);
+  color: white;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.cp-remove-img:hover {
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.cp-uploading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #6c63ff;
+  background: #f5f4ff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.cp-toolbar {
+  display: flex;
+  gap: 8px;
+  padding: 12px 0;
+  border-top: 1px solid #f0f0f3;
+  border-bottom: 1px solid #f0f0f3;
+  margin-bottom: 18px;
+}
+
+.cp-tool-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: #f7f7fb;
+  color: #4b4f63;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.cp-tool-btn:hover {
+  background: #ede9ff;
+  color: #6c63ff;
+}
+
+.cp-tool-icon {
+  font-size: 16px;
+}
+
+.cp-submit-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #6c63ff, #4f46e5);
+  color: white;
+  border: none;
+  padding: 13px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: opacity 0.2s, transform 0.1s;
+  box-shadow: 0 4px 14px rgba(108, 99, 255, 0.3);
+}
+
+.cp-submit-btn:hover:not(:disabled) {
+  opacity: 0.92;
+}
+
+.cp-submit-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.cp-submit-btn:disabled {
+  background: #d4d4dc;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.cp-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #6c63ff;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: cp-spin 0.7s linear infinite;
+}
+
+.cp-spinner.light {
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-top-color: white;
+}
+
+@keyframes cp-spin {
+  to { transform: rotate(360deg); }
+}

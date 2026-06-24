@@ -18,4 +18,13 @@ public interface FriendShip_Repo extends JpaRepository<Friendship, Long> {
     Optional<List<Friendship>> findAllByUser2_IdAndStatus(Long user2Id, FriendshipStatus status);
 
     List<Friendship> findByUser1_IdOrUser2_IdAndStatus(Long user1Id, Long user2Id, FriendshipStatus status);
+
+    Optional<List<Friendship>> findAllByUser1_IdAndStatus(Long userId, FriendshipStatus friendshipStatus);
+
+    Optional<List<Friendship>> findByStatusAndUser1_IdOrStatusAndUser2_Id(
+            FriendshipStatus status1,
+            Long user1Id,
+            FriendshipStatus status2,
+            Long user2Id
+    );
 }

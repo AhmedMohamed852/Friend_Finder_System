@@ -9,7 +9,8 @@ public interface User_Service {
 
     void register(UserDto userDto);
 
-    UserDto profile(Long id);
+    UserDto profile();
+    User_Simple_Dto simpleProfile();
 
     UserDto getUserByUserName(String username);
 
