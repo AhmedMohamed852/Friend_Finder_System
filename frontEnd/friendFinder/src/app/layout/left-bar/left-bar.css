@@ -155,3 +155,36 @@ nav a:hover {
 .dot.green {
   background: #42b72a;
 }
+/* ── أضيف الـ CSS ده جوه left-bar.css بتاعك ── */
+
+/* Nav links layout */
+nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+.nav-icon { font-size: 16px; flex-shrink: 0; }
+
+/* Unread badge على زرار Messages */
+.nav-badge {
+  margin-left: auto;
+  background: #ef4444;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  animation: badgePop .3s cubic-bezier(.34,1.56,.64,1);
+}
+
+@keyframes badgePop {
+  from { transform: scale(0); }
+  to   { transform: scale(1); }
+}

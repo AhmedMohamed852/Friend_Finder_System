@@ -19,7 +19,7 @@ public class Messages extends BaseEntity{
 
     private String content;
 
-    private  boolean isRead;
+    private  Boolean isRead;
 
     //______________ Relationships _________________
 

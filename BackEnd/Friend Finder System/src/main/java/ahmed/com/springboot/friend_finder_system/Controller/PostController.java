@@ -120,6 +120,8 @@ public class PostController {
             @PathVariable Long id
     )
     {
+        System.out.println("DELETE ENDPOINT HIT");
+
         post_Service.deletePost(id);
         return ResponseEntity.noContent().build();
     }

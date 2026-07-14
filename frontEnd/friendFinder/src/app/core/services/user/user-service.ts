@@ -32,6 +32,20 @@ export interface SimpleUserProfile {
   city: string;
 }
 
+// 🟢 الـ Interface المقابل للـ UpdateProfileDto في الـ Backend
+export interface UpdateProfileDto {
+  id?: number; // اختياري لو هتجيبه من الـ Token أو الـ Auth في السيرفر، أو هتبعته صراحة
+  image?: string; // لـ profile picture أو الـ cover حسب التعامل في السيرفر
+  CoverPhoto?: string; // لـ profile picture أو الـ cover حسب التعامل في السيرفر
+  firstName: string;
+  lastName: string;
+  bio?: string;
+  city?: string;
+  country?: string;
+  dateOfBirth: string; // بيبعت بصيغة YYYY-MM-DD
+  gender: 'MALE' | 'FEMALE' | string; // حسب الـ Enum اللي عندك في الـ Java
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -43,15 +57,19 @@ export class UserService {
     return this.http.get<UserProfile>(`${this.apiUrl}/user/${id}`);
   }
 
-
-  // جوه الـ class UserService
   getSimpleProfile(): Observable<SimpleUserProfile> {
     return this.http.get<SimpleUserProfile>(`${this.apiUrl}/simpleProfile`);
   }
 
+  searchUsers(key: string, pageNumber: number): Observable<SimpleUserProfile[]> {
+    return this.http.get<SimpleUserProfile[]>(
+      `${this.apiUrl}/search/${encodeURIComponent(key)}/${pageNumber}`
+    );
+  }
 
-  // يرجع بيانات اليوزر المسجل دخوله حالياً (بدون id في الرابط)
-  getMyProfile(userId: number): Observable<UserProfile> {
-    return this.http.get<UserProfile>(`${this.apiUrl}/profile`);
+  // 🟢 دالة تحديث الملف الشخصي
+  // الـ Backend بيرجع ResponseEntity<Void> مع HttpStatus 204 (No Content)، عشان كده استخدمنا <void>
+  updateProfile(profileData: UpdateProfileDto): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/updateProfile`, profileData);
   }
 }

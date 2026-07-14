@@ -48,7 +48,7 @@ public class Auth_Service_Impl implements AuthService {
 
       if(!passwordEncoder.matches(loginRequestVM.getPassword(),userDto.getPassword()))
       {
-          throw  new RuntimeException("invalid.password.error");
+          throw  new RuntimeException("invalid.userName.or.password.error");
       }
         Set<String> roles = userDto.getRoles().stream().map(rolesDto -> rolesDto.toString()).collect(Collectors.toSet());
         String token = tokenHandler.generateToken(userDto);

@@ -7,6 +7,7 @@ import ahmed.com.springboot.friend_finder_system.dto.CommentDto;
 import ahmed.com.springboot.friend_finder_system.service.Comment_Service;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -54,7 +55,7 @@ public class CommentController {
     //TODO:_______________ New Comment ____________________________
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/newComment")
-    public ResponseEntity<Void> newComment(@RequestBody CommentRequest_Vm commentRequestVm){
+    public ResponseEntity<Void> newComment(@RequestBody @Valid CommentRequest_Vm commentRequestVm){
         return ResponseEntity.ok(commentService.createComment(commentRequestVm));
     }
 

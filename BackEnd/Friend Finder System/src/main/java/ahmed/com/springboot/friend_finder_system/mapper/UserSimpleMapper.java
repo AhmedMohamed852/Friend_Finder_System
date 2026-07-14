@@ -4,10 +4,17 @@ import ahmed.com.springboot.friend_finder_system.dto.DtoSimble.User_Simple_Dto;
 import ahmed.com.springboot.friend_finder_system.models.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
+import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring"  , unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserSimpleMapper {
 
     User toEntity(User_Simple_Dto userDto);
+
     User_Simple_Dto toDto(User user);
+
+
+    List<User_Simple_Dto> toDtoList(Page<User> users);
 }

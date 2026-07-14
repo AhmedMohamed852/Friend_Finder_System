@@ -6,9 +6,9 @@
     <app-left-bar></app-left-bar>
   }
 
-  <div class="main-content" [class.no-sidebars]="!isLoggedIn()">
+  <main class="main-content" [class.no-sidebars]="!isLoggedIn()">
     <router-outlet></router-outlet>
-  </div>
+  </main>
 
   @if (isLoggedIn()) {
     <app-right-bar></app-right-bar>

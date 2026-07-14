@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface Post_Repo extends JpaRepository<Post, Long> {
 
@@ -22,4 +24,6 @@ public interface Post_Repo extends JpaRepository<Post, Long> {
     Page<Post> findHomeFeed(@Param("currentUserId") Long currentUserId, Pageable pageable);
 
     boolean existsByAuthorId(Long id);
+
+    Page<Post> findAllByAuthorIdIn(List<Long> ids ,  Pageable pageable);
 }

@@ -1,8 +1,8 @@
 package ahmed.com.springboot.friend_finder_system.service.impl;
 
-import ahmed.com.springboot.friend_finder_system.dto.UserDto;
-import ahmed.com.springboot.friend_finder_system.mapper.LikeMapper;
-import ahmed.com.springboot.friend_finder_system.mapper.NotificationMapper;
+
+import ahmed.com.springboot.friend_finder_system.globalCurrentUserId.CurrentUser;
+
 import ahmed.com.springboot.friend_finder_system.mapper.PostMapper;
 import ahmed.com.springboot.friend_finder_system.mapper.UserMapper;
 import ahmed.com.springboot.friend_finder_system.models.Like;
@@ -12,11 +12,10 @@ import ahmed.com.springboot.friend_finder_system.repo.Like_Repo;
 import ahmed.com.springboot.friend_finder_system.service.Like_Service;
 import ahmed.com.springboot.friend_finder_system.service.Notification_Service;
 import ahmed.com.springboot.friend_finder_system.service.Post_Service;
+
 import ahmed.com.springboot.friend_finder_system.service.User_Service;
-import jdk.dynalink.linker.LinkerServices;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -35,6 +34,7 @@ public class Like_Service_Impl implements Like_Service {
     private final PostMapper postMapper;
     private final UserMapper userMapper;
     private final Notification_Service notificationService;
+    private final User_Service userService;
 
     //TODO:_______________ Implement Service Methods ____________________________
 
@@ -48,14 +48,10 @@ public class Like_Service_Impl implements Like_Service {
 
         Post post = postMapper.toEntity(postService.getPostById(postId));
 
-        if(Objects.isNull(post))
-        {
-            throw new RuntimeException("error.post.not.found");
-        }
 
-        if(likeRepo.existsByUserIdAndPostId(currentUser() , post.getId()))
+        if(likeRepo.existsByUserIdAndPostId(CurrentUser.currentUserId(), post.getId()))
         {
-            Optional<Like> like = Optional.of(likeRepo.findByUserIdAndPostId(currentUser(), post.getId()).orElseThrow());
+            Optional<Like> like = Optional.of(likeRepo.findByUserIdAndPostId(CurrentUser.currentUserId(), post.getId()).orElseThrow());
             likeRepo.delete(like.get());
             post.setCountLikes(post.getCountLikes()-1);
             postService.savePost(postMapper.toDto(post));
@@ -70,7 +66,8 @@ public class Like_Service_Impl implements Like_Service {
         }
 
 
-        User user = userMapper.toEntity((UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+       // User user = userMapper.toEntity((UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        User user = userMapper.toEntity(userService.getUserById(CurrentUser.currentUserId()));
 
         Like newLik = new Like();
 
@@ -89,20 +86,11 @@ public class Like_Service_Impl implements Like_Service {
     //TODO:_______________ is Liked By Me ____________________________
     @Override
     public boolean isLikedByMe(Long postId) {
-        return likeRepo.existsByPostIdAndUserId(postId, currentUser());
+        return likeRepo.existsByPostIdAndUserId(postId, CurrentUser.currentUserId());
     }
 
     public Set<Long> getLikedPostIds(List<Long> postIds, Long userId) {
         return new HashSet<>(likeRepo.findLikedPostIds(userId, postIds));
     }
 
-
-    //TODO:_______________ Get CurrentUser ____________________________
-    public Long currentUser()
-    {
-        UserDto currentUser = (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long userId = currentUser.getId();
-
-        return userId;
-    }
 }

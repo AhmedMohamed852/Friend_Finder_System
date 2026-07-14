@@ -1,9 +1,12 @@
 package ahmed.com.springboot.friend_finder_system.service.impl;
 
 
+import ahmed.com.springboot.friend_finder_system.GlobalExService.NotificationEx;
+import ahmed.com.springboot.friend_finder_system.GlobalExService.UserEx;
 import ahmed.com.springboot.friend_finder_system.dto.NotificationDto;
 import ahmed.com.springboot.friend_finder_system.dto.UserDto;
 import ahmed.com.springboot.friend_finder_system.eNum.NotificationType;
+import ahmed.com.springboot.friend_finder_system.globalCurrentUserId.CurrentUser;
 import ahmed.com.springboot.friend_finder_system.mapper.MapperSimble.ToUserSimpleMapper;
 import ahmed.com.springboot.friend_finder_system.mapper.NotificationMapper;
 import ahmed.com.springboot.friend_finder_system.mapper.PostMapper;
@@ -24,6 +27,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 
@@ -68,14 +72,14 @@ public class Notification_Service_Impl implements Notification_Service {
 
         if( userId == null)
         {
-            throw new RuntimeException("error.must.be.not.null.argument.id");
+            throw NotificationEx.userIdRequired();
         }
 
-        if (notification_Repo.existsByUser_IdAndTriggeredBy_Id_AndType(userId ,currentUser() , NotificationType.FRIEND_REQUEST)){
+        /*if (notification_Repo.existsByUser_IdAndTriggeredBy_Id_AndType(userId ,currentUser() , NotificationType.FRIEND_REQUEST)){
             throw new RuntimeException("error.this.notification.exist");
-        }
+        }*/
 
-        User userSender = userSimpleMapper.toEntity(userService.simple_User(currentUser()));
+        User userSender = userSimpleMapper.toEntity(userService.simple_User(CurrentUser.currentUserId()));
 
         User user = userSimpleMapper.toEntity(userService.simple_User(userId));
 
@@ -87,17 +91,12 @@ public class Notification_Service_Impl implements Notification_Service {
         notification.setType(NotificationType.FRIEND_REQUEST);
 
 
-       // ✅ Use message key
-        String content = messageSource.getMessage("notification.friend.request",
-        new Object[]{userSender.getFirstName(), userSender.getLastName()},
-        LocaleContextHolder.getLocale());
+        String content = buildContent("notification.friend.rejected", userSender.getFirstName(), userSender.getLastName());
         notification.setContent(content);
 
         notification_Repo.save(notification);
 
     }
-
-
 
 
 
@@ -107,15 +106,15 @@ public class Notification_Service_Impl implements Notification_Service {
 
         if( userId == null)
         {
-            throw new RuntimeException("error.must.be.not.null.argument.id");
+            throw NotificationEx.userIdRequired();
         }
 
-        if(notification_Repo.existsByUser_IdAndTriggeredBy_IdAndType(currentUser() , userId ,NotificationType.FRIEND_ACCEPTED )){
-            throw new RuntimeException("error.this.notification.exist");
+        if(notification_Repo.existsByUser_IdAndTriggeredBy_IdAndType(CurrentUser.currentUserId() , userId ,NotificationType.FRIEND_ACCEPTED )){
+            throw NotificationEx.notificationAlreadyExists();
         }
 
 
-        User userSender = userSimpleMapper.toEntity(userService.simple_User(currentUser()));
+        User userSender = userSimpleMapper.toEntity(userService.simple_User(CurrentUser.currentUserId()));
 
         User user = userSimpleMapper.toEntity(userService.simple_User(userId));
 
@@ -125,9 +124,7 @@ public class Notification_Service_Impl implements Notification_Service {
         notification.setType(NotificationType.FRIEND_ACCEPTED);
 
 
-        String content = messageSource.getMessage("notification.friend.accepted",
-        new Object[]{userSender.getFirstName(), userSender.getLastName()},
-        LocaleContextHolder.getLocale());
+        String content = buildContent("notification.friend.accepted", userSender.getFirstName(), userSender.getLastName());
         notification.setContent(content);
 
 
@@ -137,24 +134,23 @@ public class Notification_Service_Impl implements Notification_Service {
 
 
 
-
     //TODO:_______________ Create FriendReject Notification ____________________________
     @Override
     public void createFriendRejectNotification(Long userId)
     {
         if( userId == null)
         {
-            throw new RuntimeException("error.must.be.not.null.argument(id)");
+            throw NotificationEx.userIdRequired();
         }
 
-        if(notification_Repo.existsByUser_IdAndTriggeredBy_IdAndType(currentUser() , userId ,NotificationType.FRIEND_REJECT)){
+     /*   if(notification_Repo.existsByUser_IdAndTriggeredBy_IdAndType(currentUser() , userId ,NotificationType.FRIEND_REJECT)){
             throw new RuntimeException("error.this.notification.exist");
-        }
+        }*/
 
 
-        User sender = user_Repo.findById(currentUser()).orElseThrow(() -> new RuntimeException("error.user.not.found"));
+        User sender = user_Repo.findById(CurrentUser.currentUserId()).orElseThrow(UserEx::userNotFound);
 
-        User receiver = user_Repo.findById(userId).orElseThrow(() -> new RuntimeException("error.user.not.found"));
+        User receiver = user_Repo.findById(userId).orElseThrow(UserEx::userNotFound);
 
         Notification notification = new Notification();
         notification.setUser(receiver);
@@ -162,9 +158,7 @@ public class Notification_Service_Impl implements Notification_Service {
         notification.setType(NotificationType.FRIEND_REJECT);
 
 
-        String content = messageSource.getMessage("notification.friend.rejected",
-        new Object[]{sender.getFirstName(), sender.getLastName()},
-        LocaleContextHolder.getLocale());
+        String content = buildContent("notification.friend.rejected", sender.getFirstName(), sender.getLastName());
         notification.setContent(content);
 
         notification_Repo.save(notification);
@@ -183,25 +177,23 @@ public class Notification_Service_Impl implements Notification_Service {
 
 
         // todo ==> we have Exception hir ______________
-        if(notification_Repo.existsByUser_IdAndTriggeredBy_IdAndPostIdAndType( currentUser() ,post.getAuthor().getId() , post.getId() ,NotificationType.POST_LIKED)){
+        if(notification_Repo.existsByUser_IdAndTriggeredBy_IdAndPostIdAndType( CurrentUser.currentUserId() ,post.getAuthor().getId() , post.getId() ,NotificationType.POST_LIKED)){
 
            // throw new RuntimeException("error.this.notification.exist");
             return;
         }
 
         User user = userMapper.toEntity(userService.getUserById(post.getAuthor().getId()));
-        User currentUser = userMapper.toEntity(userService.getUserById(currentUser()));
+        User currentUser = userMapper.toEntity(userService.getUserById(CurrentUser.currentUserId()));
 
         Notification notification = new Notification();
-        notification.setUser(currentUser);
-        notification.setTriggeredBy(user);
+        notification.setUser(user);
+        notification.setTriggeredBy(currentUser);
         notification.setType(NotificationType.POST_LIKED);
         notification.setPostId(post.getId());
 
 
-        String content = messageSource.getMessage("notification.post.liked",
-        new Object[]{user.getFirstName(), user.getLastName()},
-        LocaleContextHolder.getLocale());
+        String content = buildContent("notification.post.liked", currentUser.getFirstName(), currentUser.getLastName());
         notification.setContent(content);
 
         notification_Repo.save(notification);
@@ -224,7 +216,7 @@ public class Notification_Service_Impl implements Notification_Service {
     public List<NotificationDto> getUserNotifications()
     {
 
-        List<Notification> notifications = notification_Repo.findAllByUser_Id(currentUser())
+        List<Notification> notifications = notification_Repo.findByUser_id(CurrentUser.currentUserId())
         .orElse(Collections.emptyList());
 
         if (notifications.isEmpty()) {
@@ -255,13 +247,12 @@ public class Notification_Service_Impl implements Notification_Service {
 
     }
 
-
-    //TODO:_______________ Get CurrentUser ____________________________
-    public Long currentUser()
+    private String buildContent(String key, String firstName, String lastName)
     {
-        UserDto currentUser = (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long userId = currentUser.getId();
-
-        return userId;
+        return messageSource.getMessage(
+                key,
+                new Object[]{firstName, lastName},
+                LocaleContextHolder.getLocale()
+        );
     }
 }

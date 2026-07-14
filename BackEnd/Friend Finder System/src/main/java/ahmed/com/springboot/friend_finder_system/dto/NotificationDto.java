@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -18,7 +20,7 @@ public class NotificationDto {
     @Schema(description = "Notification ID", example = "1")
     private Long id;
 
-    @NotBlank(message = "Content is required")
+    @NotBlank(message = "error.notification.content.required")
     @Schema(
             description = "Notification content message",
             example = "John liked your post"
@@ -37,7 +39,7 @@ public class NotificationDto {
     )
     private Long postId;
 
-    @NotNull(message = "Type is required")
+    @NotNull(message = "error.notification.type.required")
     @Schema(
             description = "Type of notification",
             example = "LIKE"
@@ -46,9 +48,14 @@ public class NotificationDto {
 
     //______________relations_______________________________
 
-    @NotNull(message = "Triggered by user is required")
+    @NotNull(message = "error.notification.triggeredBy.required")
     @Schema(
             description = "User who triggered the notification"
     )
     private User_Simple_Dto triggeredBy;
+
+
+    private Long commentId;
+
+    private LocalDateTime createdDate;
 }

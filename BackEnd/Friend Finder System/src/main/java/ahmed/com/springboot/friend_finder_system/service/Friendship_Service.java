@@ -2,9 +2,11 @@ package ahmed.com.springboot.friend_finder_system.service;
 
 
 import ahmed.com.springboot.friend_finder_system.dto.DtoSimble.FriendShipRequestsDto;
+import ahmed.com.springboot.friend_finder_system.dto.DtoSimble.User_Simple_Dto;
 import ahmed.com.springboot.friend_finder_system.dto.FriendshipDto;
 
 import java.util.List;
+import java.util.Set;
 
 public interface Friendship_Service {
 
@@ -25,11 +27,12 @@ public interface Friendship_Service {
 
     void cancelFriendRequest(Long Friendship_Id);
 
-/*
-    void unfriend(Long friendId);
-*/
+    void unfriend(Long friendship_Id);
 
-/*    void blockUser(Long friendId);*/
+    Set<User_Simple_Dto> search (String key);
+
+
+    /*    void blockUser(Long friendId);*/
 
 
 

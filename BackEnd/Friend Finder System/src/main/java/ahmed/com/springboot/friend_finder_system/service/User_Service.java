@@ -2,8 +2,12 @@ package ahmed.com.springboot.friend_finder_system.service;
 
 import ahmed.com.springboot.friend_finder_system.dto.DtoSimble.UpdateProfileDto;
 import ahmed.com.springboot.friend_finder_system.dto.DtoSimble.User_Simple_Dto;
+import ahmed.com.springboot.friend_finder_system.dto.StoriesDto;
 import ahmed.com.springboot.friend_finder_system.dto.UserDto;
+import ahmed.com.springboot.friend_finder_system.models.Stories;
 import ahmed.com.springboot.friend_finder_system.models.User;
+
+import java.util.List;
 
 public interface User_Service {
 
@@ -16,6 +20,8 @@ public interface User_Service {
 
     User_Simple_Dto simple_User(Long id);
 
+    List<User_Simple_Dto> search(String key ,  int pageNumber);
+
     void updateProfile(UpdateProfileDto userDto);
 
     UserDto getUserById(Long UserId);
@@ -24,6 +30,7 @@ public interface User_Service {
     void deleteAccount();
 
     boolean existsById(Long id);
+
 
 
 /*

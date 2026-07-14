@@ -2,6 +2,7 @@ package ahmed.com.springboot.friend_finder_system.Controller;
 
 import ahmed.com.springboot.friend_finder_system.dto.DtoSimble.UpdateProfileDto;
 import ahmed.com.springboot.friend_finder_system.dto.DtoSimble.User_Simple_Dto;
+import ahmed.com.springboot.friend_finder_system.dto.StoriesDto;
 import ahmed.com.springboot.friend_finder_system.dto.UserDto;
 import ahmed.com.springboot.friend_finder_system.helper.MessageResponse;
 import ahmed.com.springboot.friend_finder_system.service.User_Service;
@@ -16,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -107,6 +110,8 @@ public class UserController {
 
 
 
+
+
     //TODO:_______________ Show My Profile ____________________________
 
     // TODO -----------> SWAGGER {
@@ -169,6 +174,14 @@ public class UserController {
     ) {
 
         return ResponseEntity.ok(user_Service.simpleProfile());
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/search/{key}/{pageNumber}")
+    public ResponseEntity<List<User_Simple_Dto>> search(@PathVariable String key,@PathVariable int pageNumber
+    ) {
+
+        return ResponseEntity.ok(user_Service.search(key , pageNumber));
     }
 
 }

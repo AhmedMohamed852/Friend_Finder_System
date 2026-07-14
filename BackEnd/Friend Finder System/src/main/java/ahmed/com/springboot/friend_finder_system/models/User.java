@@ -123,5 +123,13 @@ public class User extends BaseEntity {
 
 
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToOne(mappedBy = "user" , cascade =  CascadeType.ALL)
+    private Stories stories;
+
+
+
+
 }
 

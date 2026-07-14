@@ -41,13 +41,13 @@ public class Post extends BaseEntity {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post"  , cascade = CascadeType.ALL)
     @Column(name = "comments")
     private Set<Comments> comments = new HashSet<>();
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post"  , cascade = CascadeType.ALL)
     private Set<Like> likes = new HashSet<>();
 
 
@@ -55,7 +55,7 @@ public class Post extends BaseEntity {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "post", cascade = {CascadeType.MERGE ,CascadeType.PERSIST })
+    @OneToMany(mappedBy = "post", cascade =  CascadeType.ALL)
     private Set<Media> media = new HashSet<>();
 
 

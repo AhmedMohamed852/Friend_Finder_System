@@ -15,13 +15,13 @@ import java.time.LocalDateTime;
         uniqueConstraints = @jakarta.persistence.UniqueConstraint(columnNames = {"user_1_id", "user_2_id"}))
 public class Friendship extends BaseEntity{
 
-    @ManyToOne
+    @ManyToOne/*(cascade = CascadeType.ALL )*/
     @JoinColumn(name = "user_1_id")
     private User user1;
 
 
 
-    @ManyToOne
+    @ManyToOne/*(cascade = CascadeType.ALL )*/
     @JoinColumn(name = "user_2_id")
     private User user2;
 

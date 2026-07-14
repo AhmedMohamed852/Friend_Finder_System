@@ -75,7 +75,17 @@
 
 .post-content { color: #333; font-size: 14px; margin-bottom: 12px; line-height: 1.55; }
 
-.post-img { width: 100%; border-radius: 10px; margin-bottom: 12px; max-height: 380px; object-fit: cover; }
+/* إرجاع كود الصورة الأصلي بمقاساته الموحدة المتناسقة في كروت الـ Feed */
+/* الكلاس الجديد لجعل الصورة كاملة بدون قطع وبدون أي فراغات جانبية */
+.post-feed-image {
+  width: 100%;             /* ملء عرض الكارت بالكامل لمنع أي فراغ جانبي */
+  height: auto;            /* الارتفاع يتحدد تلقائياً حسب أبعاد الصورة الأصلية عشان متتقصش */
+  display: block;
+  border-radius: 10px;     /* حواف ناعمة متناسقة مع تصميم الكارت */
+  margin-bottom: 12px;
+  cursor: pointer;
+  object-fit: contain;     /* حماية أبعاد الصورة من التمطيط أو التشويه */
+}
 
 .post-actions {
   display: flex;
@@ -105,14 +115,8 @@
 /* Like Button */
 .like-btn { transition: color 0.2s, transform 0.1s; }
 .like-btn:active { transform: scale(0.92); }
-
-.like-btn.liked {
-  color: #dc2626;
-}
-
-.like-btn.liked .count {
-  color: #dc2626;
-}
+.like-btn.liked { color: #dc2626; }
+.like-btn.liked .count { color: #dc2626; }
 
 .mutual { color: #1a9e8f; font-size: 13px; text-decoration: none; font-weight: 500; }
 
@@ -148,7 +152,6 @@
 
 /* Friends Grid */
 .friends-container { width: 100%; }
-
 .friends-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -196,7 +199,6 @@
 }
 
 .card-info { margin: 12px 0; flex: 1; }
-
 .card-info h4 {
   margin: 0 0 4px;
   font-size: 14px;
@@ -230,14 +232,551 @@
   transition: background 0.2s, color 0.2s;
 }
 
-.friend-card:hover .profile-btn {
+.friend-card:hover .profile-btn { background: #1a9e8f; color: white; }
+.animate-fade { animation: fadeIn 0.3s ease; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.pending-btn {
+  background: #f3f4f6 !important;
+  color: #6b7280 !important;
+  border: 1.5px solid #d1d5db !important;
+  cursor: not-allowed !important;
+  opacity: 0.85;
+}
+
+.msg-btn {
+  background: none;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+  margin-left: auto;
+}
+.msg-btn:hover { background: #f0fdfa; border-color: #0d9488; }
+
+/* ── استايلات عارض الصور المظلم على طريقة فيسبوك الكاملة (Facebook Lightbox) ── */
+.fb-lightbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.95); /* تضليم كامل للشاشة بنسبة 95% */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  animation: fadeIn 0.15s ease-out;
+}
+
+/* الشريط العلوي للتحكم والتحميل */
+.lightbox-top-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 16px 24px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0));
+  z-index: 10002;
+}
+
+.lightbox-author-name {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.lightbox-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* زر التنزيل في الشريط العلوي */
+.lightbox-download-btn {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  backdrop-filter: blur(4px);
+}
+.lightbox-download-btn:hover {
+  background: #1a9e8f;
+  border-color: #1a9e8f;
+}
+.lightbox-download-btn:active {
+  transform: scale(0.97);
+}
+
+/* زر الإغلاق */
+.lightbox-close-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+}
+.lightbox-close-btn:hover {
+  background: #dc2626;
+  color: white;
+}
+
+/* بوكس الصورة الفردي السلس */
+.lightbox-content-box {
+  width: 90%;
+  max-width: 1100px;
+  height: 82vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10001;
+}
+
+.lightbox-content-box img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* إظهار كامل تفاصيل وأبعاد الصورة الأصلية بنقاء */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  border-radius: 4px;
+}
+
+/* الهواتف والشاشات الصغيرة */
+@media (max-width: 480px) {
+  .lightbox-top-bar { padding: 12px; }
+  .lightbox-download-btn { padding: 6px 12px; font-size: 12px; }
+}
+/* ========== Search Results (Facebook Style) ========== */
+
+.search-results-page {
+  width: 100%;
+}
+
+.search-results-page .friends-main-header {
+  margin-bottom: 20px;
+}
+
+.search-results-page .friends-main-header h2 {
+  font-size: 20px;
+  color: #0d2b26;
+}
+
+.search-results-page .refresh-btn {
+  width: auto;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  height: auto;
+}
+
+.search-results-page .refresh-btn:hover {
+  background: #dc2626;
+  color: white;
+}
+
+/* كارت الشخص - Facebook Style */
+.fb-user-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  border: 1px solid #e8f5f3;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+  width: 100%;
+}
+
+.fb-user-card:hover {
+  background: #f0faf9;
+  box-shadow: 0 4px 14px rgba(26, 158, 143, 0.12);
+}
+
+.fb-user-avatar {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.fb-user-avatar img {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e8f5f3;
+}
+
+.fb-avatar-placeholder {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1a9e8f, #0d6b5e);
+  color: white;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.fb-user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.fb-user-info h4 {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0d2b26;
+}
+
+.fb-user-info .fb-city {
+  font-size: 13px;
+  color: #7a9e99;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.fb-view-btn {
+  flex-shrink: 0;
+  background: #e8f5f3;
+  color: #0d6b5e;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+
+.fb-user-card:hover .fb-view-btn {
   background: #1a9e8f;
   color: white;
 }
 
-.animate-fade { animation: fadeIn 0.3s ease; }
+.search-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #7a9e99;
+  gap: 12px;
+  text-align: center;
+}
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+.search-empty-state span:first-child {
+  font-size: 48px;
+}
+
+.search-empty-state span:last-child {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+/* ========== Friends & Notifications FB Style ========== */
+
+.friend-badge-inline {
+  display: inline-block;
+  font-size: 12px;
+  color: #0d6b5e;
+  background: #e8f5f3;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.fb-notif-unread {
+  background: #f0fdf9 !important;
+  border-left: 3px solid #1a9e8f !important;
+}
+
+.fb-unread-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #1a9e8f;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+/* ── شريط الستوريز بأسلوب فيسبوك ── */
+.stories-container {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 4px 4px 16px 4px;
+  margin-bottom: 8px;
+  scrollbar-width: none; /* إخفاء شريط التمرير في فايرفوكس */
+}
+
+.stories-container::-webkit-scrollbar {
+  display: none; /* إخفاء شريط التمرير في كروم وسفاري */
+}
+
+.story-card {
+  position: relative;
+  width: 110px;
+  height: 180px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  background: #f3f4f6;
+  border: 1px solid #e8f5f3;
+}
+
+.story-card:hover {
+  transform: scale(1.03);
+}
+
+/* كارت إضافة ستوري الخاص بي */
+.create-story {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+.create-story .my-avatar-wrapper {
+  height: 130px;
+  overflow: hidden;
+}
+
+.create-story .my-avatar-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.create-story-footer {
+  position: relative;
+  height: 50px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 10px;
+}
+
+.create-story-footer .plus-icon {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 32px;
+  background: #1a9e8f;
+  color: white;
+  border-radius: 50%;
+  border: 3px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.create-story-footer span {
+  font-size: 11px;
+  font-weight: 600;
+  color: #0d2b26;
+}
+
+/* ستوريز الأصدقاء */
+.story-bg-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.story-user-avatar {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 3px solid #1a9e8f; /* الإطار الأخضر المميز للستوري غير المقروءة */
+  object-fit: cover;
+  z-index: 2;
+}
+
+.story-username {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 2;
+}
+
+.story-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.5) 100%);
+  z-index: 1;
+}
+
+/* ── نافذة عرض الستوري الكاملة (Lightbox) تظل دقيقة كاملة ── */
+.story-lightbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.98);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 20000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.story-lightbox-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 420px; /* مقاس طولي متناسق يشبه الموبايل والستوري الحقيقية */
+  height: 95vh;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* شريط التايمر العلوي المقسم */
+.story-progress-bar {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  overflow: hidden;
+  z-index: 20002;
+}
+
+.story-progress-fill {
+  height: 100%;
+  background: #1a9e8f; /* متناسق مع لون الثيم الخاص بك */
+  width: 0;
+  animation-name: storyTimer;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes storyTimer {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+/* الهيدر الخاص ببيانات الشخص داخل الستوري */
+.story-lightbox-header {
+  position: absolute;
+  top: 24px;
+  left: 0;
+  width: 100%;
+  padding: 0 16px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 20002;
+}
+
+.story-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.story-viewer-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(255,255,255,0.5);
+}
+
+.story-viewer-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.story-viewer-info strong {
+  color: white;
+  font-size: 14px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+}
+
+.story-viewer-info span {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 11px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+}
+
+.story-close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+.story-close-btn:hover { opacity: 1; }
+
+/* عرض محتوى الستوري الفعلي */
+.story-viewer-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.story-viewer-content img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* لملء كادر الشاشة الطولي بالكامل مثل فيسبوك */
 }

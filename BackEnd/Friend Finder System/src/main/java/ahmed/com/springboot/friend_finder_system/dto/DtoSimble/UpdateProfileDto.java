@@ -21,26 +21,25 @@ public class UpdateProfileDto {
 
     private String image;
 
-    @NotBlank(message = "First Name is required")
-    @NotNull(message = "First Name is required")
-    @Size(max = 50)
+    @NotBlank(message = "error.user.firstName.required")
+    @Size(max = 50, message = "error.user.firstName.tooLong")
     private String firstName;
 
-    @NotBlank(message = "Last Name is required")
-    @NotNull(message = "Last Name is required")
-    @Size(max = 50)
+    @NotBlank(message = "error.user.lastName.required")
+    @Size(max = 50, message = "error.user.lastName.tooLong")
     private String lastName;
 
+    private String coverPhoto;
 
     private String bio;
     private String city;
     private String country;
 
-    @Past(message = "Date of birth must be in the past")
-    @NotNull(message = "Date of birth is required")
+    @Past(message = "error.user.dateOfBirth.mustBePast")
+    @NotNull(message = "error.user.dateOfBirth.required")
     private LocalDate dateOfBirth;
 
-    @NotNull(message = "Gender is required")
+    @NotNull(message = "error.user.gender.required")
     private Gender gender;
 
     // NO: username, email, password, roles

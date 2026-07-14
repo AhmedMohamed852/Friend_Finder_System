@@ -22,55 +22,47 @@ public class UserDto {
     )
     private Long id;
 
-    @NotBlank(message = "Username is required")
-    @Size(max = 50)
+
     @Schema(
             description = "Username of the user",
             example = "ahmed123"
     )
     private String username;
 
-    @NotBlank(message = "First Name is required")
-    @Size(max = 50)
+
     @Schema(
             description = "First name",
             example = "Ahmed"
     )
     private String firstName;
 
-    @NotBlank(message = "Last Name is required")
-    @Size(max = 50)
+
     @Schema(
             description = "Last name",
             example = "Mohamed"
     )
     private String lastName;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Please enter a valid email")
     @Schema(
             description = "Email address",
             example = "ahmed@gmail.com"
     )
     private String email;
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 8, message = "Password must be at least 8 characters long")
+
     @Schema(
             description = "User password",
             example = "********"
     )
     private String password;
 
-    @NotNull(message = "Gender is required")
     @Schema(
             description = "Gender",
             example = "MALE"
     )
     private Gender gender;
 
-    @Past(message = "Date of birth must be in the past")
-    @NotNull(message = "Date of birth is required")
+
     @Schema(
             description = "Date of birth",
             example = "2000-01-01"

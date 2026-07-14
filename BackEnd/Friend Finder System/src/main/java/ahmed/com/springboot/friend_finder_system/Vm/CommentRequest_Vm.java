@@ -9,10 +9,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class CommentRequest_Vm {
-    @NotNull(message = "muste.be.Id.notNull")
+    @NotNull(message = "error.comment.postId.required")
     Long postId;
 
-
-    @NotNull(message = "muste.be.comment.notNull")
+    @NotNull(message = "error.comment.content.required")
     String content;
 }

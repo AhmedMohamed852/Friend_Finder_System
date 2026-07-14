@@ -6,3 +6,4 @@ export interface UserSimpleDto {
   lastName: string;
   city: string;
 }
+

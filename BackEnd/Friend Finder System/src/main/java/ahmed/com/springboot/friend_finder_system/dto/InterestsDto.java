@@ -15,7 +15,7 @@ public class InterestsDto {
     @Schema(description = "Interest ID", example = "1")
     private Long id;
 
-    @NotNull(message = "Name is required")
+    @NotNull(message = "error.interest.category.required")
     @Schema(
             description = "Interest category",
             example = "SPORTS",

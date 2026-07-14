@@ -10,7 +10,6 @@
 
   @if (!loading && post) {
 
-    <!-- Post Card -->
     <div class="post-card animate-fade">
       <div class="post-header">
         <img [src]="post.authorPicture" alt="Author" class="post-avatar">
@@ -34,24 +33,6 @@
       </div>
     </div>
 
-    <!-- Add Comment -->
-    <div class="add-comment-box">
-      <input
-        #commentInput
-        type="text"
-        placeholder="Write a comment..."
-        class="comment-input"
-        [disabled]="submittingComment"
-        (keydown.enter)="addComment(commentInput.value); commentInput.value = ''">
-      <button
-        class="send-btn"
-        [disabled]="submittingComment"
-        (click)="addComment(commentInput.value); commentInput.value = ''">
-        {{ submittingComment ? '...' : 'Send' }}
-      </button>
-    </div>
-
-    <!-- Comments -->
     <div class="comments-section">
       <h3 class="section-title">Comments ({{ post.countComments }})</h3>
 
@@ -61,76 +42,118 @@
 
       @for (c of comments; track c.id) {
         <div class="comment animate-fade">
+
           <div class="comment-header">
-            <div class="author-avatar-wrap" (click)="openProfile(c.authorId)" style="cursor:pointer;">
+            <div class="author-avatar-wrap" (click)="openProfile(c.authorId)">
               @if (c.authorImage) {
                 <img [src]="c.authorImage" alt="author" class="comment-avatar">
               } @else {
                 <div class="comment-avatar-placeholder">👤</div>
               }
             </div>
-            <span class="comment-author" (click)="openProfile(c.authorId)" style="cursor:pointer;">
-              {{ c.authorName }}
-            </span>
-            <button class="delete-btn" (click)="deleteComment(c.id)" title="Delete">🗑</button>
+
+            <div class="comment-meta">
+              <span class="comment-author" (click)="openProfile(c.authorId)">
+                {{ c.authorName }}
+              </span>
+            </div>
+
+            <div class="comment-actions-right">
+
+              @if (c.hasMoreReplies || c.replies.length > 0) {
+                <button
+                  class="replies-toggle-btn"
+                  (click)="toggleRepliesView(c)"
+                  [class.active]="c.repliesVisible">
+                  💬 {{ c.repliesVisible ? 'Hide' : 'View' }} replies
+                  @if (!c.repliesLoaded && c.hasMoreReplies) {
+                    <span class="replies-dot"></span>
+                  }
+                </button>
+              }
+
+              <button class="reply-action-btn" (click)="toggleReplyBox(c)" [class.active]="c.showReplyBox">
+                {{ c.showReplyBox ? '✕ Cancel' : '↩ Reply' }}
+              </button>
+
+              <button class="delete-btn" (click)="deleteComment(c.id)" title="Delete">🗑</button>
+            </div>
           </div>
 
           <p class="comment-content">{{ c.content }}</p>
 
-          <button class="reply-btn" (click)="toggleReplyBox(c)">
-            💬 {{ c.showReplyBox ? 'Cancel' : 'Reply' }}
-            @if (c.hasMoreReplies && !c.repliesLoaded) {
-              <span class="reply-count">({{ 'Show replies' }})</span>
-            }
-          </button>
-
-          <!-- Replies -->
-          @if (c.repliesLoaded && c.replies.length > 0) {
-            <div class="replies">
-              @for (r of c.replies; track r.id) {
-                <div class="comment reply animate-fade">
-                  <div class="comment-header">
-                    <div class="author-avatar-wrap" (click)="openProfile(r.authorId)" style="cursor:pointer;">
-                      @if (r.authorImage) {
-                        <img [src]="r.authorImage" alt="author" class="comment-avatar">
-                      } @else {
-                        <div class="comment-avatar-placeholder">👤</div>
-                      }
-                    </div>
-                    <span class="comment-author" (click)="openProfile(r.authorId)" style="cursor:pointer;">
-                      {{ r.authorName }}
-                    </span>
-                  </div>
-                  <p class="comment-content">{{ r.content }}</p>
-                </div>
-              }
-
-              @if (c.hasMoreReplies) {
-                <button class="load-more-replies-btn" (click)="loadReplies(c)" [disabled]="c.loadingReplies">
-                  {{ c.loadingReplies ? '🔄 Loading...' : 'Load more replies' }}
-                </button>
-              }
-            </div>
-          }
-
-          @if (c.loadingReplies && c.replies.length === 0) {
-            <div class="status-msg" style="padding: 8px 0 0 42px; font-size: 12px;">🔄 Loading replies...</div>
-          }
-
-          <!-- Reply Input -->
           @if (c.showReplyBox) {
-            <div class="reply-box">
+            <div class="reply-box animate-fade">
               <input
+                [id]="'reply-input-' + c.id"
                 #replyInput
                 type="text"
                 placeholder="Write a reply..."
                 class="comment-input"
                 (keydown.enter)="addReply(c, replyInput.value); replyInput.value = ''">
               <button
-                class="send-btn"
+                class="send-btn send-btn-sm"
                 (click)="addReply(c, replyInput.value); replyInput.value = ''">
                 Send
               </button>
+            </div>
+          }
+
+          @if (c.repliesVisible) {
+            <div class="replies-section">
+
+              @if (c.loadingReplies && c.replies.length === 0) {
+                <div class="status-msg-sm">🔄 Loading replies...</div>
+              }
+
+              @for (r of c.replies; track r.id) {
+                <div class="reply-item animate-fade">
+                  <div class="reply-thread-line"></div>
+
+                  <div class="reply-body">
+                    <div class="comment-header">
+                      <div class="author-avatar-wrap" (click)="openProfile(r.authorId)">
+                        @if (r.authorImage) {
+                          <img [src]="r.authorImage" alt="author" class="comment-avatar comment-avatar-sm">
+                        } @else {
+                          <div class="comment-avatar-placeholder comment-avatar-sm">👤</div>
+                        }
+                      </div>
+
+                      <div class="comment-meta">
+                        <span class="reply-author-name" (click)="openProfile(r.authorId)">
+                          {{ r.authorName }}
+                        </span>
+                        <span class="reply-badge">replied to</span>
+                        <span class="comment-author" (click)="openProfile(c.authorId)">
+                          {{ c.authorName }}
+                        </span>
+                      </div>
+
+                      <div class="reply-to-reply-action">
+                        <button
+                          class="reply-action-btn sub-reply-btn"
+                          (click)="prepareReplyToReply(c, r.authorName)">
+                          ↩ Reply
+                        </button>
+                      </div>
+                    </div>
+
+                    <p class="comment-content reply-content">{{ r.content }}</p>
+                  </div>
+                </div>
+              }
+
+              @if (c.hasMoreReplies && !c.loadingReplies && c.replies.length > 0) {
+                <button class="load-more-replies-btn" (click)="loadReplies(c)">
+                  ↓ Load more replies
+                </button>
+              }
+
+              @if (c.loadingReplies && c.replies.length > 0) {
+                <div class="status-msg-sm">🔄 Loading more...</div>
+              }
+
             </div>
           }
 
@@ -141,16 +164,30 @@
         }
       }
 
-      <!-- Load More Comments -->
       @if (hasMoreComments && !loadingComments && comments.length > 0) {
-        <button class="load-more-btn" (click)="loadComments()">
-          Load more comments
-        </button>
+        <button class="load-more-btn" (click)="loadComments()">Load more comments</button>
       }
 
       @if (loadingComments && comments.length > 0) {
         <div class="status-msg">🔄 Loading more...</div>
       }
+
+      <div class="add-comment-box" style="margin-top: 24px; margin-bottom: 0;">
+        <input
+          #commentInput
+          type="text"
+          placeholder="Write a comment..."
+          class="comment-input"
+          [disabled]="submittingComment"
+          (keydown.enter)="addComment(commentInput.value); commentInput.value = ''">
+        <button
+          class="send-btn"
+          [disabled]="submittingComment"
+          (click)="addComment(commentInput.value); commentInput.value = ''">
+          {{ submittingComment ? '...' : 'Send' }}
+        </button>
+      </div>
+
     </div>
   }
 

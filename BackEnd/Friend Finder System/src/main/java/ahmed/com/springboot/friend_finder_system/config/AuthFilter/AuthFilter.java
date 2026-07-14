@@ -56,8 +56,15 @@ public class AuthFilter extends OncePerRequestFilter {
 
         UserDto userDto = tokenHandler.validateToken(token);
 
+        System.out.println("TOKEN = " + token);
+
+        System.out.println("USER = " + userDto.getEmail());
+
+
         List<SimpleGrantedAuthority> roles = userDto.getRoles().stream().map(rolesDto ->
             new SimpleGrantedAuthority("ROLE_" + rolesDto.getName())).collect(Collectors.toList());
+
+        System.out.println("ROLES = " + roles);
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDto, null, roles);
         SecurityContextHolder.getContext().setAuthentication(authentication);

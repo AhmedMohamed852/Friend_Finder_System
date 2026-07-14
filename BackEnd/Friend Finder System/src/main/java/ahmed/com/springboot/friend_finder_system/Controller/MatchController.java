@@ -53,16 +53,8 @@ public class MatchController {
     })
     @GetMapping("/find")
     public ResponseEntity<List<User_Simple_Dto>> findMatch() {
-        return ResponseEntity.ok(match_Service.findPotentialFriends(getUserId()));
+        return ResponseEntity.ok(match_Service.findPotentialFriends());
     }
 
-
-    public Long getUserId()
-    {
-        UserDto currentUser = (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long userId = currentUser.getId();
-
-        return userId;
-    }
 
 }

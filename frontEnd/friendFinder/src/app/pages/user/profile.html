@@ -9,39 +9,76 @@
   }
 
   @if (user) {
-    <div class="cover-photo" [style.backgroundImage]="user.coverPhoto ? 'url(' + user.coverPhoto + ')' : null">
-      @if (!user.coverPhoto) {
-        <div class="cover-placeholder"></div>
-      }
-    </div>
 
-    <div class="identity-card">
-      <div class="avatar-wrap">
-        @if (user.profilePicture) {
-          <img [src]="user.profilePicture" class="profile-avatar" alt="Avatar">
+    <div class="fb-header-container">
+
+      <div class="cover-photo-wrapper">
+        @if (user.coverPhoto) {
+          <img [src]="user.coverPhoto" class="cover-photo-img" alt="Cover">
         } @else {
-          <div class="profile-avatar-placeholder">👤</div>
+          <div class="cover-placeholder"></div>
         }
       </div>
 
-      <h1>{{ fullName }}</h1>
-      <span class="username">&#64;{{ user.username }}</span>
+      <div class="fb-profile-bar">
+        <div class="avatar-left-wrap">
+          @if (user.profilePicture) {
+            <img [src]="user.profilePicture" class="profile-avatar" alt="Avatar">
+          } @else {
+            <div class="profile-avatar-placeholder">👤</div>
+          }
+        </div>
 
-      @if (user.bio) {
-        <p class="bio">{{ user.bio }}</p>
-      }
+        <div class="fb-name-actions-row">
+          <div class="fb-user-titles">
+            <h1>{{ fullName }}</h1>
+            <span class="username">&#64;{{ user.username }}</span>
+          </div>
+
+          <div class="profile-actions">
+            @if (isMe) {
+              <button class="action-btn edit-profile-btn" (click)="goToUpdateProfile()" title="Edit Profile">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2">
+                  <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                </svg>
+                <span>Edit Profile</span>
+              </button>
+            }
+
+            @if (!isMe) {
+              @if (isLoading) { <button class="action-btn loading-btn" disabled>...</button> }
+              @if (isNone) { <button class="action-btn add-btn" (click)="sendFriendRequest()" [disabled]="actionLoading">➕ Add Friend</button> }
+              @if (isSent) { <button class="action-btn cancel-btn" (click)="cancelRequest()" [disabled]="actionLoading">⏳ Cancel Request</button> }
+              @if (isReceived) {
+                <button class="action-btn accept-btn" (click)="acceptRequest()" [disabled]="actionLoading">✅ Accept</button>
+                <button class="action-btn reject-btn" (click)="rejectRequest()" [disabled]="actionLoading">❌ Decline</button>
+              }
+              @if (isFriend) {
+                <button class="action-btn friends-btn" disabled>👥 Friends</button>
+                <button class="action-btn msg-btn" (click)="openChat()">💬 Message</button>
+                <button class="action-btn unfriend-btn" (click)="unFriend()" [disabled]="actionLoading">
+                  ❌ Unfriend
+                </button>
+              }
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="identity-details-card">
+      @if (user.bio) { <p class="bio">{{ user.bio }}</p> }
 
       <div class="info-pills">
         @if (user.city || user.country) {
           <span class="pill">📍 {{ user.city }}{{ user.city && user.country ? ', ' : '' }}{{ user.country }}</span>
         }
-        @if (user.gender) {
-          <span class="pill">⚧ {{ user.gender }}</span>
-        }
-        @if (user.dateOfBirth) {
-          <span class="pill">🎂 {{ user.dateOfBirth }}</span>
-        }
+        @if (user.gender) { <span class="pill">⚧ {{ user.gender }}</span> }
+        @if (user.dateOfBirth) { <span class="pill">🎂 {{ user.dateOfBirth }}</span> }
       </div>
+
+      @if (!isMe && actionLoading) { <div class="action-loading">Processing...</div> }
+      @if (!isMe && friendshipError) { <div class="friendship-error">⚠️ {{ friendshipError }}</div> }
     </div>
 
     <div class="profile-posts-section">
@@ -65,12 +102,10 @@
             </div>
           </div>
 
-          @if (post.content) {
-            <p>{{ post.content }}</p>
-          }
+          @if (post.content) { <p>{{ post.content }}</p> }
 
           @if (post.postImage) {
-            <img [src]="post.postImage" alt="post" class="post-img">
+            <img [src]="post.postImage" alt="post" class="post-feed-image" (click)="openImageModal(post)">
           }
 
           <div class="post-actions">
@@ -79,13 +114,9 @@
               <span>Like</span>
               <span>({{ post.countLikes }})</span>
             </button>
-
-            <button
-              class="comment-stat-btn"
-              (click)="goToPostDetails(post.id)">
+            <button class="comment-stat-btn" (click)="goToPostDetails(post.id)">
               💬 Comment ({{ post.countComments || 0 }})
             </button>
-
           </div>
         </div>
       } @empty {
@@ -101,6 +132,23 @@
       @if (loadingPosts) {
         <div class="status-msg">🔄 Loading more posts...</div>
       }
+    </div>
+  }
+
+  @if (isModalOpen && selectedPostForModal) {
+    <div class="fb-lightbox-overlay" (click)="closeImageModal()">
+      <div class="lightbox-top-bar" (click)="$event.stopPropagation()">
+        <span class="lightbox-author-name">{{ fullName }}</span>
+        <div class="lightbox-actions">
+          <button class="lightbox-download-btn" (click)="downloadImage(selectedPostForModal.postImage, fullName)">
+            📥 Download
+          </button>
+          <button class="lightbox-close-btn" (click)="closeImageModal()">✕</button>
+        </div>
+      </div>
+      <div class="lightbox-content-box" (click)="$event.stopPropagation()">
+        <img [src]="selectedPostForModal.postImage" alt="Lightbox View">
+      </div>
     </div>
   }
 

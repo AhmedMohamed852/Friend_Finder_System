@@ -1,19 +1,25 @@
 package ahmed.com.springboot.friend_finder_system.service.impl;
 
+import ahmed.com.springboot.friend_finder_system.GlobalExService.PaginationEx;
+import ahmed.com.springboot.friend_finder_system.GlobalExService.PostsEx;
 import ahmed.com.springboot.friend_finder_system.Vm.Post_Response_Vm;
 import ahmed.com.springboot.friend_finder_system.dto.PostDto;
 import ahmed.com.springboot.friend_finder_system.dto.UserDto;
+import ahmed.com.springboot.friend_finder_system.globalCurrentUserId.CurrentUser;
 import ahmed.com.springboot.friend_finder_system.mapper.MediaMapper;
 import ahmed.com.springboot.friend_finder_system.mapper.PostMapper;
 import ahmed.com.springboot.friend_finder_system.mapper.UserMapper;
 import ahmed.com.springboot.friend_finder_system.models.Media;
 import ahmed.com.springboot.friend_finder_system.models.Post;
 import ahmed.com.springboot.friend_finder_system.models.User;
+import ahmed.com.springboot.friend_finder_system.repo.Comment_Repo;
 import ahmed.com.springboot.friend_finder_system.repo.Like_Repo;
 import ahmed.com.springboot.friend_finder_system.repo.Post_Repo;
+import ahmed.com.springboot.friend_finder_system.service.Match_Service;
 import ahmed.com.springboot.friend_finder_system.service.Post_Service;
 import ahmed.com.springboot.friend_finder_system.service.User_Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,9 +27,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,8 +41,9 @@ public class Post_Service_Impl implements Post_Service {
     private final MediaMapper mediaMapper;
     private final User_Service user_Service;
     private final UserMapper userMapper;
-    //@Lazy
-   // private final Like_Service likeService;
+    private final Comment_Repo commentRepo;
+    @Lazy
+    private final Match_Service matchService;
     private final Like_Repo likeRepo;
 
 
@@ -65,7 +70,7 @@ public class Post_Service_Impl implements Post_Service {
             post.setMedia(media);
         }
 
-        User author = userMapper.toEntity(user_Service.getUserById(getUserId()));
+        User author = userMapper.toEntity(user_Service.getUserById(CurrentUser.currentUserId()));
         post.setAuthor(author);
         post_Repo.save(post);
     }
@@ -77,9 +82,9 @@ public class Post_Service_Impl implements Post_Service {
 
         if(postDto.getId() == null)
         {
-            throw new RuntimeException("error.post.id.is.required");
+            throw PostsEx.postIdRequired();
         }
-         post_Repo.findById(postDto.getId()).orElseThrow(() -> new RuntimeException("error.post.not.found"));
+         post_Repo.findById(postDto.getId()).orElseThrow(PostsEx::postNotFound);
 
         Post post = postMapper.toEntity(postDto);
 
@@ -94,7 +99,7 @@ public class Post_Service_Impl implements Post_Service {
             post.setMedia(media);
         }
 
-        User author = userMapper.toEntity(user_Service.getUserById(getUserId()));
+        User author = userMapper.toEntity(user_Service.getUserById(CurrentUser.currentUserId()));
         post.setAuthor(author);
         post_Repo.save(post);
     }
@@ -106,7 +111,6 @@ public class Post_Service_Impl implements Post_Service {
     public void savePost(PostDto postDto) {
         Post post = postMapper.toEntity(postDto);
         post_Repo.save(post);
-
     }
 
 
@@ -114,8 +118,10 @@ public class Post_Service_Impl implements Post_Service {
     @Override
     public void deletePost(Long id) {
 
-        Post post = post_Repo.findById(id).orElseThrow(() -> new RuntimeException("error.post.not.found"));
+        Post post = post_Repo.findById(id).orElseThrow(PostsEx::postNotFound);
         post_Repo.delete(post);
+
+        System.out.println("DELETE");
     }
 
 
@@ -126,14 +132,22 @@ public class Post_Service_Impl implements Post_Service {
 
         if(id == null)
         {
-            throw new RuntimeException("error.post.id.is.required");
+            throw PostsEx.postIdRequired();
         }
         if(!post_Repo.existsById(id))
         {
-            throw new RuntimeException("error.post.not.found");
+            throw PostsEx.postNotFound();
         }
-        Post post = post_Repo.findById(id).orElseThrow(() -> new RuntimeException("error.post.not.found"));
-        return postMapper.toDto(post);
+        Post post = post_Repo.findById(id).orElseThrow(PostsEx::postNotFound);
+        List<PostDto> postDto = List.of(postMapper.toDto(post));
+
+        List<Long> postIds = postDto.stream().map(PostDto::getId).toList();
+        Map<Long, Long> commentsCountMap = CountComments(postIds);
+
+        postDto.stream().forEach(dto ->
+                dto.setCountComments(commentsCountMap.getOrDefault(dto.getId(), 0L).intValue()));
+
+        return postDto.get(0);
 
     }
 
@@ -144,7 +158,7 @@ public class Post_Service_Impl implements Post_Service {
 
         if(!post_Repo.existsByAuthorId(id))
         {
-            throw new RuntimeException("error.user.id.not.found");
+            throw PostsEx.postNotFound();
         }
 
         validatePageNumberAndSize(pageNumber, 5);
@@ -155,16 +169,15 @@ public class Post_Service_Impl implements Post_Service {
 
         if (posts.getContent().isEmpty())
         {
-            throw new RuntimeException("error.post.not.found");
+            throw PostsEx.postNotFound();
         }
 
         posts.getContent().stream().forEach(post -> post.getAuthor().setPassword(null));
 
         List<PostDto> postDtoList = postMapper.toDtoList(posts.getContent());
 
-        // جلب كل اللايكس بتاعة اليوزر الحالي على البوستات دي بـ query واحد بس
         List<Long> postIds = postDtoList.stream().map(PostDto::getId).toList();
-        Set<Long> likedPostIds = likeRepo.findLikedPostIds( getUserId() , postIds);
+        Set<Long> likedPostIds = likeRepo.findLikedPostIds( CurrentUser.currentUserId() , postIds);
 
         postDtoList.forEach(dto -> dto.setLikedIs(likedPostIds.contains(dto.getId())));
 
@@ -180,22 +193,27 @@ public class Post_Service_Impl implements Post_Service {
 
         Pageable pageable = PageRequest.of(pageNumber - 1, 5);
 
-        Page<Post> posts = post_Repo.findHomeFeed(getUserId(), pageable);
+        Page<Post> posts = matchService.findHomeFeed(pageable);
 
         if (posts.getContent().isEmpty()) {
-            throw new RuntimeException("error.post.not.found");
+            throw PostsEx.postNotFound();
         }
 
         posts.getContent().forEach(post -> post.getAuthor().setPassword(null));
 
         List<PostDto> postDtoList = postMapper.toDtoList(posts.getContent());
 
-        // جلب كل اللايكس بتاعة اليوزر الحالي على البوستات دي بـ query واحد بس
         List<Long> postIds = postDtoList.stream().map(PostDto::getId).toList();
-        Set<Long> likedPostIds = likeRepo.findLikedPostIds( getUserId() , postIds);
+        Set<Long> likedPostIds = likeRepo.findLikedPostIds(CurrentUser.currentUserId(), postIds);
 
-        postDtoList.forEach(dto -> dto.setLikedIs(likedPostIds.contains(dto.getId())));
+        Map<Long, Long> commentsCountMap = CountComments(postIds);
 
+        postDtoList.forEach(dto -> {
+            dto.setLikedIs(likedPostIds.contains(dto.getId()));
+            dto.setCountComments(
+                    commentsCountMap.getOrDefault(dto.getId(), 0L).intValue()
+            );
+        });
         return new Post_Response_Vm(postDtoList, posts.getTotalElements());
     }
 
@@ -207,20 +225,27 @@ public class Post_Service_Impl implements Post_Service {
     {
         if (pageNumber < 1 || pageSize <= 0)
         {
-            throw new IllegalArgumentException("page.number.invalid");
+            throw PaginationEx.invalidPageNumber();
         }
-
 
         return true;
     }
 
 
 
-    public Long getUserId()
+    public Map<Long, Long> CountComments(List<Long> postIds)
     {
-        UserDto currentUser = (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long userId = currentUser.getId();
+        Map<Long, Long> commentsCountMap = new HashMap<>();
 
-        return userId;
+        List<Object[]> result = commentRepo.countCommentsByPostIds(postIds);
+
+        for (Object[] row : result) {
+            commentsCountMap.put(
+                    (Long) row[0],
+                    (Long) row[1]
+            );
+        }
+        return commentsCountMap;
+
     }
 }

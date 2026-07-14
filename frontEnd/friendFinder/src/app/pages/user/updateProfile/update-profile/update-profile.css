@@ -1,0 +1,280 @@
+/* الحاوية الأساسية للجروب بالكامل */
+.update-profile-page,
+.update-profile-page * {
+  box-sizing: border-box;
+}
+
+.update-profile-page {
+  max-width: 600px; /* تصغير عرض الكارت الكلي ليصبح أكثر احترافية */
+  margin: 25px auto;
+  padding: 0 16px;
+}
+
+/* الكارت الأساسي */
+.update-card {
+  background: white;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  border: 1px solid #e8f5f3;
+}
+
+/* رأس الصفحة */
+.card-header {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.card-header h2 {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0d2b26;
+  margin: 0 0 4px;
+}
+
+.card-header p {
+  font-size: 13px;
+  color: #7a9e99;
+  margin: 0;
+}
+
+/* 📸 سيكشن الصور الاحترافي (المصغر) */
+.profile-images-section {
+  position: relative;
+  margin-bottom: 55px; /* تقليل المساحة السفلية بعد تصغير البروفايل */
+}
+
+/* حاوية الغلاف (Cover) المحدثة */
+.cover-edit-container {
+  width: 100%;
+  height: 140px; /* تقليل الارتفاع من 180px لـ 140px لشكل أرق */
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  background-color: #f0f5f4;
+  position: relative;
+  border: 1px solid #e2efed;
+}
+
+/* حاوية البروفايل (Avatar) المحدثة */
+.avatar-edit-container {
+  position: absolute;
+  bottom: -35px; /* تظبيط مكانها مع الحجم الجديد */
+  left: 20px;
+  width: 80px;  /* تصغير القطر من 100px لـ 80px */
+  height: 80px; /* تصغير القطر من 100px لـ 80px */
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  background-color: #fff;
+}
+
+.profile-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* أزرار الكاميرا الاحترافية الصغيرة */
+.camera-btn {
+  position: absolute;
+  background: #ffffff;
+  border: 1px solid #cce5e1;
+  color: #0d9488;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.camera-btn:hover {
+  transform: scale(1.05);
+  background-color: #f0fdfc;
+  border-color: #0d9488;
+}
+
+/* زر كاميرا الغلاف */
+.cover-camera {
+  bottom: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  font-size: 13px;
+}
+
+/* زر كاميرا البروفايل */
+.avatar-camera {
+  bottom: -2px;
+  right: -2px;
+  width: 26px; /* تصغير حجم الزر ليتناسق مع البروفايل الصغير */
+  height: 26px;
+  font-size: 11px;
+}
+
+/* تقسيم الحقول داخل الفورم */
+.form-row {
+  display: flex;
+  gap: 14px;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #334e4a;
+  margin-bottom: 5px;
+}
+
+.required {
+  color: #dc2626;
+}
+
+/* المدخلات والقوائم المنسدلة */
+input[type="text"],
+input[type="date"],
+select,
+textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 7px;
+  border: 1px solid #cce5e1;
+  background-color: #fafdfd;
+  color: #0d2b26;
+  font-size: 13.5px;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #0d9488;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.08);
+  background-color: #ffffff;
+}
+
+textarea {
+  resize: vertical;
+}
+
+/* أخطاء الـ Validation */
+.input-error {
+  border-color: #fca5a5 !important;
+  background-color: #fff8f8 !important;
+}
+
+.error-text {
+  color: #dc2626;
+  font-size: 11.5px;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* علب الإشعارات */
+.status-msg {
+  padding: 10px 14px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.error-box {
+  background-color: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+}
+
+.success-box {
+  background-color: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+}
+
+/* أزرار التحكم السفلى */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid #e8f5f3;
+}
+
+.submit-btn,
+.cancel-btn {
+  padding: 9px 20px;
+  border-radius: 7px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s ease;
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #0d9488, #14b8a6);
+  color: white;
+}
+
+.cancel-btn {
+  background: #ffffff;
+  color: #5b7a75;
+  border: 1px solid #cce5e1;
+}
+
+.submit-btn:hover:not(:disabled),
+.cancel-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.03);
+}
+
+.submit-btn:disabled,
+.cancel-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.spinner {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-fade {
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* موبايل ريسبونسيف */
+@media (max-width: 500px) {
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  .update-card {
+    padding: 18px;
+  }
+}

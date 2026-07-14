@@ -1,5 +1,6 @@
 package ahmed.com.springboot.friend_finder_system.service.impl;
 
+import ahmed.com.springboot.friend_finder_system.GlobalExService.RoleEx;
 import ahmed.com.springboot.friend_finder_system.dto.RolesDto;
 import ahmed.com.springboot.friend_finder_system.eNum.RoleType;
 import ahmed.com.springboot.friend_finder_system.mapper.RolesMapper;
@@ -26,7 +27,7 @@ public class Role_Service_Impl implements Role_Service {
         Roles roles = roles_Repo.findByName((role));
         if(roles == null)
         {
-            throw new RuntimeException("error.role.not.found");
+            throw RoleEx.roleNotFound();
         }
         return rolesMapper.toDto(roles);
     }

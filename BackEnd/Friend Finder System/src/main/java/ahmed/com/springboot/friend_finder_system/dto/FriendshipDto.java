@@ -16,11 +16,11 @@ public class FriendshipDto {
     @Schema(description = "Friendship ID", example = "1")
     private Long id;
 
-    @NotNull(message = "User1 Id is required")
+    @NotNull(message = "error.friendship.user1.required")
     @Schema(description = "Sender User ID", example = "10", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long user1;
 
-    @NotNull(message = "User2 Id is required")
+    @NotNull(message = "error.friendship.user2.required")
     @Schema(description = "Receiver User ID", example = "20", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long user2;
 

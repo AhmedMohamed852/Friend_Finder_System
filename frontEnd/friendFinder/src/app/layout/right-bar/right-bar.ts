@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core'; // 1. استيراد ChangeDetectorRef
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subscription, interval } from 'rxjs';
@@ -23,14 +23,13 @@ export class RightBarComponent implements OnInit, OnDestroy {
   private matchService = inject(MatchService);
   private friendshipService = inject(FriendshipService);
   private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef); // 2. حقن الخدمة هنا
 
   matches: ExtendedMatch[] = [];
-  friendRequests: Friendship[] = []; // الطلبات الواردة (Received)
-  sentRequests: Friendship[] = [];   // الطلبات المرسلة والمعلقة (Sent)
+  friendRequests: Friendship[] = [];
+  sentRequests: Friendship[] = [];
 
-  // التحكم في التبويب النشط: 'received' أو 'sent'
   activeTab: 'received' | 'sent' = 'received';
-
   loading = false;
   error = '';
 
@@ -64,6 +63,7 @@ export class RightBarComponent implements OnInit, OnDestroy {
 
   switchTab(tab: 'received' | 'sent'): void {
     this.activeTab = tab;
+    this.cdr.detectChanges(); // تحديث الواجهة عند تنقل التبويبات
   }
 
   loadMatches(): void {
@@ -81,11 +81,13 @@ export class RightBarComponent implements OnInit, OnDestroy {
         } else {
           this.matches = data.map(item => ({ ...item, isPending: false }));
         }
+        this.cdr.detectChanges(); // 3. إجبار الواجهة على التحديث
       },
       error: (err: any) => {
         this.loading = false;
         this.error = 'Failed to load suggestions';
         console.error(err);
+        this.cdr.detectChanges();
       }
     });
   }
@@ -100,23 +102,23 @@ export class RightBarComponent implements OnInit, OnDestroy {
         } else {
           this.friendRequests = data;
         }
+        this.cdr.detectChanges(); // 3. إجبار الواجهة على التحديث
       },
       error: (err: any) => console.error(err)
     });
   }
 
-  // جلب الطلبات اللي أنا بعتها ولسه معلقة
   loadSentRequests(): void {
     this.friendshipService.getSentFriendRequests().subscribe({
       next: (data: Friendship[]) => {
         if (!data || data.length === 0) {
-          // داتا وهمية للطلبات اللي أنا بعتها لسه معلقة
           this.sentRequests = [
             { Friendship_Id: 301, id: 601, userSenderId: 601, firstName: 'Kareem', last_Name: 'Hany', profilePicture: 'https://randomuser.me/api/portraits/men/22.jpg' }
           ];
         } else {
           this.sentRequests = data;
         }
+        this.cdr.detectChanges(); // 3. إجبار الواجهة على التحديث
       },
       error: (err: any) => console.error('Error fetching sent requests:', err)
     });
@@ -126,7 +128,6 @@ export class RightBarComponent implements OnInit, OnDestroy {
     if (person.isMock) {
       person.isPending = true;
       person.friendshipId = Math.floor(Math.random() * 1000);
-      // إضافة الطلب تلقائياً لقائمة الـ Sent كـ Mock تفاعلي
       this.sentRequests.push({
         Friendship_Id: person.friendshipId,
         id: person.id,
@@ -135,6 +136,7 @@ export class RightBarComponent implements OnInit, OnDestroy {
         last_Name: person.lastName,
         profilePicture: person.profilePicture || ''
       });
+      this.cdr.detectChanges();
       return;
     }
 
@@ -142,7 +144,7 @@ export class RightBarComponent implements OnInit, OnDestroy {
       next: (res: any) => {
         person.isPending = true;
         person.friendshipId = res?.friendshipId || res?.id;
-        this.loadSentRequests(); // إعادة تحميل القائمة لتحديث التبويب الثاني
+        this.refreshAll();
       },
       error: (err) => console.error(err)
     });
@@ -152,6 +154,7 @@ export class RightBarComponent implements OnInit, OnDestroy {
     if (person.isMock) {
       person.isPending = false;
       this.sentRequests = this.sentRequests.filter(r => r.Friendship_Id !== person.friendshipId);
+      this.cdr.detectChanges();
       return;
     }
 
@@ -159,26 +162,22 @@ export class RightBarComponent implements OnInit, OnDestroy {
       this.friendshipService.cancelFriendRequest(person.friendshipId).subscribe({
         next: () => {
           person.isPending = false;
-          this.loadSentRequests();
+          this.refreshAll();
         },
         error: (err) => console.error(err)
       });
     }
   }
 
-  // إلغاء مباشر من داخل تبويب الـ Sent Requests
   cancelSentRequestDirect(friendshipId: number): void {
     this.friendshipService.cancelFriendRequest(friendshipId).subscribe({
       next: () => {
-        this.sentRequests = this.sentRequests.filter(r => r.Friendship_Id !== friendshipId);
-        // تحديث زرار الـ match لو الشخص ده كان معروض فوق في الاقتراحات
-        const match = this.matches.find(m => m.friendshipId === friendshipId);
-        if (match) match.isPending = false;
+        this.refreshAll();
       },
       error: (err) => {
         console.error(err);
-        // Fallback للموك لو السيرفر مش شغال
         this.sentRequests = this.sentRequests.filter(r => r.Friendship_Id !== friendshipId);
+        this.cdr.detectChanges();
       }
     });
   }
@@ -186,7 +185,7 @@ export class RightBarComponent implements OnInit, OnDestroy {
   acceptRequest(request: Friendship): void {
     this.friendshipService.acceptFriendRequest(request.Friendship_Id).subscribe({
       next: () => {
-        this.friendRequests = this.friendRequests.filter(r => r.Friendship_Id !== request.Friendship_Id);
+        this.refreshAll();
       },
       error: (err) => console.error(err)
     });
@@ -195,7 +194,7 @@ export class RightBarComponent implements OnInit, OnDestroy {
   rejectRequest(request: Friendship): void {
     this.friendshipService.rejectFriendRequest(request.Friendship_Id).subscribe({
       next: () => {
-        this.friendRequests = this.friendRequests.filter(r => r.Friendship_Id !== request.Friendship_Id);
+        this.refreshAll();
       },
       error: (err) => console.error(err)
     });

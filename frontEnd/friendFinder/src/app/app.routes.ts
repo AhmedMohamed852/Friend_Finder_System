@@ -10,6 +10,11 @@ export const routes: Routes = [
     canActivate: [guestGuard]
   },
   {
+    path: 'updateProfile',
+    loadComponent: () => import('./pages/user/updateProfile/update-profile/update-profile').then(m => m.UpdateProfile),
+    canActivate: [authGuard]
+  },
+  {
     path: 'signup',
     loadComponent: () => import('./pages/sign-up/sign-up').then(m => m.SignupComponent),
     canActivate: [guestGuard]
@@ -38,5 +43,17 @@ export const routes: Routes = [
     path: 'post/:id',
     loadComponent: () => import('./pages/post-details/post-details/post-details').then(m => m.PostDetails),
     canActivate: [authGuard]
-  }
+  },
+  // ── Messages ─────────────────────────────────────────────
+  {
+    path: 'messages',
+    loadComponent: () => import('./pages/Messages/messages/messages').then(m => m.MessagesComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'messages/:userId',   // فتح محادثة مباشرة مع شخص معين
+    loadComponent: () => import('./pages/Messages/messages/messages').then(m => m.MessagesComponent),
+    canActivate: [authGuard]
+  },
+  { path: '**', redirectTo: 'home' }
 ];

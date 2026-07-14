@@ -1,118 +1,291 @@
+@if (!isSearchActive() && currentActiveView === 'feed') {
+  <div class="stories-container animate-fade">
+
+    <label class="story-card create-story" style="cursor: pointer;">
+      <input type="file" accept="image/*,video/*" (change)="onStoryFileSelected($event)" style="display: none;" [disabled]="isUploadingStory" />
+
+      <div class="my-avatar-wrapper">
+        @if (isUploadingStory) {
+          <span class="spinning" style="font-size: 24px; margin-top: 25px; display: inline-block;">🔄</span>
+        } @else {
+          <img [src]="currentUserProfilePicture || 'assets/images/avatar-placeholder.png'" alt="My Profile" />
+        }
+      </div>
+      <div class="create-story-footer">
+        <div class="plus-icon">+</div>
+        <span>{{ isUploadingStory ? 'Uploading...' : 'Add New Story' }}</span>
+      </div>
+    </label>
+
+    @if (myStory) {
+      <div class="story-card active-story animate-fade" (click)="openStoryModal(myStory)">
+        <img class="story-user-avatar" [src]="myStory.user?.profilePicture || 'assets/images/avatar-placeholder.png'" alt="My Avatar">
+
+        @if (myStory.type === 'VIDEO') {
+          <div class="video-thumbnail-placeholder">🎥 Video Story</div>
+        } @else {
+          <img class="story-bg-image" [src]="myStory.url" alt="My Story Content">
+        }
+
+        <span class="story-username">My Story</span>
+      </div>
+    }
+
+    <!-- 👇 جديد: ستوريهات الأصحاب -->
+    @for (story of friendsStories; track story.id) {
+      <div class="story-card animate-fade" (click)="openStoryModal(story)">
+        <img class="story-user-avatar" [src]="story.user?.profilePicture || 'assets/images/avatar-placeholder.png'" alt="Avatar">
+
+        @if (story.type === 'VIDEO') {
+          <div class="video-thumbnail-placeholder">🎥 Video Story</div>
+        } @else {
+          <img class="story-bg-image" [src]="story.url" alt="Story Content">
+        }
+
+        <span class="story-username">{{ story.user?.firstName }}</span>
+      </div>
+    }
+
+  </div>
+}
+
+@if (isStoryModalOpen && selectedStory) {
+  <div class="story-lightbox-overlay" (click)="closeStoryModal()">
+    <div class="story-lightbox-wrapper" (click)="$event.stopPropagation()">
+
+      <div class="story-progress-bar">
+        <div class="story-progress-fill" [style.animationDuration]="'300s'"></div>
+      </div>
+
+      <div class="story-lightbox-header">
+        <div class="story-header-left">
+          <img [src]="selectedStory.user?.profilePicture || 'assets/images/avatar-placeholder.png'" alt="Avatar" class="story-viewer-avatar">
+          <div class="story-viewer-info">
+            <strong>{{ selectedStory.user?.firstName }} {{ selectedStory.user?.lastName }}</strong>
+            <span>📍 {{ selectedStory.user?.city || 'Story' }}</span>
+          </div>
+        </div>
+        <button class="story-close-btn" (click)="closeStoryModal()">✕</button>
+      </div>
+
+      <div class="story-viewer-content">
+        @if (selectedStory.type === 'VIDEO') {
+          <video [src]="selectedStory.url" autoplay controls style="max-width: 100%; max-height: 80vh;"></video>
+        } @else {
+          <img [src]="selectedStory.url" alt="Story Content">
+        }
+      </div>
+    </div>
+  </div>
+}
+
 <div class="feed">
 
-  @if (currentActiveView === 'feed') {
-    <div class="feed-header">
-      <h2>Home Feed</h2>
-      <button class="refresh-btn" (click)="refreshFeed()" [disabled]="loading" title="Refresh feed">
-        <span [class.spinning]="loading">🔄</span>
-      </button>
+  @if (isSearchActive()) {
+    <div class="search-results-page">
+      <div class="friends-main-header">
+        <h2>🔍 "{{ searchQuery() }}" — {{ searchResults().length }} result{{ searchResults().length !== 1 ? 's' : '' }}</h2>
+        <button class="refresh-btn" (click)="clearSearch()">✕ Close</button>
+      </div>
+
+      @if (searchResults().length === 0) {
+        <div class="search-empty-state">
+          <span>🔍</span>
+          <span>No users found for "{{ searchQuery() }}"</span>
+        </div>
+      } @else {
+        @for (user of searchResults(); track user.id) {
+          <div class="fb-user-card animate-fade" (click)="viewProfile(user.id)">
+            <div class="fb-user-avatar">
+              @if (user.profilePicture) {
+                <img [src]="user.profilePicture" alt="{{ user.firstName }}">
+              } @else {
+                <div class="fb-avatar-placeholder">👤</div>
+              }
+            </div>
+            <div class="fb-user-info">
+              <h4>{{ user.firstName }} {{ user.lastName }}</h4>
+              <span class="fb-city">📍 {{ user.city }}</span>
+            </div>
+            <button class="fb-view-btn">View Profile</button>
+          </div>
+        }
+      }
     </div>
 
-    @if (error) {
-      <div class="status-banner error-banner">
-        <span>⚠️</span>
-        <span>{{ error }}</span>
-      </div>
-    }
+  } @else {
 
-    @for (post of posts; track post.id) {
-      <div class="post-card animate-fade">
-        <div class="post-header">
-          <img [src]="post.authorPicture" alt="Author Avatar" class="post-avatar">
-          <div class="post-author-info">
-            <strong>{{ post.authorName }}</strong>
-            <span>{{ post.timeAgo }}</span>
+    @if (currentActiveView === 'feed') {
+      <div class="feed-header">
+        <h2>Home Feed</h2>
+        <button class="refresh-btn" (click)="refreshFeed()" [disabled]="loading" title="Refresh feed">
+          <span [class.spinning]="loading">🔄</span>
+        </button>
+      </div>
+
+      @if (error) {
+        <div class="status-banner error-banner">
+          <span>⚠️</span>
+          <span>{{ error }}</span>
+        </div>
+      }
+
+      @for (post of posts; track post.id) {
+        <div class="post-card animate-fade">
+          <div class="post-header">
+            <img [src]="post.authorPicture" alt="Author Avatar" class="post-avatar" (click)="viewProfile(post.authorId)">
+            <div class="post-author-info">
+              <strong>{{ post.authorName }}</strong>
+              <span>{{ post.timeAgo }}</span>
+            </div>
+            @if (!post.isMock && !isMe(post.authorId)) {
+              <button class="msg-btn" (click)="openChat(post.authorId)" title="Send message">💬</button>
+            }
+            <span class="more">···</span>
           </div>
 
-          @if (!post.isMock) {
-            <button class="friend-btn" (click)="sendFriendRequest(post.id)">Friend Request</button>
+          @if (post.content) {
+            <p class="post-content">{{ post.content }}</p>
           }
-          <span class="more">···</span>
-        </div>
 
-        @if (post.content) {
-          <p class="post-content">{{ post.content }}</p>
-        }
-        @if (post.timeAgo) {
-          <p class="post-content">{{ post.timeAgo }}</p>
-        }
+          @if (post.postImage) {
+            <img [src]="post.postImage" alt="post" class="post-feed-image" (click)="openImageModal(post)">
+          }
 
-        @if (post.postImage) {
-          <img [src]="post.postImage" alt="post" class="post-img">
+          <div class="post-actions">
+            <button class="like-btn" [class.liked]="post.liked" (click)="toggleLike(post)">
+              <span>{{ post.liked ? '❤️' : '🤍' }}</span>
+              <span>Like</span>
+              <span class="count">({{ post.countLikes }})</span>
+            </button>
+            <button (click)="openPost(post.id)">
+              💬 Comment
+              <span class="count">({{ post.countComments || 0 }})</span>
+            </button>
+          </div>
+          <a href="#" class="mutual">See Mutual Friends</a>
+        </div>
+      } @empty {
+        @if (!loading) {
+          <div class="status-banner empty-banner">
+            <span>✨</span>
+            <span>No posts to show right now</span>
+          </div>
         }
-
-        <div class="post-actions">
-          <button class="like-btn" [class.liked]="post.liked" (click)="toggleLike(post)">
-            <span>{{ post.liked ? '❤️' : '🤍' }}</span>
-            <span>Like</span>
-            <span class="count">({{ post.countLikes }})</span>
-          </button>
-          <button (click)="openPost(post.id)">
-            💬 Comment
-            <span class="count">({{ post.countComments || 0 }})</span>
-          </button>
-        </div>
-        <a href="#" class="mutual">See Mutual Friends</a>
-      </div>
-    } @empty {
-      @if (!loading) {
-        <div class="status-banner empty-banner">
-          <span>✨</span>
-          <span>No posts to show right now</span>
-        </div>
       }
-    }
 
-    @if (loading) {
-      <div class="status-banner loading-banner">
-        <span class="spinning">🔄</span>
-        <span>Loading posts...</span>
-      </div>
-    }
-
-    @if (hasMorePosts && !loading && posts.length > 0) {
-      <button class="load-more-btn" (click)="loadHomeFeed()">Load More Posts</button>
-    }
-  }
-
-  @if (currentActiveView === 'friends') {
-    <div class="friends-container">
-      <div class="friends-main-header">
-        <h2>My Friends ({{ friends.length }})</h2>
-      </div>
-
-      @if (loadingFriends) {
+      @if (loading) {
         <div class="status-banner loading-banner">
           <span class="spinning">🔄</span>
-          <span>Loading your friends list...</span>
+          <span>Loading posts...</span>
         </div>
       }
 
-      @if (!loadingFriends) {
-        <div class="friends-grid">
+      @if (hasMorePosts && !loading && posts.length > 0) {
+        <button class="load-more-btn" (click)="loadHomeFeed()">Load More Posts</button>
+      }
+    }
+
+    @if (currentActiveView === 'friends') {
+      <div class="search-results-page">
+        <div class="friends-main-header">
+          <h2>👥 My Friends ({{ friends.length }})</h2>
+        </div>
+
+        @if (loadingFriends) {
+          <div class="status-banner loading-banner">
+            <span class="spinning">🔄</span>
+            <span>Loading your friends list...</span>
+          </div>
+        }
+
+        @if (!loadingFriends) {
           @for (friend of friends; track friend.Friendship_Id) {
-            <div class="friend-card animate-fade" (click)="viewProfile(friend.userSenderId)">
-              <div class="card-avatar">
+            <div class="fb-user-card animate-fade" (click)="viewProfile(friend.userSenderId)">
+              <div class="fb-user-avatar">
                 @if (friend.profilePicture) {
-                  <img [src]="friend.profilePicture" alt="Friend Photo">
+                  <img [src]="friend.profilePicture" alt="{{ friend.firstName }}">
                 } @else {
-                  <div class="avatar-placeholder">👨‍💻</div>
+                  <div class="fb-avatar-placeholder">👨‍💻</div>
                 }
               </div>
-              <div class="card-info">
+              <div class="fb-user-info">
                 <h4>{{ friend.firstName }} {{ friend.last_Name }}</h4>
-                <span class="status-badge">Friend</span>
+                <span class="fb-city">
+                  <span class="friend-badge-inline">✅ Friend</span>
+                </span>
               </div>
-              <button class="profile-btn">View Profile</button>
+              <button class="fb-view-btn">View Profile</button>
             </div>
           } @empty {
-            <div class="status-banner empty-banner">
-              <span>✨</span>
+            <div class="search-empty-state">
+              <span>👥</span>
               <span>You haven't added any friends yet.</span>
             </div>
           }
+        }
+      </div>
+    }
+
+    @if (currentActiveView === 'notifications') {
+      <div class="search-results-page">
+        <div class="friends-main-header">
+          <h2>🔔 Notifications ({{ notifications.length }})</h2>
         </div>
-      }
+
+        @if (loading) {
+          <div class="status-banner loading-banner">
+            <span class="spinning">🔄</span>
+            <span>Loading your notifications...</span>
+          </div>
+        }
+
+        @if (!loading) {
+          @for (n of notifications; track n.id) {
+            <div class="fb-user-card animate-fade"
+                 [class.fb-notif-unread]="!n.read"
+                 (click)="openNotification(n)">
+              <div class="fb-user-avatar">
+                @if (n.triggeredBy?.profilePicture) {
+                  <img [src]="n.triggeredBy.profilePicture" alt="User">
+                } @else {
+                  <div class="fb-avatar-placeholder">👤</div>
+                }
+              </div>
+              <div class="fb-user-info">
+                <h4>{{ n.triggeredBy?.firstName }} {{ n.triggeredBy?.lastName }}</h4>
+                <span class="fb-city">{{ n.content }}</span>
+              </div>
+              @if (!n.read) {
+                <span class="fb-unread-dot"></span>
+              }
+            </div>
+          } @empty {
+            <div class="search-empty-state">
+              <span>✨</span>
+              <span>You're all caught up 🎉</span>
+            </div>
+          }
+        }
+      </div>
+    }
+
+  }
+
+  @if (isModalOpen && selectedPostForModal) {
+    <div class="fb-lightbox-overlay" (click)="closeImageModal()">
+      <div class="lightbox-top-bar" (click)="$event.stopPropagation()">
+        <span class="lightbox-author-name">{{ selectedPostForModal.authorName }}</span>
+        <div class="lightbox-actions">
+          <!--<button class="lightbox-download-btn" (click)="downloadImage(post.postImage, selectedPostForModal.authorName)" title="Download Image">
+            📥 Download
+          </button>-->
+          <button class="lightbox-close-btn" (click)="closeImageModal()">✕</button>
+        </div>
+      </div>
+      <div class="lightbox-content-box" (click)="$event.stopPropagation()">
+        <img [src]="selectedPostForModal.postImage" alt="Facebook Style View">
+      </div>
     </div>
   }
 

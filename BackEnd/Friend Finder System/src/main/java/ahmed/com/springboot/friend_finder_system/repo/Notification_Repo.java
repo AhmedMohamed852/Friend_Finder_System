@@ -20,4 +20,6 @@ public interface Notification_Repo extends JpaRepository<Notification, Long> {
    Optional<List<Notification>> findAllByUser_Id(Long userId);
 
     boolean existsByUser_IdAndTriggeredBy_IdAndPostIdAndType(Long userId, Long triggeredById,Long postId , NotificationType notificationType);
+
+    Optional<List<Notification>> findByUser_id(Long aLong);
 }

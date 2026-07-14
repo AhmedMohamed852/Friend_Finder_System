@@ -1,10 +1,12 @@
 package ahmed.com.springboot.friend_finder_system.service.impl;
 
+import ahmed.com.springboot.friend_finder_system.globalCurrentUserId.CurrentUser;
 import ahmed.com.springboot.friend_finder_system.dto.DtoSimble.UpdateProfileDto;
 import ahmed.com.springboot.friend_finder_system.dto.DtoSimble.User_Simple_Dto;
 import ahmed.com.springboot.friend_finder_system.dto.RolesDto;
 import ahmed.com.springboot.friend_finder_system.dto.UserDto;
 import ahmed.com.springboot.friend_finder_system.eNum.RoleType;
+import ahmed.com.springboot.friend_finder_system.GlobalExService.UserEx;
 import ahmed.com.springboot.friend_finder_system.mapper.RolesMapper;
 import ahmed.com.springboot.friend_finder_system.mapper.UserMapper;
 import ahmed.com.springboot.friend_finder_system.mapper.UserSimpleMapper;
@@ -14,10 +16,13 @@ import ahmed.com.springboot.friend_finder_system.service.Role_Service;
 import ahmed.com.springboot.friend_finder_system.service.User_Service;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -45,9 +50,9 @@ public class User_Service_Impl implements User_Service {
     public void register(UserDto userDto) {
 
         if (user_Repo.existsByUsername(userDto.getUsername())) {
-            throw new RuntimeException("error.username.already.exists");
+            throw UserEx.usernameAlreadyExists();
         }if (user_Repo.existsByEmail(userDto.getEmail())) {
-            throw new RuntimeException("error.email.already.exists");
+            throw UserEx.emailAlreadyExists();
         }
 
         User user = userMapper.toEntity(userDto);
@@ -63,31 +68,12 @@ public class User_Service_Impl implements User_Service {
 
 
 
-    //TODO:_______________ Login To My Account ____________________________
-/*    @Override
-    public void login(String username, String password)
-    {
-        if(!(user_Repo.existsByUsername(username) && user_Repo.existsByPassword(password)))
-        {
-            throw new RuntimeException("error.invalid.username.or.password");
-        }
-    *//*
-
-        if (!passwordEncoder.matches(password, user.getPassword()))
-        {
-        throw new InvalidCredentialsException("error.invalid.username.or.password");
-         }
-     *//*
-        // return Token
-    }*/
-
-
     //TODO:_______________ Show My Profile ____________________________
     @Override
     public UserDto profile()
     {
 
-       User user = user_Repo.findById(getUserId()).orElseThrow(() -> new RuntimeException("error.user.not.found"));
+       User user = user_Repo.findById(CurrentUser.currentUserId()).orElseThrow(UserEx::userNotFound);
 
         return userMapper.toDto(user);
     }
@@ -97,7 +83,7 @@ public class User_Service_Impl implements User_Service {
     @Override
     public User_Simple_Dto simpleProfile() {
 
-        User user = user_Repo.findById(getUserId()).orElseThrow(() -> new RuntimeException("error.user.not.found"));
+        User user = user_Repo.findById(CurrentUser.currentUserId()).orElseThrow(UserEx::userNotFound);
         return userSimpleMapper.toDto(user);
     }
 
@@ -105,7 +91,7 @@ public class User_Service_Impl implements User_Service {
     //TODO:_______________ Show My Profile ____________________________
     @Override
     public UserDto getUserByUserName(String username) {
-        User user = user_Repo.findByUsername(username).orElseThrow(() -> new RuntimeException("user.not.found"));
+        User user = user_Repo.findByUsername(username).orElseThrow(UserEx::userNotFound);
         UserDto userDto = userMapper.toDto(user);
         return userDto;
 
@@ -118,10 +104,11 @@ public class User_Service_Impl implements User_Service {
     {
         if(userDto.getId() == null)
         {
-            throw new RuntimeException("error.user.id.is.required");
+            throw UserEx.userIdRequired();
         }
 
-        User existingUser = user_Repo.findById(userDto.getId()).orElseThrow(() -> new RuntimeException("error.user.not.found"));
+        User existingUser = user_Repo.findById(userDto.getId()).orElseThrow(UserEx::userNotFound);
+
 
            existingUser.setFirstName(userDto.getFirstName());
            existingUser.setLastName(userDto.getLastName());
@@ -130,6 +117,7 @@ public class User_Service_Impl implements User_Service {
            existingUser.setCity(userDto.getCity());
            existingUser.setDateOfBirth(userDto.getDateOfBirth());
            existingUser.setGender(userDto.getGender());
+           existingUser.setCoverPhoto(userDto.getCoverPhoto());
            if(userDto.getImage() != null)
            {
                existingUser.setProfilePicture(userDto.getImage());
@@ -146,9 +134,9 @@ public class User_Service_Impl implements User_Service {
 
         if(!user_Repo.existsById(userId))
         {
-            throw new RuntimeException("error.user.not.found");
+            throw UserEx.userNotFound();
         }
-        return userMapper.toDto(user_Repo.findById(userId).orElseThrow(() -> new RuntimeException("error.user.not.found")));
+        return userMapper.toDto(user_Repo.findById(userId).orElseThrow(UserEx::userNotFound));
     }
 
 
@@ -157,12 +145,12 @@ public class User_Service_Impl implements User_Service {
     public void deleteAccount()
     {
 
-        if(!user_Repo.existsById(getUserId()))
+        if(!user_Repo.existsById(CurrentUser.currentUserId()))
         {
-            throw new RuntimeException("error.user.not.found");
+            throw UserEx.userNotFound();
         }
 
-        user_Repo.deleteById(getUserId());
+        user_Repo.deleteById(CurrentUser.currentUserId());
     }
 
 
@@ -180,11 +168,40 @@ public class User_Service_Impl implements User_Service {
 
 
 
+
+
+
     @Override
     public User_Simple_Dto simple_User(Long id) {
 
-        User user = user_Repo.findById(id).orElseThrow(() -> new RuntimeException("error.user.not.found"));
+        User user = user_Repo.findById(id).orElseThrow(UserEx::userNotFound);
         User_Simple_Dto user_Simple_Dto = userSimpleMapper.toDto(user);
+
+        return user_Simple_Dto;
+    }
+
+    @Override
+    public List<User_Simple_Dto> search(String key ,  int pageNumber) {
+
+
+        if(key == null)
+        {
+            throw UserEx.userNotFound();
+        }
+
+        if(!user_Repo.existsByKeyword(key))
+        {
+            throw UserEx.searchKeyRequired();
+        }
+
+
+        validatePageNumberAndSize(pageNumber, 5);
+
+        Pageable pageable = PageRequest.of(pageNumber - 1, 5);
+
+        Page<User> users = user_Repo.search(key,pageable);
+
+        List<User_Simple_Dto> user_Simple_Dto = userSimpleMapper.toDtoList(users);
 
         return user_Simple_Dto;
     }
@@ -193,11 +210,16 @@ public class User_Service_Impl implements User_Service {
 
 
 
-    public Long getUserId()
-    {
-        UserDto currentUser = (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long userId = currentUser.getId();
 
-        return userId;
+    //TODO _________________validatePageNumberAndSize______________________
+//TODO ________________________________________________________________
+    boolean validatePageNumberAndSize(int pageNumber, int pageSize)
+    {
+        if (pageNumber < 1 || pageSize <= 0)
+        {
+            throw UserEx.invalidPageNumber();
+        }
+        return true;
     }
+
 }

@@ -1,9 +1,15 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
+import { catchError, of } from 'rxjs';
 import { PostService } from '../../core/services/posts/posts-service';
 import { LikeService } from '../../core/services/Like/like-service';
-import { Friendship, FriendshipService, MyFriendDto } from '../../core/services/Friendship/friendship-service';
+import { Friendship, FriendshipService } from '../../core/services/Friendship/friendship-service';
+import { AuthService } from '../../core/services/auth/auth';
+import { NotificationDto, NotificationService } from '../../core/services/notification/notification-service';
+import { SearchService } from '../../core/services/Search/search-service';
+import { UploadService } from '../../core/services/upload/upload-service';
+import {StoriesDto, StoryService} from '../../core/services/story/story'; // 👈 تأكد من مسار الـ Upload Service عندك
 
 export interface DisplayPost {
   id: number;
@@ -13,6 +19,7 @@ export interface DisplayPost {
   countComments: number | null;
   authorName: string;
   authorPicture: string;
+  authorId: number;
   timeAgo: string;
   isMock?: boolean;
   liked: boolean;
@@ -21,16 +28,22 @@ export interface DisplayPost {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
 export class Home implements OnInit {
-  private postService = inject(PostService);
+  private postService       = inject(PostService);
   private friendshipService = inject(FriendshipService);
-  private likeService = inject(LikeService);
-  private cdr = inject(ChangeDetectorRef);
-  private router = inject(Router);
+  private likeService       = inject(LikeService);
+  private authService       = inject(AuthService);
+  private notifService      = inject(NotificationService);
+  private cdr               = inject(ChangeDetectorRef);
+  private router            = inject(Router);
+  private route             = inject(ActivatedRoute);
+  private searchService     = inject(SearchService);
+  private storyService      = inject(StoryService);
+  private uploadService     = inject(UploadService); // 👈 حقن سيرفيس الرفع
 
   posts: DisplayPost[] = [];
   loading = false;
@@ -38,106 +51,163 @@ export class Home implements OnInit {
   currentPage = 1;
   hasMorePosts = true;
 
+  searchResults  = this.searchService.searchResults;
+  isSearchActive = this.searchService.isSearchActive;
+  searchQuery    = this.searchService.lastQuery;
+
   friends: Friendship[] = [];
   loadingFriends = false;
+  notifications: NotificationDto[] = [];
 
-  currentActiveView: 'feed' | 'friends' = 'feed';
+  friendIds = new Set<number>();
+  pendingRequestIds = new Set<number>();
+  currentUserId = 0;
+  currentUserProfilePicture: string | null = null; // 👈 جديد: صورة بروفايل اليوزر الحالي
 
-  ngOnInit() {
-    this.loadHomeFeed();
-    this.loadFriendsData();
+  currentActiveView: 'feed' | 'friends' | 'notifications' = 'feed';
+
+  selectedPostForModal: DisplayPost | null = null;
+  isModalOpen = false;
+
+  // ── متغيرات الستوري الحقيقية ──
+  myStory: StoriesDto | null = null;
+  friendsStories: StoriesDto[] = []; // 👈 جديد: ستوريهات الأصحاب (غير ستوريتي أنا)
+  isStoryModalOpen = false;
+  selectedStory: StoriesDto | null = null;
+  storyTimeoutId: any = null;
+  isUploadingStory = false; // مؤشر أثناء عملية رفع الستوري
+
+  // 👇 effect بيراقب authService.currentUser (signal) ويحدث الصورة تلقائياً
+  // لو الـ profile اتجاب بعد ما الصفحة فتحت (async)، الصورة هتتحدث لوحدها من غير ما نستنى
+  constructor() {
+    effect(() => {
+      const currentUser = this.authService.currentUser();
+      this.currentUserProfilePicture = currentUser?.profilePicture ?? null;
+    });
   }
 
-  handleViewChange(view: 'feed' | 'friends') {
-    this.currentActiveView = view;
-    if (view === 'feed') {
-      this.refreshFeed();
-    } else if (view === 'friends') {
-      this.loadFriendsData();
-    }
+  ngOnInit() {
+    this.currentUserId = this.authService.getCurrentUserId();
+    this.loadHomeFeed();
+    this.loadFriendsData();
+    this.loadSentRequests();
+    this.loadStoriesData();
+
+    this.route.queryParams.subscribe(params => {
+      if (params['view'] === 'notifications') {
+        this.currentActiveView = 'notifications';
+        this.loadNotificationsData();
+      } else if (params['view'] === 'friends') {
+        this.currentActiveView = 'friends';
+      } else {
+        this.currentActiveView = 'feed';
+      }
+      this.cdr.detectChanges();
+    });
+  }
+
+  isFriend(authorId: number): boolean { return this.friendIds.has(authorId); }
+  isPending(authorId: number): boolean { return this.pendingRequestIds.has(authorId); }
+  isMe(authorId: number): boolean { return authorId === this.currentUserId; }
+
+  // 🛠️ بديل loadMyStoryData القديمة: بترجع كل الستوريهات (ستوريتي + الأصحاب) وتفرّقهم
+  // ⚠️ getMyStory() بترجع Union Type (StoriesDto | StoriesDto[])، فلازم نعمل Normalize للـ array الأول
+  loadStoriesData() {
+    this.storyService.getMyStory().pipe(
+      catchError(() => of([] as StoriesDto[]))
+    ).subscribe(stories => {
+      // نحول أي شكل راجع (object مفرد أو array) لـ array موحد
+      const list: StoriesDto[] = Array.isArray(stories)
+        ? stories
+        : (stories ? [stories] : []);
+
+      this.myStory = list.find(s => s.user?.id === this.currentUserId) ?? null;
+      this.friendsStories = list.filter(s => s.user?.id !== this.currentUserId);
+      this.cdr.detectChanges();
+    });
+  }
+
+  // 🛠️ دالة معالجة اختيار الملف ورفعه تلقائياً للـ ImgBB ثم الـ Backend
+  onStoryFileSelected(event: any): void {
+    const file: File = event.target.files[0];
+    if (!file) return;
+
+    // تحديد نوع الـ Media بناءً على الـ file type
+    const mediaType: 'IMAGE' | 'VIDEO' = file.type.startsWith('video/') ? 'VIDEO' : 'IMAGE';
+
+    this.isUploadingStory = true;
     this.cdr.detectChanges();
+
+    // 1. الرفع لسيرفيس الـ ImgBB (أو سيرفيس الرفع المعتمدة عندك)
+    this.uploadService.uploadImage(file).subscribe({
+      next: (uploadedUrl: string) => {
+        const newStoryData: StoriesDto = {
+          url: uploadedUrl,
+          type: mediaType
+        };
+
+        // 2. إرسال الرابط والبيانات إلى الـ Backend لإنشاء الستوري
+        this.storyService.newStory(newStoryData).subscribe({
+          next: () => {
+            this.isUploadingStory = false;
+            this.loadStoriesData(); // إعادة تحميل الستوريهات لتحديث الـ UI فورا
+          },
+          error: (err) => {
+            console.error('Failed to save story on backend:', err);
+            this.isUploadingStory = false;
+            this.cdr.detectChanges();
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Failed to upload media:', err);
+        this.isUploadingStory = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   loadHomeFeed() {
     this.loading = true;
     this.error = '';
-
     this.postService.getHomeFeed(this.currentPage).subscribe({
       next: (response) => {
         this.loading = false;
-
-        if (response && response.posts && response.posts.length > 0) {
+        if (response?.posts?.length > 0) {
           const mapped: DisplayPost[] = response.posts.map((p: any) => ({
-            id: p.id,
-            content: p.content,
-            postImage: p.media && p.media.length > 0 ? p.media[0].url : undefined,
-            countLikes: p.countLikes || 0,
+            id:            p.id,
+            content:       p.content,
+            postImage:     p.media?.length > 0 ? p.media[0].url : undefined,
+            countLikes:    p.countLikes || 0,
             countComments: p.countComments,
-            authorName: `${p.author.firstName} ${p.author.lastName}`,
+            authorName:    `${p.author.firstName} ${p.author.lastName}`,
             authorPicture: p.author.profilePicture,
-            timeAgo: p.localDateTime,
-            isMock: false,
-            liked: p.likedIs || false
+            authorId:      p.author.id,
+            timeAgo:       p.localDateTime,
+            isMock:        false,
+            liked:         p.likedIs || false
           }));
-
           this.posts = [...this.posts, ...mapped];
           this.currentPage++;
         } else if (this.posts.length === 0) {
           this.posts = [
             {
-              id: 901,
-              authorName: 'Omar Khaled',
+              id: 901, authorId: 901, authorName: 'Rodina Mohamed',
               authorPicture: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150',
-              timeAgo: '3 hours ago',
-              content: 'Just finished setting up the microservices architecture for Friend Finder system! 🚀🔥',
-              countLikes: 12,
-              countComments: 2,
-              isMock: true,
-              liked: false
-            },
-            {
-              id: 902,
-              authorName: 'Youssef Ali',
-              authorPicture: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
-              timeAgo: '5 hours ago',
-              content: 'The Angular standalone components with dark mode look absolutely cinematic.',
-              countLikes: 8,
-              countComments: 0,
-              isMock: true,
-              liked: false
+              timeAgo: '3 hours ago', content: 'Rodina Posts',
+              postImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500',
+              countLikes: 12, countComments: 2, liked: false
             }
           ];
           this.hasMorePosts = false;
         } else {
           this.hasMorePosts = false;
         }
-
         this.cdr.detectChanges();
       },
       error: (err) => {
         this.loading = false;
-        this.error = 'Failed to load home feed. Please try again.';
-        console.error('Error fetching feed:', err);
-        this.cdr.detectChanges();
-      }
-    });
-  }
-
-  toggleLike(post: DisplayPost): void {
-    if (post.isMock) return;
-
-    // Optimistic UI: نغيّر الحالة فوراً قبل ما الـ request يخلص
-    const wasLiked = post.liked;
-    post.liked = !wasLiked;
-    post.countLikes += wasLiked ? -1 : 1;
-    this.cdr.detectChanges();
-
-    this.likeService.toggleLike(post.id).subscribe({
-      error: (err) => {
-        // لو الـ request فشل، نرجع الحالة زي ما كانت
-        post.liked = wasLiked;
-        post.countLikes += wasLiked ? 1 : -1;
-        console.error('Error toggling like:', err);
+        this.error = err.error?.message || 'Failed to load home feed.';
         this.cdr.detectChanges();
       }
     });
@@ -150,40 +220,138 @@ export class Home implements OnInit {
         this.loadingFriends = false;
         if (!data || data.length === 0) {
           this.friends = [
-            { Friendship_Id: 701, userSenderId: 101, firstName: 'Omar', id: 1, last_Name: 'Khaled', profilePicture: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150' },
-            { Friendship_Id: 702, userSenderId: 102, firstName: 'Youssef', id: 2, last_Name: 'Ali', profilePicture: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150' },
-            { Friendship_Id: 703, userSenderId: 103, firstName: 'Kareem', id: 3, last_Name: 'Mahmoud', profilePicture: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150' }
+            { Friendship_Id: 701, userSenderId: 101, firstName: 'Omar', id: 1, last_Name: 'Khaled', profilePicture: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150' }
           ];
-        } else {
-          this.friends = data;
-        }
+        } else { this.friends = data; }
+        this.friendIds = new Set(this.friends.map(f => f.id));
+        this.cdr.detectChanges();
+      },
+      error: () => { this.loadingFriends = false; this.cdr.detectChanges(); }
+    });
+  }
+
+  loadSentRequests() {
+    this.friendshipService.getSentFriendRequests().pipe(catchError(() => of([]))).subscribe(requests => {
+      this.pendingRequestIds = new Set(requests.map(r => r.id));
+      this.cdr.detectChanges();
+    });
+  }
+
+  loadNotificationsData() {
+    this.loading = true;
+    this.notifService.getNotifications().subscribe({
+      next: (res) => {
+        this.notifications = res ?? [];
+        this.loading = false;
         this.cdr.detectChanges();
       },
       error: (err) => {
-        this.loadingFriends = false;
-        console.error('Error fetching friends:', err);
+        console.error(err);
+        this.loading = false;
         this.cdr.detectChanges();
       }
     });
   }
 
-  viewProfile(id: number): void {
-    this.router.navigate(['/profile', id]);
-  }
-
-  refreshFeed() {
-    this.posts = [];
-    this.currentPage = 1;
-    this.hasMorePosts = true;
-    this.loadHomeFeed();
-  }
-
   sendFriendRequest(authorId: number) {
-    console.log(`Sending request from Home feed to user ID: ${authorId}`);
+    if (this.isFriend(authorId) || this.isPending(authorId) || this.isMe(authorId)) return;
+    this.pendingRequestIds.add(authorId);
+    this.cdr.detectChanges();
+    this.friendshipService.sendFriendRequest(authorId).pipe(catchError(err => {
+      this.pendingRequestIds.delete(authorId);
+      this.cdr.detectChanges();
+      return of(null);
+    })).subscribe(() => { this.loadFriendsData(); this.loadSentRequests(); });
   }
 
+  toggleLike(post: DisplayPost): void {
+    if (post.isMock) return;
+    const wasLiked  = post.liked;
+    post.liked      = !wasLiked;
+    post.countLikes += wasLiked ? -1 : 1;
+    this.cdr.detectChanges();
+    this.likeService.toggleLike(post.id).subscribe({ error: () => { post.liked = wasLiked; post.countLikes += wasLiked ? 1 : -1; this.cdr.detectChanges(); } });
+  }
 
-openPost(postId: number): void {
-  this.router.navigate(['/post', postId]);
-}
+  handleViewChange(view: 'feed' | 'friends' | 'notifications') {
+    this.currentActiveView = view;
+    if (view === 'feed') this.refreshFeed();
+    else if (view === 'friends') this.loadFriendsData();
+    else this.loadNotificationsData();
+    this.cdr.detectChanges();
+  }
+
+  refreshFeed() { this.posts = []; this.currentPage = 1; this.hasMorePosts = true; this.loadHomeFeed(); }
+  viewProfile(id: number): void { this.router.navigate(['/profile', id]); }
+  openPost(postId: number): void { this.router.navigate(['/post', postId]); }
+  openChat(authorId: number): void { this.router.navigate(['/messages', authorId]); }
+
+  openNotification(notification: NotificationDto): void {
+    switch (notification.type) {
+      case 'POST_LIKED':
+      case 'COMMENT':
+      case 'REPLY':
+        if (notification.postId) this.router.navigate(['/post', notification.postId]);
+        break;
+      case 'FRIEND_REQUEST':
+      case 'FRIEND_ACCEPTED':
+      case 'FRIEND_REJECT':
+        if (notification.triggeredBy?.id) this.router.navigate(['/profile', notification.triggeredBy.id]);
+        break;
+    }
+  }
+
+  openImageModal(post: DisplayPost): void {
+    this.selectedPostForModal = post;
+    this.isModalOpen = true;
+    this.cdr.detectChanges();
+  }
+
+  closeImageModal(): void {
+    this.isModalOpen = false;
+    this.selectedPostForModal = null;
+    this.cdr.detectChanges();
+  }
+
+  clearSearch(): void {
+    this.searchService.clearSearch();
+  }
+
+  downloadImage(imageUrl: string | undefined, authorName: string): void {
+    if (!imageUrl) return;
+    fetch(imageUrl)
+      .then(response => response.blob())
+      .then(blob => {
+        const blobUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = `${authorName.replace(/\s+/g, '_')}_post_image.jpg`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(blobUrl);
+      })
+      .catch(err => {
+        console.error('تحميل الصورة فشل، سيتم فتحها في تبويب جديد لتنزيلها يدوياً:', err);
+        window.open(imageUrl, '_blank');
+      });
+  }
+
+  openStoryModal(story: StoriesDto) {
+    this.selectedStory = story;
+    this.isStoryModalOpen = true;
+
+    this.storyTimeoutId = setTimeout(() => {
+      this.closeStoryModal();
+    }, 300000); // 5 دقائق
+  }
+
+  closeStoryModal() {
+    this.isStoryModalOpen = false;
+    this.selectedStory = null;
+
+    if (this.storyTimeoutId) {
+      clearTimeout(this.storyTimeoutId);
+    }
+  }
 }

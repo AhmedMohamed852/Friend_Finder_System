@@ -1,19 +1,22 @@
 package ahmed.com.springboot.friend_finder_system.service.impl;
 
+import ahmed.com.springboot.friend_finder_system.GlobalExService.UserEx;
 import ahmed.com.springboot.friend_finder_system.dto.DtoSimble.User_Simple_Dto;
 import ahmed.com.springboot.friend_finder_system.dto.MatchDto;
-import ahmed.com.springboot.friend_finder_system.dto.UserDto;
 import ahmed.com.springboot.friend_finder_system.eNum.FriendshipStatus;
+import ahmed.com.springboot.friend_finder_system.globalCurrentUserId.CurrentUser;
 import ahmed.com.springboot.friend_finder_system.models.Friendship;
 import ahmed.com.springboot.friend_finder_system.models.Interests;
+import ahmed.com.springboot.friend_finder_system.models.Post;
 import ahmed.com.springboot.friend_finder_system.models.User;
 import ahmed.com.springboot.friend_finder_system.repo.FriendShip_Repo;
+import ahmed.com.springboot.friend_finder_system.repo.Post_Repo;
 import ahmed.com.springboot.friend_finder_system.repo.User_Repo;
 import ahmed.com.springboot.friend_finder_system.service.Match_Service;
 import ahmed.com.springboot.friend_finder_system.service.User_Service;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -29,18 +32,14 @@ public class Match_Service_Impl implements Match_Service {
     //TODO: Declare Service Methods
 
     private final User_Service user_Service;
-
     private final User_Repo user_Repo;
 
     private final FriendShip_Repo friendShip_Repo;
-
-
+    private final Post_Repo postRepo;
 
 
 
     //TODO:_______________ Implement Service Methods ____________________________
-
-
 
 
 
@@ -49,11 +48,11 @@ public class Match_Service_Impl implements Match_Service {
 
 
     @Override
-    @Cacheable(value = "potentialFriends" , key = "'#userId'")
-    public List<User_Simple_Dto> findPotentialFriends(Long userId) {
+    //@Cacheable(value = "potentialFriends" , key = "'#userId'")
+    public List<User_Simple_Dto> findPotentialFriends() {
 
         // Get Current User Info
-        User current_user = user_Repo.findById(getUserId())
+        User current_user = user_Repo.findById(CurrentUser.currentUserId())
                 .orElseThrow(() -> new RuntimeException("error.user.not.found"));
 
 
@@ -67,7 +66,7 @@ public class Match_Service_Impl implements Match_Service {
 
 
         List<MatchDto> matchresult = allUsers.stream().
-                filter(user -> !user.getId().equals(getUserId()))
+                filter(user -> !user.getId().equals(CurrentUser.currentUserId()))
 
                 .filter(user -> !currentFriendIds.contains(user.getId()))
 
@@ -86,14 +85,36 @@ public class Match_Service_Impl implements Match_Service {
         return user_Simple_Dto;
     }
 
+    @Override
+    public Page<Post> findHomeFeed( Pageable pageable) {
+
+        // Get Current User Info
+        User current_user = user_Repo.findById(CurrentUser.currentUserId())
+                .orElseThrow(UserEx::userNotFound);
+
+        Set<Long> currentFriendIds = getCurrentFriendIds(current_user.getId());
 
 
+        List<User> allUsers = user_Repo.findAll();
 
 
+        List<MatchDto> matchresult = allUsers.stream()
 
+            .map(user -> calculateMatch(current_user , user))
 
+            .filter(match -> match.getMatchScore() > 10)
 
+            .sorted((m1 ,m2) -> Double.compare(m2.getMatchScore() , m1.getMatchScore()))
 
+            .limit(2).collect(Collectors.toList());
+
+        List<Long> userIds = matchresult.stream().map(match -> match.getUser().getId()).collect(Collectors.toList());
+        userIds.addAll(currentFriendIds);
+
+        Page<Post> posts = postRepo.findAllByAuthorIdIn(userIds , pageable);
+
+        return posts;
+    }
 
 
     //TODO:_______________ Get Current Friends ____________________________
@@ -118,7 +139,6 @@ public class Match_Service_Impl implements Match_Service {
 
         return friendIds;
     }
-
 
 
 
@@ -162,7 +182,7 @@ public class Match_Service_Impl implements Match_Service {
 
         if(!commonInterests.isEmpty())
         {
-            interestScour = (commonInterests.size() * 100.0) / commonInterests.size();
+            interestScour = (commonInterests.size() * 100.0) / currentUserInterests.size();
 
         }
 
@@ -190,7 +210,7 @@ public class Match_Service_Impl implements Match_Service {
 
         double mutualFriendsScour = mutualFriendsCount * 5.0;
 
-        if(mutualFriendsScour > 20.0)
+        if(mutualFriendsScour > 10.0)
         {
             mutualFriendsScour = 20.0;
         }
@@ -216,14 +236,6 @@ public class Match_Service_Impl implements Match_Service {
         return matchDto;
     }
 
-
-    public Long getUserId()
-    {
-        UserDto currentUser = (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long userId = currentUser.getId();
-
-        return userId;
-    }
 
 
 }

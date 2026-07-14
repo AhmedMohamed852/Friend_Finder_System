@@ -24,7 +24,7 @@ public class PostDto {
     )
     private Long id;
 
-    @NotBlank(message = "Content is required")
+    @NotBlank(message = "error.post.content.required")
     @Schema(
             description = "Post content",
             example = "Hello Friends, this is my first post."

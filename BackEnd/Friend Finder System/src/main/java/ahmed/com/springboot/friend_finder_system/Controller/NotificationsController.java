@@ -50,7 +50,7 @@ public class NotificationsController {
             )
     })
     @PreAuthorize("hasRole('USER')")
-    @GetMapping
+    @GetMapping("/userNotifications")
     public ResponseEntity<List<NotificationDto>> getUserNotifications() {
         return ResponseEntity.ok(notification_Service.getUserNotifications());
     }

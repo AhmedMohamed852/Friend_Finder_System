@@ -2,6 +2,7 @@ package ahmed.com.springboot.friend_finder_system.Controller;
 
 
 import ahmed.com.springboot.friend_finder_system.dto.DtoSimble.FriendShipRequestsDto;
+import ahmed.com.springboot.friend_finder_system.dto.DtoSimble.User_Simple_Dto;
 import ahmed.com.springboot.friend_finder_system.helper.MessageResponse;
 import ahmed.com.springboot.friend_finder_system.service.Friendship_Service;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +20,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+import java.util.Set;
 
 
 @Tag(
@@ -213,8 +214,31 @@ public class FriendShipController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('USER')")
+    @DeleteMapping("/unFriend/{friendship_Id}")
+    public ResponseEntity<Void> unFriend(
+
+            @Parameter(
+                    description = "Friend Request ID",
+                    example = "1",
+                    required = true
+            )
+            @PathVariable Long friendship_Id
+    ) {
+        friendship_service.unfriend(friendship_Id);
+        return ResponseEntity.noContent().build();
+    }
 
 
+    //TODO:_______________ search ____________________________
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/search/{key}")
+    public ResponseEntity<Set<User_Simple_Dto>> search(
+
+            @PathVariable String key
+    ) {
+        return ResponseEntity.ok(friendship_service.search(key));
+    }
 
 
     //TODO:_______________ Cancel Friendship Request ____________________________
