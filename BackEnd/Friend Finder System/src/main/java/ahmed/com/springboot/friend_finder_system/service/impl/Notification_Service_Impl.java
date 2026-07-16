@@ -4,7 +4,6 @@ package ahmed.com.springboot.friend_finder_system.service.impl;
 import ahmed.com.springboot.friend_finder_system.GlobalExService.NotificationEx;
 import ahmed.com.springboot.friend_finder_system.GlobalExService.UserEx;
 import ahmed.com.springboot.friend_finder_system.dto.NotificationDto;
-import ahmed.com.springboot.friend_finder_system.dto.UserDto;
 import ahmed.com.springboot.friend_finder_system.eNum.NotificationType;
 import ahmed.com.springboot.friend_finder_system.globalCurrentUserId.CurrentUser;
 import ahmed.com.springboot.friend_finder_system.mapper.MapperSimble.ToUserSimpleMapper;
@@ -24,10 +23,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 
@@ -47,7 +44,7 @@ public class Notification_Service_Impl implements Notification_Service {
     @Lazy
     private final Post_Service postService;
     private final PostMapper postMapper;
-    private final ResourceBundleMessageSource messageSource;  // ✅ Inject MessageSource
+    private final ResourceBundleMessageSource messageSource;
 
 
 
@@ -143,9 +140,6 @@ public class Notification_Service_Impl implements Notification_Service {
             throw NotificationEx.userIdRequired();
         }
 
-     /*   if(notification_Repo.existsByUser_IdAndTriggeredBy_IdAndType(currentUser() , userId ,NotificationType.FRIEND_REJECT)){
-            throw new RuntimeException("error.this.notification.exist");
-        }*/
 
 
         User sender = user_Repo.findById(CurrentUser.currentUserId()).orElseThrow(UserEx::userNotFound);

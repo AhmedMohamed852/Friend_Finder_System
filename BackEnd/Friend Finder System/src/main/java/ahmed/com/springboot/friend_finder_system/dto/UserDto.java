@@ -27,6 +27,7 @@ public class UserDto {
             description = "Username of the user",
             example = "ahmed123"
     )
+    @NotBlank(message = "error.user.username.required")
     private String username;
 
 
@@ -34,6 +35,7 @@ public class UserDto {
             description = "First name",
             example = "Ahmed"
     )
+    @NotBlank(message = "error.user.firstName.required")
     private String firstName;
 
 
@@ -41,12 +43,15 @@ public class UserDto {
             description = "Last name",
             example = "Mohamed"
     )
+    @NotBlank(message = "error.user.lastName.required")
     private String lastName;
 
     @Schema(
             description = "Email address",
             example = "ahmed@gmail.com"
     )
+    @NotBlank(message = "error.user.email.required")
+    @Email(message = "error.user.email.invalid")
     private String email;
 
 
@@ -54,12 +59,15 @@ public class UserDto {
             description = "User password",
             example = "********"
     )
+    @NotBlank(message = "error.user.password.required")
+    @Size(min = 8, message = "error.user.password.tooShort")
     private String password;
 
     @Schema(
             description = "Gender",
             example = "MALE"
     )
+    @NotNull(message = "error.user.gender.required")
     private Gender gender;
 
 
@@ -67,6 +75,8 @@ public class UserDto {
             description = "Date of birth",
             example = "2000-01-01"
     )
+    @Past(message = "error.user.dateOfBirth.mustBePast")
+    @NotNull(message = "error.user.dateOfBirth.required")
     private LocalDate dateOfBirth;
 
     @Schema(

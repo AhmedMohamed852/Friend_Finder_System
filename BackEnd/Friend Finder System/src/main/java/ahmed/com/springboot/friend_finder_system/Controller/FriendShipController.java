@@ -1,4 +1,5 @@
-package ahmed.com.springboot.friend_finder_system.Controller;
+
+        package ahmed.com.springboot.friend_finder_system.Controller;
 
 
 import ahmed.com.springboot.friend_finder_system.dto.DtoSimble.FriendShipRequestsDto;
@@ -25,7 +26,7 @@ import java.util.Set;
 
 @Tag(
         name = "Friendship Controller",
-        description = "APIs for managing friendship requests"
+        description = "APIs for managing friendship requests and managing friends list"
 )
 @SecurityRequirement(name = "bearerAuth")
 @RestController
@@ -39,8 +40,6 @@ public class FriendShipController {
 
 
     //TODO:_______________ Implement Service Methods ____________________________
-
-
 
 
 
@@ -114,8 +113,31 @@ public class FriendShipController {
     public ResponseEntity<List<FriendShipRequestsDto>> showFriendshipRequests() {
         return ResponseEntity.ok(friendship_service.getFriendshipsByUser1Id());
     }
-    //TODO:_______________ Sent Friendship Requests ____________________________
 
+    //TODO:_______________ Sent Friendship Requests ____________________________
+    @Operation(
+            summary = "Get Sent Friendship Requests",
+            description = "Returns all friendship requests sent by the authenticated user to other users."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Sent friendship requests retrieved successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(
+                                            implementation = FriendShipRequestsDto.class
+                                    )
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized",
+                    content = @Content
+            )
+    })
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/SentFriendshipRequests")
     public ResponseEntity<List<FriendShipRequestsDto>> SentFriendshipRequests() {
@@ -123,7 +145,29 @@ public class FriendShipController {
     }
 
     //TODO:_______________ Get My Friends ____________________________
-
+    @Operation(
+            summary = "Get My Friends List",
+            description = "Returns all accepted friends for the authenticated user."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Friends list retrieved successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(
+                                            implementation = FriendShipRequestsDto.class
+                                    )
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized",
+                    content = @Content
+            )
+    })
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/getMyFriends")
     public ResponseEntity<List<FriendShipRequestsDto>> getMyFriends() {
@@ -214,6 +258,25 @@ public class FriendShipController {
         return ResponseEntity.noContent().build();
     }
 
+
+    //TODO:_______________ Unfriend ____________________________
+    @Operation(
+            summary = "Unfriend User",
+            description = "Removes an existing friendship association using friendship ID."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Unfriended successfully"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "{friend.request.not.found}",
+                    content = @Content(
+                            schema = @Schema(implementation = MessageResponse.class)
+                    )
+            )
+    })
     @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/unFriend/{friendship_Id}")
     public ResponseEntity<Void> unFriend(
@@ -231,10 +294,35 @@ public class FriendShipController {
 
 
     //TODO:_______________ search ____________________________
+    @Operation(
+            summary = "Search Users",
+            description = "Search users by name key for friendship system."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Search results retrieved successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = User_Simple_Dto.class)
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized",
+                    content = @Content
+            )
+    })
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/search/{key}")
     public ResponseEntity<Set<User_Simple_Dto>> search(
-
+            @Parameter(
+                    description = "Search query/key (e.g., first name or last name)",
+                    example = "Ahmed",
+                    required = true
+            )
             @PathVariable String key
     ) {
         return ResponseEntity.ok(friendship_service.search(key));
@@ -279,8 +367,5 @@ public class FriendShipController {
         friendship_service.cancelFriendRequest(friendship_Id);
         return ResponseEntity.noContent().build();
     }
-
-
-
 
 }

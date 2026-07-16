@@ -83,14 +83,6 @@ public class Like_Service_Impl implements Like_Service {
 
 
     }
-    //TODO:_______________ is Liked By Me ____________________________
-    @Override
-    public boolean isLikedByMe(Long postId) {
-        return likeRepo.existsByPostIdAndUserId(postId, CurrentUser.currentUserId());
-    }
 
-    public Set<Long> getLikedPostIds(List<Long> postIds, Long userId) {
-        return new HashSet<>(likeRepo.findLikedPostIds(userId, postIds));
-    }
 
 }

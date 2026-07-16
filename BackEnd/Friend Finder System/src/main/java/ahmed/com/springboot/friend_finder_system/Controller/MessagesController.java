@@ -2,7 +2,6 @@ package ahmed.com.springboot.friend_finder_system.Controller;
 
 import ahmed.com.springboot.friend_finder_system.dto.MessagesDto;
 import ahmed.com.springboot.friend_finder_system.service.Message_Service;
-import ahmed.com.springboot.friend_finder_system.service.MessagesService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -30,7 +29,7 @@ public class MessagesController {
 
     private final Message_Service messagesService;
 
-    // ===================== SEND MESSAGE =====================
+    //TODO ===================== SEND MESSAGE =====================
 
     @Operation(
             summary = "Send Message",
@@ -59,7 +58,7 @@ public class MessagesController {
     }
 
 
-    // ===================== GET MESSAGE BY ID =====================
+    //TODO ===================== GET MESSAGE BY ID =====================
 
     @Operation(
             summary = "Get Message By Id",
@@ -87,7 +86,7 @@ public class MessagesController {
     }
 
 
-    // ===================== GET CONVERSATION =====================
+    //TODO ===================== GET CONVERSATION =====================
 
     @Operation(
             summary = "Get Conversation",
@@ -118,7 +117,7 @@ public class MessagesController {
     }
 
 
-    // ===================== GET INBOX =====================
+    //TODO ===================== GET INBOX =====================
 
     @Operation(
             summary = "Get Inbox",
@@ -148,7 +147,7 @@ public class MessagesController {
     }
 
 
-    // ===================== GET SENT MESSAGES =====================
+    //TODO ===================== GET SENT MESSAGES =====================
 
     @Operation(
             summary = "Get Sent Messages",
@@ -178,7 +177,7 @@ public class MessagesController {
     }
 
 
-    // ===================== GET UNREAD MESSAGES =====================
+    //TODO ===================== GET UNREAD MESSAGES =====================
 
     @Operation(
             summary = "Get Unread Messages",
@@ -208,7 +207,7 @@ public class MessagesController {
     }
 
 
-    // ===================== MARK AS READ =====================
+    //TODO ===================== MARK AS READ =====================
 
     @Operation(
             summary = "Mark Message As Read",
@@ -236,7 +235,7 @@ public class MessagesController {
     }
 
 
-    // ===================== MARK CONVERSATION AS READ =====================
+    //TODO ===================== MARK CONVERSATION AS READ =====================
 
     @Operation(
             summary = "Mark Conversation As Read",
@@ -262,7 +261,7 @@ public class MessagesController {
     }
 
 
-    // ===================== COUNT UNREAD MESSAGES =====================
+    //TODO ===================== COUNT UNREAD MESSAGES =====================
 
     @Operation(
             summary = "Count Unread Messages",
@@ -286,7 +285,7 @@ public class MessagesController {
     }
 
 
-    // ===================== UPDATE MESSAGE =====================
+    //TODO ===================== UPDATE MESSAGE =====================
 
     @Operation(
             summary = "Update Message",
@@ -315,7 +314,7 @@ public class MessagesController {
     }
 
 
-    // ===================== DELETE MESSAGE =====================
+    //TODO ===================== DELETE MESSAGE =====================
 
     @Operation(
             summary = "Delete Message",

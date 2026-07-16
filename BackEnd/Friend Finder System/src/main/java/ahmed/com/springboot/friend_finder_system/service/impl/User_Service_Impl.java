@@ -136,6 +136,9 @@ public class User_Service_Impl implements User_Service {
         {
             throw UserEx.userNotFound();
         }
+
+        UserDto userDto = userMapper.toDto(user_Repo.findById(userId).orElseThrow(UserEx::userNotFound));
+        userDto.setPassword(null);
         return userMapper.toDto(user_Repo.findById(userId).orElseThrow(UserEx::userNotFound));
     }
 

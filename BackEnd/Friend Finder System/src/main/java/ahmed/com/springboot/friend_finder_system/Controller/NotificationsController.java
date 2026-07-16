@@ -27,7 +27,7 @@ public class NotificationsController {
 
     private final Notification_Service notification_Service;
 
-    // ===================== GET USER NOTIFICATIONS =====================
+    //TODO ===================== GET USER NOTIFICATIONS =====================
 
     @Operation(
             summary = "Get User Notifications",

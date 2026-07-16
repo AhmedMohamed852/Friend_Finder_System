@@ -9,7 +9,6 @@ public interface Like_Service {
 
 
     void toggleLike(Long postId );
-    boolean isLikedByMe(Long postId);
-    Set<Long> getLikedPostIds(List<Long> postIds, Long userId);
+
 
 }

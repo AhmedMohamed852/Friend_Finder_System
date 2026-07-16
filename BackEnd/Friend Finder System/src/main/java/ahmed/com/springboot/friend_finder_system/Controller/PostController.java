@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -55,7 +56,7 @@ public class PostController {
     )
     @PreAuthorize("hasRole('USER')")
     @PostMapping("creatPost")
-    public ResponseEntity<Void> creatPost(@RequestBody PostDto postDto) throws URISyntaxException {
+    public ResponseEntity<Void> creatPost(@RequestBody @Valid PostDto postDto) throws URISyntaxException {
         post_Service.creatPost(postDto);
         return ResponseEntity.created(new URI("/api/posts/")).build();
     }
@@ -81,9 +82,7 @@ public class PostController {
     )
     @PreAuthorize("hasRole('USER')")
     @PutMapping("updatePost")
-    public ResponseEntity<Void> updatePost(
-            @RequestBody PostDto postDto
-    )
+    public ResponseEntity<Void> updatePost(@RequestBody @Valid PostDto postDto)
     {
         post_Service.updatePost(postDto);
         return ResponseEntity.noContent().build();
@@ -183,7 +182,7 @@ public class PostController {
         return ResponseEntity.ok(post_Service.getPostById(id));
     }
 
-    //TODO:_______________ Get Posts By ID ____________________________
+    //TODO _______________ Get Posts By ID ____________________________
     @PreAuthorize("hasRole('USER')")
     @GetMapping("getPosts/{id}/{PageNumber}")
     public ResponseEntity<Post_Response_Vm> getPostsByUserId(
