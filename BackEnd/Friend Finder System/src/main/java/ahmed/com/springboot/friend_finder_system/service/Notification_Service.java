@@ -20,7 +20,7 @@ public interface Notification_Service {
 
     List<NotificationDto> getUserNotifications();
 
-    void markAsRead(Long notificationId, Long userId);
+    void markAsRead(Long notificationId);
 
     void deleteNotification(Long notificationId);
 

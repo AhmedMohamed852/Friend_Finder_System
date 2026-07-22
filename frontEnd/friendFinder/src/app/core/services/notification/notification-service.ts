@@ -27,6 +27,15 @@ export class NotificationService {
   private apiUrl = 'http://localhost:8081/api/notifications';
 
   getNotifications(): Observable<NotificationDto[]> {
-    return this.http.get<NotificationDto[]>(`${this.apiUrl}/userNotifications`);
+    return this.http.get<NotificationDto[]>(
+      `${this.apiUrl}/userNotifications`
+    );
+  }
+
+  markAsRead(notificationId: number): Observable<void> {
+    return this.http.put<void>(
+      `${this.apiUrl}/markAsRead/${notificationId}`,
+      {}
+    );
   }
 }

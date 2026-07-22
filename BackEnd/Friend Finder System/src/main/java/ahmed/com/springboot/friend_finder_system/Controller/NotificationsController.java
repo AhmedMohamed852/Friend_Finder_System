@@ -54,4 +54,17 @@ public class NotificationsController {
     public ResponseEntity<List<NotificationDto>> getUserNotifications() {
         return ResponseEntity.ok(notification_Service.getUserNotifications());
     }
+
+
+
+     @PreAuthorize("hasRole('USER')")
+    @PutMapping("/markAsRead/{notificationId}")
+    public ResponseEntity<Void> markAsRead(@PathVariable Long notificationId) {
+        notification_Service.markAsRead(notificationId);
+        return ResponseEntity.noContent().build();
+    }
+
+
+
+
 }

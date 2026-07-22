@@ -1,3 +1,36 @@
+/* ============================================================
+   FRIEND FINDER — Feed Page
+   Palette: #38a8dc (sky blue) · #e8f4fd (light bg) · #fff (white)
+   ============================================================ */
+
+/* ── Animations ── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes storyTimer {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes loadingDot {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40%            { transform: scale(1);   opacity: 1; }
+}
+
+/* ============================================================
+   FEED WRAPPER
+   ============================================================ */
 .feed {
   width: 100%;
   max-width: 640px;
@@ -5,576 +38,89 @@
   padding: 20px 0;
 }
 
-.feed-header, .friends-main-header {
+/* ── Header ── */
+.feed-header,
+.friends-main-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
   padding: 0 4px;
 }
 
-.feed-header h2, .friends-main-header h2 {
+.feed-header h2,
+.friends-main-header h2 {
   font-size: 18px;
   font-weight: 700;
-  color: #0d2b26;
+  color: #0f2a3d;
   margin: 0;
 }
 
+/* ── Refresh Button ── */
 .refresh-btn {
-  background: #e8f5f3;
-  border: none;
+  background: #e8f4fd;
+  border: 1.5px solid #c8e6f5;
   cursor: pointer;
   font-size: 14px;
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
-  transition: background 0.2s;
+  transition: background 0.2s, border-color 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #1a9e8f;
+  color: #38a8dc;
 }
-
-.refresh-btn:hover:not(:disabled) { background: #c5e8e4; }
+.refresh-btn:hover:not(:disabled) {
+  background: #c8e6f5;
+  border-color: #38a8dc;
+}
 .refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
 .spinning { display: inline-block; animation: spin 0.8s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
 
-/* Post Card */
-.post-card {
-  background: white;
-  border-radius: 14px;
-  padding: 18px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e8f5f3;
-}
-
-.post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-.post-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
-.post-author-info { display: flex; flex-direction: column; gap: 2px; }
-.post-author-info strong { font-size: 14px; color: #0d2b26; }
-.post-author-info span { color: #7a9e99; font-size: 12px; }
-
-.friend-btn {
-  margin-left: auto;
-  background: #e8f5f3;
-  color: #0d6b5e;
-  border: none;
-  padding: 6px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 12.5px;
-  font-weight: 600;
-  transition: background 0.2s, color 0.2s;
-}
-
-.friend-btn:hover { background: #1a9e8f; color: white; }
-
-.more { color: #b4b7c5; cursor: pointer; font-size: 18px; margin-left: 8px; line-height: 1; }
-
-.post-content { color: #333; font-size: 14px; margin-bottom: 12px; line-height: 1.55; }
-
-/* إرجاع كود الصورة الأصلي بمقاساته الموحدة المتناسقة في كروت الـ Feed */
-/* الكلاس الجديد لجعل الصورة كاملة بدون قطع وبدون أي فراغات جانبية */
-.post-feed-image {
-  width: 100%;             /* ملء عرض الكارت بالكامل لمنع أي فراغ جانبي */
-  height: auto;            /* الارتفاع يتحدد تلقائياً حسب أبعاد الصورة الأصلية عشان متتقصش */
-  display: block;
-  border-radius: 10px;     /* حواف ناعمة متناسقة مع تصميم الكارت */
-  margin-bottom: 12px;
-  cursor: pointer;
-  object-fit: contain;     /* حماية أبعاد الصورة من التمطيط أو التشويه */
-}
-
-.post-actions {
-  display: flex;
-  gap: 18px;
-  padding: 10px 0;
-  border-top: 1px solid #e8f5f3;
-  border-bottom: 1px solid #e8f5f3;
-  margin-bottom: 10px;
-}
-
-.post-actions button {
-  border: none;
-  background: none;
-  cursor: pointer;
-  color: #5b5f73;
-  font-size: 13px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  transition: color 0.2s;
-}
-
-.post-actions button:hover { color: #1a9e8f; }
-.post-actions .count { color: #7a9e99; }
-
-/* Like Button */
-.like-btn { transition: color 0.2s, transform 0.1s; }
-.like-btn:active { transform: scale(0.92); }
-.like-btn.liked { color: #dc2626; }
-.like-btn.liked .count { color: #dc2626; }
-
-.mutual { color: #1a9e8f; font-size: 13px; text-decoration: none; font-weight: 500; }
-
-/* Status Banners */
-.status-banner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 16px;
-  border-radius: 12px;
-  font-size: 13.5px;
-  margin-bottom: 16px;
-}
-
-.error-banner { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
-.empty-banner, .loading-banner { background: #f0faf9; color: #7a9e99; }
-
-.load-more-btn {
-  width: 100%;
-  background: #e8f5f3;
-  color: #0d6b5e;
-  border: none;
-  padding: 12px;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.load-more-btn:hover { background: #c5e8e4; }
-
-/* Friends Grid */
-.friends-container { width: 100%; }
-.friends-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 16px;
-  margin-top: 8px;
-}
-
-.friend-card {
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 18px;
-  text-align: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e8f5f3;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.friend-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 16px rgba(26, 158, 143, 0.15);
-}
-
-.card-avatar img {
-  width: 75px;
-  height: 75px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid #e8f5f3;
-}
-
-.avatar-placeholder {
-  width: 75px;
-  height: 75px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #1a9e8f, #0d6b5e);
-  color: white;
-  font-size: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.card-info { margin: 12px 0; flex: 1; }
-.card-info h4 {
-  margin: 0 0 4px;
-  font-size: 14px;
-  font-weight: 700;
-  color: #0d2b26;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 150px;
-}
-
-.status-badge {
-  font-size: 11px;
-  color: #0d6b5e;
-  background: #e8f5f3;
-  padding: 2px 10px;
-  border-radius: 20px;
-  font-weight: 600;
-}
-
-.profile-btn {
-  width: 100%;
-  background: #f0faf9;
-  color: #0d2b26;
-  border: none;
-  padding: 8px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-}
-
-.friend-card:hover .profile-btn { background: #1a9e8f; color: white; }
-.animate-fade { animation: fadeIn 0.3s ease; }
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.pending-btn {
-  background: #f3f4f6 !important;
-  color: #6b7280 !important;
-  border: 1.5px solid #d1d5db !important;
-  cursor: not-allowed !important;
-  opacity: 0.85;
-}
-
-.msg-btn {
-  background: none;
-  border: 1.5px solid #d1d5db;
-  border-radius: 8px;
-  padding: 4px 10px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background .15s, border-color .15s;
-  margin-left: auto;
-}
-.msg-btn:hover { background: #f0fdfa; border-color: #0d9488; }
-
-/* ── استايلات عارض الصور المظلم على طريقة فيسبوك الكاملة (Facebook Lightbox) ── */
-.fb-lightbox-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.95); /* تضليم كامل للشاشة بنسبة 95% */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 10000;
-  animation: fadeIn 0.15s ease-out;
-}
-
-/* الشريط العلوي للتحكم والتحميل */
-.lightbox-top-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: 16px 24px;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0));
-  z-index: 10002;
-}
-
-.lightbox-author-name {
-  color: #ffffff;
-  font-size: 15px;
-  font-weight: 600;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
-}
-
-.lightbox-actions {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-/* زر التنزيل في الشريط العلوي */
-.lightbox-download-btn {
-  background: rgba(255, 255, 255, 0.15);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
-  backdrop-filter: blur(4px);
-}
-.lightbox-download-btn:hover {
-  background: #1a9e8f;
-  border-color: #1a9e8f;
-}
-.lightbox-download-btn:active {
-  transform: scale(0.97);
-}
-
-/* زر الإغلاق */
-.lightbox-close-btn {
-  background: rgba(255, 255, 255, 0.15);
-  border: none;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s, color 0.2s;
-}
-.lightbox-close-btn:hover {
-  background: #dc2626;
-  color: white;
-}
-
-/* بوكس الصورة الفردي السلس */
-.lightbox-content-box {
-  width: 90%;
-  max-width: 1100px;
-  height: 82vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10001;
-}
-
-.lightbox-content-box img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain; /* إظهار كامل تفاصيل وأبعاد الصورة الأصلية بنقاء */
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  border-radius: 4px;
-}
-
-/* الهواتف والشاشات الصغيرة */
-@media (max-width: 480px) {
-  .lightbox-top-bar { padding: 12px; }
-  .lightbox-download-btn { padding: 6px 12px; font-size: 12px; }
-}
-/* ========== Search Results (Facebook Style) ========== */
-
-.search-results-page {
-  width: 100%;
-}
-
-.search-results-page .friends-main-header {
-  margin-bottom: 20px;
-}
-
-.search-results-page .friends-main-header h2 {
-  font-size: 20px;
-  color: #0d2b26;
-}
-
-.search-results-page .refresh-btn {
-  width: auto;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #dc2626;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  height: auto;
-}
-
-.search-results-page .refresh-btn:hover {
-  background: #dc2626;
-  color: white;
-}
-
-/* كارت الشخص - Facebook Style */
-.fb-user-card {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  background: #fff;
-  border-radius: 12px;
-  padding: 14px 18px;
-  margin-bottom: 10px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-  border: 1px solid #e8f5f3;
-  cursor: pointer;
-  transition: background 0.15s, box-shadow 0.15s;
-  width: 100%;
-}
-
-.fb-user-card:hover {
-  background: #f0faf9;
-  box-shadow: 0 4px 14px rgba(26, 158, 143, 0.12);
-}
-
-.fb-user-avatar {
-  position: relative;
-  flex-shrink: 0;
-}
-
-.fb-user-avatar img {
-  width: 62px;
-  height: 62px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #e8f5f3;
-}
-
-.fb-avatar-placeholder {
-  width: 62px;
-  height: 62px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #1a9e8f, #0d6b5e);
-  color: white;
-  font-size: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.fb-user-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.fb-user-info h4 {
-  margin: 0 0 4px;
-  font-size: 15px;
-  font-weight: 700;
-  color: #0d2b26;
-}
-
-.fb-user-info .fb-city {
-  font-size: 13px;
-  color: #7a9e99;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.fb-view-btn {
-  flex-shrink: 0;
-  background: #e8f5f3;
-  color: #0d6b5e;
-  border: none;
-  padding: 8px 18px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-  white-space: nowrap;
-}
-
-.fb-user-card:hover .fb-view-btn {
-  background: #1a9e8f;
-  color: white;
-}
-
-.search-empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 20px;
-  color: #7a9e99;
-  gap: 12px;
-  text-align: center;
-}
-
-.search-empty-state span:first-child {
-  font-size: 48px;
-}
-
-.search-empty-state span:last-child {
-  font-size: 15px;
-  font-weight: 500;
-}
-
-/* ========== Friends & Notifications FB Style ========== */
-
-.friend-badge-inline {
-  display: inline-block;
-  font-size: 12px;
-  color: #0d6b5e;
-  background: #e8f5f3;
-  padding: 2px 10px;
-  border-radius: 20px;
-  font-weight: 600;
-}
-
-.fb-notif-unread {
-  background: #f0fdf9 !important;
-  border-left: 3px solid #1a9e8f !important;
-}
-
-.fb-unread-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #1a9e8f;
-  flex-shrink: 0;
-  margin-left: auto;
-}
-/* ── شريط الستوريز بأسلوب فيسبوك ── */
+/* ============================================================
+   STORIES BAR
+   ============================================================ */
 .stories-container {
   display: flex;
   gap: 10px;
   overflow-x: auto;
   padding: 4px 4px 16px 4px;
-  margin-bottom: 8px;
-  scrollbar-width: none; /* إخفاء شريط التمرير في فايرفوكس */
+  margin-bottom: 12px;
+  scrollbar-width: none;
 }
-
-.stories-container::-webkit-scrollbar {
-  display: none; /* إخفاء شريط التمرير في كروم وسفاري */
-}
+.stories-container::-webkit-scrollbar { display: none; }
 
 .story-card {
   position: relative;
   width: 110px;
   height: 180px;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 14px rgba(56,168,220,0.15);
   cursor: pointer;
   flex-shrink: 0;
-  transition: transform 0.2s ease;
-  background: #f3f4f6;
-  border: 1px solid #e8f5f3;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: #e8f4fd;
+  border: 1.5px solid #c8e6f5;
 }
-
 .story-card:hover {
-  transform: scale(1.03);
+  transform: scale(1.04);
+  box-shadow: 0 8px 22px rgba(56,168,220,0.25);
 }
 
-/* كارت إضافة ستوري الخاص بي */
+/* Create Story Card */
 .create-story {
   display: flex;
   flex-direction: column;
   background: #fff;
+  border: 1.5px solid #c8e6f5;
 }
-
 .create-story .my-avatar-wrapper {
   height: 130px;
   overflow: hidden;
 }
-
 .create-story .my-avatar-wrapper img {
   width: 100%;
   height: 100%;
@@ -590,7 +136,6 @@
   justify-content: center;
   padding-top: 10px;
 }
-
 .create-story-footer .plus-icon {
   position: absolute;
   top: -16px;
@@ -598,7 +143,7 @@
   transform: translateX(-50%);
   width: 32px;
   height: 32px;
-  background: #1a9e8f;
+  background: linear-gradient(135deg, #38a8dc, #2196c4);
   color: white;
   border-radius: 50%;
   border: 3px solid white;
@@ -607,64 +152,76 @@
   justify-content: center;
   font-size: 20px;
   font-weight: bold;
+  box-shadow: 0 2px 8px rgba(56,168,220,0.35);
 }
-
 .create-story-footer span {
   font-size: 11px;
   font-weight: 600;
-  color: #0d2b26;
+  color: #0f2a3d;
 }
 
-/* ستوريز الأصدقاء */
+/* Story images & overlay */
 .story-bg-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-
 .story-user-avatar {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  width: 36px;
-  height: 36px;
+  top: 10px; left: 10px;
+  width: 36px; height: 36px;
   border-radius: 50%;
-  border: 3px solid #1a9e8f; /* الإطار الأخضر المميز للستوري غير المقروءة */
+  border: 3px solid #38a8dc;
   object-fit: cover;
   z-index: 2;
 }
-
 .story-username {
   position: absolute;
-  bottom: 10px;
-  left: 10px;
-  right: 10px;
+  bottom: 10px; left: 10px; right: 10px;
   color: white;
   font-size: 12px;
   font-weight: 600;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   z-index: 2;
 }
-
 .story-card::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.5) 100%);
+  background: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.55) 100%);
   z-index: 1;
 }
 
-/* ── نافذة عرض الستوري الكاملة (Lightbox) تظل دقيقة كاملة ── */
+.video-thumbnail-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0f2a3d, #38a8dc);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  padding: 8px;
+}
+
+/* Active story ring */
+.active-story .story-user-avatar {
+  border-color: #fff;
+  box-shadow: 0 0 0 3px #38a8dc;
+}
+
+/* ============================================================
+   STORY LIGHTBOX
+   ============================================================ */
 .story-lightbox-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.98);
+  inset: 0;
+  background: rgba(0,0,0,0.97);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -675,47 +232,35 @@
 .story-lightbox-wrapper {
   position: relative;
   width: 100%;
-  max-width: 420px; /* مقاس طولي متناسق يشبه الموبايل والستوري الحقيقية */
+  max-width: 420px;
   height: 95vh;
   background: #000;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 20px 60px rgba(56,168,220,0.2);
 }
 
-/* شريط التايمر العلوي المقسم */
 .story-progress-bar {
   position: absolute;
-  top: 12px;
-  left: 12px;
-  right: 12px;
+  top: 12px; left: 12px; right: 12px;
   height: 3px;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255,255,255,0.25);
   border-radius: 2px;
   overflow: hidden;
   z-index: 20002;
 }
-
 .story-progress-fill {
   height: 100%;
-  background: #1a9e8f; /* متناسق مع لون الثيم الخاص بك */
+  background: #38a8dc;
   width: 0;
-  animation-name: storyTimer;
-  animation-timing-function: linear;
-  animation-fill-mode: forwards;
+  animation: storyTimer linear forwards;
 }
 
-@keyframes storyTimer {
-  from { width: 0; }
-  to { width: 100%; }
-}
-
-/* الهيدر الخاص ببيانات الشخص داخل الستوري */
 .story-lightbox-header {
   position: absolute;
-  top: 24px;
-  left: 0;
+  top: 24px; left: 0;
   width: 100%;
   padding: 0 16px;
   box-sizing: border-box;
@@ -724,59 +269,534 @@
   align-items: center;
   z-index: 20002;
 }
-
 .story-header-left {
   display: flex;
   align-items: center;
   gap: 10px;
 }
-
 .story-viewer-avatar {
-  width: 40px;
-  height: 40px;
+  width: 40px; height: 40px;
   border-radius: 50%;
   object-fit: cover;
-  border: 1px solid rgba(255,255,255,0.5);
+  border: 2px solid rgba(255,255,255,0.5);
 }
-
-.story-viewer-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.story-viewer-info strong {
-  color: white;
-  font-size: 14px;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
-}
-
-.story-viewer-info span {
-  color: rgba(255, 255, 255, 0.75);
-  font-size: 11px;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
-}
+.story-viewer-info { display: flex; flex-direction: column; }
+.story-viewer-info strong { color: #fff; font-size: 14px; }
+.story-viewer-info span  { color: rgba(255,255,255,0.7); font-size: 11px; }
 
 .story-close-btn {
-  background: none;
-  border: none;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
   color: white;
-  font-size: 20px;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  font-size: 16px;
   cursor: pointer;
-  opacity: 0.8;
-  transition: opacity 0.2s;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
 }
-.story-close-btn:hover { opacity: 1; }
+.story-close-btn:hover { background: rgba(56,168,220,0.45); }
 
-/* عرض محتوى الستوري الفعلي */
 .story-viewer-content {
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-
 .story-viewer-content img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+
+/* ============================================================
+   POST CARDS
+   ============================================================ */
+.post-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 12px rgba(56,168,220,0.08);
+  border: 1px solid #daeef9;
+  animation: slideUp 0.4s ease both;
+  transition: box-shadow 0.2s;
+}
+.post-card:hover {
+  box-shadow: 0 6px 22px rgba(56,168,220,0.14);
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.post-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2.5px solid #c8e6f5;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.post-avatar:hover { border-color: #38a8dc; }
+
+.post-author-info { display: flex; flex-direction: column; gap: 2px; }
+.post-author-info strong { font-size: 14px; color: #0f2a3d; font-weight: 700; }
+.post-author-info span  { color: #7aadca; font-size: 12px; }
+
+.more {
+  color: #b0cfe0;
+  cursor: pointer;
+  font-size: 20px;
+  margin-left: 8px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+.more:hover { color: #38a8dc; }
+
+.post-content {
+  color: #1a2e3d;
+  font-size: 14.5px;
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.post-feed-image {
   width: 100%;
-  height: 100%;
-  object-fit: cover; /* لملء كادر الشاشة الطولي بالكامل مثل فيسبوك */
+  height: auto;
+  display: block;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  object-fit: contain;
+  border: 1px solid #e8f4fd;
+  transition: opacity 0.2s;
+}
+.post-feed-image:hover { opacity: 0.95; }
+
+/* Post Actions */
+.post-actions {
+  display: flex;
+  gap: 20px;
+  padding: 10px 0;
+  border-top: 1px solid #e8f4fd;
+  border-bottom: 1px solid #e8f4fd;
+  margin-bottom: 10px;
+}
+.post-actions button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #4a7a98;
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: background 0.15s, color 0.15s;
+}
+.post-actions button:hover {
+  background: #e8f4fd;
+  color: #38a8dc;
+}
+.post-actions .count { color: #90bdd4; font-size: 12px; }
+
+.like-btn { transition: color 0.2s, transform 0.1s; }
+.like-btn:active { transform: scale(0.9); }
+.like-btn.liked { color: #e24b4a; }
+.like-btn.liked .count { color: #e24b4a; }
+
+.mutual {
+  color: #38a8dc;
+  font-size: 13px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.mutual:hover { color: #2196c4; text-decoration: underline; }
+
+/* Msg Button */
+.msg-btn {
+  background: none;
+  border: 1.5px solid #c8e6f5;
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-left: auto;
+  color: #38a8dc;
+  transition: background 0.15s, border-color 0.15s;
+}
+.msg-btn:hover {
+  background: #e8f4fd;
+  border-color: #38a8dc;
+}
+
+/* ============================================================
+   STATUS BANNERS
+   ============================================================ */
+.status-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 14px;
+  font-size: 13.5px;
+  margin-bottom: 16px;
+}
+.error-banner {
+  background: #fff0f0;
+  color: #a32d2d;
+  border: 1px solid #f5c1c1;
+}
+.empty-banner,
+.loading-banner {
+  background: #e8f4fd;
+  color: #4a7a98;
+  border: 1px solid #c8e6f5;
+}
+
+/* ── Load More ── */
+.load-more-btn {
+  width: 100%;
+  background: #e8f4fd;
+  color: #1a6a9a;
+  border: 1.5px solid #c8e6f5;
+  padding: 13px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  margin-top: 4px;
+}
+.load-more-btn:hover {
+  background: #38a8dc;
+  border-color: #38a8dc;
+  color: #fff;
+}
+
+/* ============================================================
+   SEARCH RESULTS PAGE
+   ============================================================ */
+.search-results-page { width: 100%; }
+.search-results-page .friends-main-header { margin-bottom: 20px; }
+.search-results-page .friends-main-header h2 { font-size: 20px; }
+
+.search-results-page .refresh-btn {
+  width: auto;
+  padding: 6px 16px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #a32d2d;
+  background: #fff0f0;
+  border: 1px solid #f5c1c1;
+  height: auto;
+}
+.search-results-page .refresh-btn:hover {
+  background: #e24b4a;
+  border-color: #e24b4a;
+  color: #fff;
+}
+
+/* ── FB User Card ── */
+.fb-user-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 10px rgba(56,168,220,0.07);
+  border: 1px solid #daeef9;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.2s, transform 0.15s;
+  width: 100%;
+  animation: fadeIn 0.35s ease both;
+}
+.fb-user-card:hover {
+  background: #f0f9fe;
+  box-shadow: 0 6px 18px rgba(56,168,220,0.15);
+  transform: translateY(-2px);
+}
+
+.fb-user-avatar { position: relative; flex-shrink: 0; }
+.fb-user-avatar img {
+  width: 62px; height: 62px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2.5px solid #c8e6f5;
+}
+
+.fb-avatar-placeholder {
+  width: 62px; height: 62px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #38a8dc, #2196c4);
+  color: white;
+  font-size: 24px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.fb-user-info { flex: 1; min-width: 0; }
+.fb-user-info h4 {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f2a3d;
+}
+.fb-user-info .fb-city {
+  font-size: 13px;
+  color: #7aadca;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.fb-view-btn {
+  flex-shrink: 0;
+  background: #e8f4fd;
+  color: #1a6a9a;
+  border: 1.5px solid #c8e6f5;
+  padding: 8px 18px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+.fb-user-card:hover .fb-view-btn {
+  background: #38a8dc;
+  border-color: #38a8dc;
+  color: #fff;
+}
+
+/* Empty State */
+.search-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 20px;
+  color: #7aadca;
+  gap: 14px;
+  text-align: center;
+}
+.search-empty-state span:first-child { font-size: 52px; }
+.search-empty-state span:last-child  { font-size: 15px; font-weight: 500; }
+
+/* ── Badges & Notifications ── */
+.friend-badge-inline {
+  display: inline-block;
+  font-size: 12px;
+  color: #1a6a9a;
+  background: #e8f4fd;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+  border: 1px solid #c8e6f5;
+}
+
+.fb-notif-unread {
+  background: #f0f9fe !important;
+  border-left: 3px solid #38a8dc !important;
+}
+.fb-unread-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #38a8dc;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* ── Friend Cards Grid ── */
+.friends-container { width: 100%; }
+.friends-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.friend-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 18px;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(56,168,220,0.08);
+  border: 1px solid #daeef9;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.friend-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(56,168,220,0.18);
+}
+
+.card-avatar img {
+  width: 75px; height: 75px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #c8e6f5;
+}
+.avatar-placeholder {
+  width: 75px; height: 75px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #38a8dc, #2196c4);
+  color: white;
+  font-size: 26px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.card-info { margin: 12px 0; flex: 1; }
+.card-info h4 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f2a3d;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+.status-badge {
+  font-size: 11px;
+  color: #1a6a9a;
+  background: #e8f4fd;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+  border: 1px solid #c8e6f5;
+}
+
+.profile-btn {
+  width: 100%;
+  background: #e8f4fd;
+  color: #0f2a3d;
+  border: 1.5px solid #c8e6f5;
+  padding: 8px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.friend-card:hover .profile-btn {
+  background: #38a8dc;
+  border-color: #38a8dc;
+  color: white;
+}
+
+.pending-btn {
+  background: #f3f4f6 !important;
+  color: #6b7280 !important;
+  border: 1.5px solid #d1d5db !important;
+  cursor: not-allowed !important;
+  opacity: 0.75;
+}
+
+/* ── Animate Fade ── */
+.animate-fade { animation: fadeIn 0.35s ease both; }
+
+/* ============================================================
+   IMAGE LIGHTBOX (Facebook Style)
+   ============================================================ */
+.fb-lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.96);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.lightbox-top-bar {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  padding: 16px 24px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.55), transparent);
+  z-index: 10002;
+}
+.lightbox-author-name {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+}
+.lightbox-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.lightbox-download-btn {
+  background: rgba(255,255,255,0.12);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.lightbox-download-btn:hover { background: #38a8dc; border-color: #38a8dc; }
+
+.lightbox-close-btn {
+  background: rgba(255,255,255,0.12);
+  border: none;
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.lightbox-close-btn:hover { background: #e24b4a; }
+
+.lightbox-content-box {
+  width: 90%;
+  max-width: 1100px;
+  height: 82vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10001;
+}
+.lightbox-content-box img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  border-radius: 6px;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 480px) {
+  .fb-user-card { padding: 12px 14px; gap: 10px; }
+  .fb-view-btn  { padding: 7px 14px; font-size: 12px; }
+  .post-card    { border-radius: 14px; padding: 14px; }
+  .story-card   { width: 95px; height: 160px; }
+  .lightbox-top-bar { padding: 12px; }
 }

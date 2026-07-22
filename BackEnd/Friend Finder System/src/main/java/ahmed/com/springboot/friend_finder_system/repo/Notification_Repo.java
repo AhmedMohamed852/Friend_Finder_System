@@ -3,6 +3,8 @@ package ahmed.com.springboot.friend_finder_system.repo;
 import ahmed.com.springboot.friend_finder_system.eNum.NotificationType;
 import ahmed.com.springboot.friend_finder_system.models.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
@@ -21,5 +23,6 @@ public interface Notification_Repo extends JpaRepository<Notification, Long> {
 
     boolean existsByUser_IdAndTriggeredBy_IdAndPostIdAndType(Long userId, Long triggeredById,Long postId , NotificationType notificationType);
 
-    Optional<List<Notification>> findByUser_id(Long aLong);
+    @Query("SELECT n FROM Notification n WHERE n.user.id = :userId ORDER BY n.isRead ASC, n.createdDate DESC")
+    Optional<List<Notification>> findByUser_id(@Param("userId") Long userId);
 }

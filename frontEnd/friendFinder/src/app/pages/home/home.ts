@@ -9,7 +9,7 @@ import { AuthService } from '../../core/services/auth/auth';
 import { NotificationDto, NotificationService } from '../../core/services/notification/notification-service';
 import { SearchService } from '../../core/services/Search/search-service';
 import { UploadService } from '../../core/services/upload/upload-service';
-import {StoriesDto, StoryService} from '../../core/services/story/story'; // 👈 تأكد من مسار الـ Upload Service عندك
+import { StoriesDto, StoryService } from '../../core/services/story/story';
 
 export interface DisplayPost {
   id: number;
@@ -43,7 +43,7 @@ export class Home implements OnInit {
   private route             = inject(ActivatedRoute);
   private searchService     = inject(SearchService);
   private storyService      = inject(StoryService);
-  private uploadService     = inject(UploadService); // 👈 حقن سيرفيس الرفع
+  private uploadService     = inject(UploadService);
 
   posts: DisplayPost[] = [];
   loading = false;
@@ -62,23 +62,20 @@ export class Home implements OnInit {
   friendIds = new Set<number>();
   pendingRequestIds = new Set<number>();
   currentUserId = 0;
-  currentUserProfilePicture: string | null = null; // 👈 جديد: صورة بروفايل اليوزر الحالي
+  currentUserProfilePicture: string | null = null;
 
   currentActiveView: 'feed' | 'friends' | 'notifications' = 'feed';
 
   selectedPostForModal: DisplayPost | null = null;
   isModalOpen = false;
 
-  // ── متغيرات الستوري الحقيقية ──
   myStory: StoriesDto | null = null;
-  friendsStories: StoriesDto[] = []; // 👈 جديد: ستوريهات الأصحاب (غير ستوريتي أنا)
+  friendsStories: StoriesDto[] = [];
   isStoryModalOpen = false;
   selectedStory: StoriesDto | null = null;
   storyTimeoutId: any = null;
-  isUploadingStory = false; // مؤشر أثناء عملية رفع الستوري
+  isUploadingStory = false;
 
-  // 👇 effect بيراقب authService.currentUser (signal) ويحدث الصورة تلقائياً
-  // لو الـ profile اتجاب بعد ما الصفحة فتحت (async)، الصورة هتتحدث لوحدها من غير ما نستنى
   constructor() {
     effect(() => {
       const currentUser = this.authService.currentUser();
@@ -110,47 +107,34 @@ export class Home implements OnInit {
   isPending(authorId: number): boolean { return this.pendingRequestIds.has(authorId); }
   isMe(authorId: number): boolean { return authorId === this.currentUserId; }
 
-  // 🛠️ بديل loadMyStoryData القديمة: بترجع كل الستوريهات (ستوريتي + الأصحاب) وتفرّقهم
-  // ⚠️ getMyStory() بترجع Union Type (StoriesDto | StoriesDto[])، فلازم نعمل Normalize للـ array الأول
   loadStoriesData() {
     this.storyService.getMyStory().pipe(
       catchError(() => of([] as StoriesDto[]))
     ).subscribe(stories => {
-      // نحول أي شكل راجع (object مفرد أو array) لـ array موحد
       const list: StoriesDto[] = Array.isArray(stories)
         ? stories
         : (stories ? [stories] : []);
-
       this.myStory = list.find(s => s.user?.id === this.currentUserId) ?? null;
       this.friendsStories = list.filter(s => s.user?.id !== this.currentUserId);
       this.cdr.detectChanges();
     });
   }
 
-  // 🛠️ دالة معالجة اختيار الملف ورفعه تلقائياً للـ ImgBB ثم الـ Backend
   onStoryFileSelected(event: any): void {
     const file: File = event.target.files[0];
     if (!file) return;
 
-    // تحديد نوع الـ Media بناءً على الـ file type
     const mediaType: 'IMAGE' | 'VIDEO' = file.type.startsWith('video/') ? 'VIDEO' : 'IMAGE';
-
     this.isUploadingStory = true;
     this.cdr.detectChanges();
 
-    // 1. الرفع لسيرفيس الـ ImgBB (أو سيرفيس الرفع المعتمدة عندك)
     this.uploadService.uploadImage(file).subscribe({
       next: (uploadedUrl: string) => {
-        const newStoryData: StoriesDto = {
-          url: uploadedUrl,
-          type: mediaType
-        };
-
-        // 2. إرسال الرابط والبيانات إلى الـ Backend لإنشاء الستوري
+        const newStoryData: StoriesDto = { url: uploadedUrl, type: mediaType };
         this.storyService.newStory(newStoryData).subscribe({
           next: () => {
             this.isUploadingStory = false;
-            this.loadStoriesData(); // إعادة تحميل الستوريهات لتحديث الـ UI فورا
+            this.loadStoriesData();
           },
           error: (err) => {
             console.error('Failed to save story on backend:', err);
@@ -241,7 +225,12 @@ export class Home implements OnInit {
     this.loading = true;
     this.notifService.getNotifications().subscribe({
       next: (res) => {
-        this.notifications = res ?? [];
+        // الـ Backend بيرتب، بس كـ safety net هنرتب في الفرونت كمان
+        // false (مش مقروء) = 0 → يجي قبل true (مقروء) = 1
+        this.notifications = (res ?? []).sort((a, b) => {
+          if (a.read === b.read) return 0;
+          return a.read ? 1 : -1;
+        });
         this.loading = false;
         this.cdr.detectChanges();
       },
@@ -286,7 +275,29 @@ export class Home implements OnInit {
   openPost(postId: number): void { this.router.navigate(['/post', postId]); }
   openChat(authorId: number): void { this.router.navigate(['/messages', authorId]); }
 
+  // ✅ openNotification مع markAsRead
   openNotification(notification: NotificationDto): void {
+
+    // 1. لو مش مقروء → Optimistic Update فوراً في الـ UI
+    if (!notification.read) {
+      this.notifications = this.notifications.map(n =>
+        n.id === notification.id ? { ...n, read: true } : n
+      );
+      this.cdr.detectChanges();
+
+      // ✅ ابعت الـ request للباك في الخلفية
+      this.notifService.markAsRead(notification.id).subscribe({
+        error: () => {
+          // فشل → رجّع الـ UI للحالة الأصلية
+          this.notifications = this.notifications.map(n =>
+            n.id === notification.id ? { ...n, read: false } : n
+          );
+          this.cdr.detectChanges();
+        }
+      });
+    }
+
+    // 2. Navigate فوراً من غير استنناء الـ API
     switch (notification.type) {
       case 'POST_LIKED':
       case 'COMMENT':
@@ -340,16 +351,14 @@ export class Home implements OnInit {
   openStoryModal(story: StoriesDto) {
     this.selectedStory = story;
     this.isStoryModalOpen = true;
-
     this.storyTimeoutId = setTimeout(() => {
       this.closeStoryModal();
-    }, 300000); // 5 دقائق
+    }, 300000);
   }
 
   closeStoryModal() {
     this.isStoryModalOpen = false;
     this.selectedStory = null;
-
     if (this.storyTimeoutId) {
       clearTimeout(this.storyTimeoutId);
     }

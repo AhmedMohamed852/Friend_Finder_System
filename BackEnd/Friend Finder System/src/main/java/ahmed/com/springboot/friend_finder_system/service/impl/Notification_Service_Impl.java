@@ -229,9 +229,16 @@ public class Notification_Service_Impl implements Notification_Service {
 
     //TODO:_______________ Mark As Read Notification ____________________________
     @Override
-    public void markAsRead(Long notificationId, Long userId) {
-
+    public void markAsRead(Long notificationId) {
+        if(!notification_Repo.existsById(notificationId))
+        {
+            throw NotificationEx.notificationNotFound();
+        }
+        Notification notification = notification_Repo.getById(notificationId);
+        notification.setRead(true);
+        notification_Repo.save(notification);
     }
+
 
 
 

@@ -9,4 +9,8 @@ public interface NotificationEx {
     static RuntimeException notificationAlreadyExists() {
         return new RuntimeException("error.this.notification.exist");
     }
+
+    static RuntimeException notificationNotFound() {
+        return new RuntimeException("error.this.notification.not.found");
+    }
 }
