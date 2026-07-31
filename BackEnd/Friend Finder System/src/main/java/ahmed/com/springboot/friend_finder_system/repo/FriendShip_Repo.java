@@ -60,4 +60,6 @@ public interface FriendShip_Repo extends JpaRepository<Friendship, Long> {
 """)
     List<Friendship> search(@Param("userId") Long userId,
                             @Param("keyword") String keyword);
+
+    boolean existsByUser1IdOrUser2_Id(Long user1  , Long user2);
 }

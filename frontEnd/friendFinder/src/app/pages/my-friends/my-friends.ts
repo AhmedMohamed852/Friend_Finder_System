@@ -1,7 +1,7 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core'; // 👈 ضفنا الـ ChangeDetectorRef
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import {Friendship, FriendshipService, MyFriendDto} from '../../core/services/Friendship/friendship-service';
+import { Friendship, FriendshipService } from '../../core/services/Friendship/friendship-service';
 
 @Component({
   selector: 'app-my-friends',
@@ -13,7 +13,7 @@ import {Friendship, FriendshipService, MyFriendDto} from '../../core/services/Fr
 export class MyFriendsComponent implements OnInit {
   private friendshipService = inject(FriendshipService);
   private router = inject(Router);
-  private cdr = inject(ChangeDetectorRef); // 👈 حقن السيرفيس هنا
+  private cdr = inject(ChangeDetectorRef);
 
   friends: Friendship[] = [];
   loading = false;
@@ -26,11 +26,8 @@ export class MyFriendsComponent implements OnInit {
     this.loading = true;
     this.friendshipService.getMyFriends().subscribe({
       next: (data) => {
-        console.log('Data arrived to component:', data); // للتأكد في الـ Console
         this.friends = data;
         this.loading = false;
-
-        // 👈 إجبار الأنجولر على تحديث الشاشة فوراً
         this.cdr.detectChanges();
       },
       error: (err) => {

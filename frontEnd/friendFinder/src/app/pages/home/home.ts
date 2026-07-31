@@ -69,12 +69,18 @@ export class Home implements OnInit {
   selectedPostForModal: DisplayPost | null = null;
   isModalOpen = false;
 
+  // ── Story state ──
+  allStories: StoriesDto[] = [];
+  currentStoryIndex = 0;
   myStory: StoriesDto | null = null;
   friendsStories: StoriesDto[] = [];
   isStoryModalOpen = false;
-  selectedStory: StoriesDto | null = null;
-  storyTimeoutId: any = null;
   isUploadingStory = false;
+  private storyTimeoutId: any = null;
+
+  get currentStory(): StoriesDto | null {
+    return this.allStories[this.currentStoryIndex] ?? null;
+  }
 
   constructor() {
     effect(() => {
@@ -107,6 +113,7 @@ export class Home implements OnInit {
   isPending(authorId: number): boolean { return this.pendingRequestIds.has(authorId); }
   isMe(authorId: number): boolean { return authorId === this.currentUserId; }
 
+  // ── Stories ──
   loadStoriesData() {
     this.storyService.getMyStory().pipe(
       catchError(() => of([] as StoriesDto[]))
@@ -114,16 +121,73 @@ export class Home implements OnInit {
       const list: StoriesDto[] = Array.isArray(stories)
         ? stories
         : (stories ? [stories] : []);
-      this.myStory = list.find(s => s.user?.id === this.currentUserId) ?? null;
+      this.myStory        = list.find(s => s.user?.id === this.currentUserId) ?? null;
       this.friendsStories = list.filter(s => s.user?.id !== this.currentUserId);
+      this.allStories     = [
+        ...(this.myStory ? [this.myStory] : []),
+        ...this.friendsStories
+      ];
       this.cdr.detectChanges();
     });
+  }
+
+  openStoryModal(index: number) {
+    if (!this.allStories.length) return;
+    this.currentStoryIndex = index;
+    this.isStoryModalOpen  = true;
+    this.cdr.detectChanges();
+    this.startStoryTimer();
+  }
+
+  private startStoryTimer() {
+    this.clearStoryTimer();
+    this.storyTimeoutId = setTimeout(() => {
+      this.advanceStory();
+    }, 60000); // 1 minute
+  }
+
+  private clearStoryTimer() {
+    if (this.storyTimeoutId) {
+      clearTimeout(this.storyTimeoutId);
+      this.storyTimeoutId = null;
+    }
+  }
+
+  private advanceStory() {
+    if (this.currentStoryIndex < this.allStories.length - 1) {
+      this.currentStoryIndex++;
+      this.cdr.detectChanges();
+      this.startStoryTimer();
+    } else {
+      this.closeStoryModal();
+    }
+  }
+
+  nextStory(event: Event) {
+    event.stopPropagation();
+    this.clearStoryTimer();
+    this.advanceStory();
+  }
+
+  prevStory(event: Event) {
+    event.stopPropagation();
+    this.clearStoryTimer();
+    if (this.currentStoryIndex > 0) {
+      this.currentStoryIndex--;
+      this.cdr.detectChanges();
+      this.startStoryTimer();
+    }
+  }
+
+  closeStoryModal() {
+    this.isStoryModalOpen = false;
+    this.clearStoryTimer();
+    this.cdr.detectChanges();
   }
 
   onStoryFileSelected(event: any): void {
     const file: File = event.target.files[0];
     if (!file) return;
-
     const mediaType: 'IMAGE' | 'VIDEO' = file.type.startsWith('video/') ? 'VIDEO' : 'IMAGE';
     this.isUploadingStory = true;
     this.cdr.detectChanges();
@@ -132,25 +196,15 @@ export class Home implements OnInit {
       next: (uploadedUrl: string) => {
         const newStoryData: StoriesDto = { url: uploadedUrl, type: mediaType };
         this.storyService.newStory(newStoryData).subscribe({
-          next: () => {
-            this.isUploadingStory = false;
-            this.loadStoriesData();
-          },
-          error: (err) => {
-            console.error('Failed to save story on backend:', err);
-            this.isUploadingStory = false;
-            this.cdr.detectChanges();
-          }
+          next: () => { this.isUploadingStory = false; this.loadStoriesData(); },
+          error: () => { this.isUploadingStory = false; this.cdr.detectChanges(); }
         });
       },
-      error: (err) => {
-        console.error('Failed to upload media:', err);
-        this.isUploadingStory = false;
-        this.cdr.detectChanges();
-      }
+      error: () => { this.isUploadingStory = false; this.cdr.detectChanges(); }
     });
   }
 
+  // ── Feed ──
   loadHomeFeed() {
     this.loading = true;
     this.error = '';
@@ -174,15 +228,13 @@ export class Home implements OnInit {
           this.posts = [...this.posts, ...mapped];
           this.currentPage++;
         } else if (this.posts.length === 0) {
-          this.posts = [
-            {
-              id: 901, authorId: 901, authorName: 'Rodina Mohamed',
-              authorPicture: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150',
-              timeAgo: '3 hours ago', content: 'Rodina Posts',
-              postImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500',
-              countLikes: 12, countComments: 2, liked: false
-            }
-          ];
+          this.posts = [{
+            id: 901, authorId: 901, authorName: 'Rodina Mohamed',
+            authorPicture: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150',
+            timeAgo: '3 hours ago', content: 'Rodina Posts',
+            postImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500',
+            countLikes: 12, countComments: 2, liked: false
+          }];
           this.hasMorePosts = false;
         } else {
           this.hasMorePosts = false;
@@ -204,7 +256,8 @@ export class Home implements OnInit {
         this.loadingFriends = false;
         if (!data || data.length === 0) {
           this.friends = [
-            { Friendship_Id: 701, userSenderId: 101, firstName: 'Omar', id: 1, last_Name: 'Khaled', profilePicture: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150' }
+            { Friendship_Id: 701, userSenderId: 101, firstName: 'Omar', id: 1, last_Name: 'Khaled',
+              profilePicture: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150' }
           ];
         } else { this.friends = data; }
         this.friendIds = new Set(this.friends.map(f => f.id));
@@ -225,8 +278,6 @@ export class Home implements OnInit {
     this.loading = true;
     this.notifService.getNotifications().subscribe({
       next: (res) => {
-        // الـ Backend بيرتب، بس كـ safety net هنرتب في الفرونت كمان
-        // false (مش مقروء) = 0 → يجي قبل true (مقروء) = 1
         this.notifications = (res ?? []).sort((a, b) => {
           if (a.read === b.read) return 0;
           return a.read ? 1 : -1;
@@ -234,11 +285,7 @@ export class Home implements OnInit {
         this.loading = false;
         this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.error(err);
-        this.loading = false;
-        this.cdr.detectChanges();
-      }
+      error: () => { this.loading = false; this.cdr.detectChanges(); }
     });
   }
 
@@ -246,11 +293,9 @@ export class Home implements OnInit {
     if (this.isFriend(authorId) || this.isPending(authorId) || this.isMe(authorId)) return;
     this.pendingRequestIds.add(authorId);
     this.cdr.detectChanges();
-    this.friendshipService.sendFriendRequest(authorId).pipe(catchError(err => {
-      this.pendingRequestIds.delete(authorId);
-      this.cdr.detectChanges();
-      return of(null);
-    })).subscribe(() => { this.loadFriendsData(); this.loadSentRequests(); });
+    this.friendshipService.sendFriendRequest(authorId).pipe(
+      catchError(() => { this.pendingRequestIds.delete(authorId); this.cdr.detectChanges(); return of(null); })
+    ).subscribe(() => { this.loadFriendsData(); this.loadSentRequests(); });
   }
 
   toggleLike(post: DisplayPost): void {
@@ -259,7 +304,9 @@ export class Home implements OnInit {
     post.liked      = !wasLiked;
     post.countLikes += wasLiked ? -1 : 1;
     this.cdr.detectChanges();
-    this.likeService.toggleLike(post.id).subscribe({ error: () => { post.liked = wasLiked; post.countLikes += wasLiked ? 1 : -1; this.cdr.detectChanges(); } });
+    this.likeService.toggleLike(post.id).subscribe({
+      error: () => { post.liked = wasLiked; post.countLikes += wasLiked ? 1 : -1; this.cdr.detectChanges(); }
+    });
   }
 
   handleViewChange(view: 'feed' | 'friends' | 'notifications') {
@@ -275,20 +322,14 @@ export class Home implements OnInit {
   openPost(postId: number): void { this.router.navigate(['/post', postId]); }
   openChat(authorId: number): void { this.router.navigate(['/messages', authorId]); }
 
-  // ✅ openNotification مع markAsRead
   openNotification(notification: NotificationDto): void {
-
-    // 1. لو مش مقروء → Optimistic Update فوراً في الـ UI
     if (!notification.read) {
       this.notifications = this.notifications.map(n =>
         n.id === notification.id ? { ...n, read: true } : n
       );
       this.cdr.detectChanges();
-
-      // ✅ ابعت الـ request للباك في الخلفية
       this.notifService.markAsRead(notification.id).subscribe({
         error: () => {
-          // فشل → رجّع الـ UI للحالة الأصلية
           this.notifications = this.notifications.map(n =>
             n.id === notification.id ? { ...n, read: false } : n
           );
@@ -296,19 +337,11 @@ export class Home implements OnInit {
         }
       });
     }
-
-    // 2. Navigate فوراً من غير استنناء الـ API
     switch (notification.type) {
-      case 'POST_LIKED':
-      case 'COMMENT':
-      case 'REPLY':
-        if (notification.postId) this.router.navigate(['/post', notification.postId]);
-        break;
-      case 'FRIEND_REQUEST':
-      case 'FRIEND_ACCEPTED':
-      case 'FRIEND_REJECT':
-        if (notification.triggeredBy?.id) this.router.navigate(['/profile', notification.triggeredBy.id]);
-        break;
+      case 'POST_LIKED': case 'COMMENT': case 'REPLY':
+        if (notification.postId) this.router.navigate(['/post', notification.postId]); break;
+      case 'FRIEND_REQUEST': case 'FRIEND_ACCEPTED': case 'FRIEND_REJECT':
+        if (notification.triggeredBy?.id) this.router.navigate(['/profile', notification.triggeredBy.id]); break;
     }
   }
 
@@ -324,43 +357,16 @@ export class Home implements OnInit {
     this.cdr.detectChanges();
   }
 
-  clearSearch(): void {
-    this.searchService.clearSearch();
-  }
 
-  downloadImage(imageUrl: string | undefined, authorName: string): void {
-    if (!imageUrl) return;
-    fetch(imageUrl)
-      .then(response => response.blob())
-      .then(blob => {
-        const blobUrl = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = blobUrl;
-        a.download = `${authorName.replace(/\s+/g, '_')}_post_image.jpg`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(blobUrl);
-      })
-      .catch(err => {
-        console.error('تحميل الصورة فشل، سيتم فتحها في تبويب جديد لتنزيلها يدوياً:', err);
-        window.open(imageUrl, '_blank');
-      });
-  }
-
-  openStoryModal(story: StoriesDto) {
-    this.selectedStory = story;
-    this.isStoryModalOpen = true;
-    this.storyTimeoutId = setTimeout(() => {
-      this.closeStoryModal();
-    }, 300000);
-  }
-
-  closeStoryModal() {
-    this.isStoryModalOpen = false;
-    this.selectedStory = null;
-    if (this.storyTimeoutId) {
-      clearTimeout(this.storyTimeoutId);
+  // دالة لتحضير رابط الصورة بأمان تام
+  getProfilePic(picPath: string | undefined | null): string {
+    if (!picPath) return '';
+    if (picPath.startsWith('http://') || picPath.startsWith('https://')) {
+      return picPath;
     }
+    return `http://localhost:8081/${picPath.replace(/^\//, '')}`;
   }
+
+
+  clearSearch(): void { this.searchService.clearSearch(); }
 }

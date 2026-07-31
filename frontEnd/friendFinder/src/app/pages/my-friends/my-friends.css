@@ -1,8 +1,27 @@
+/* ==========================================================
+   Friend Finder — My Friends Page
+   Theme: Sky Blue (#38a8dc) & Navy (#0f2a3d)
+   ========================================================== */
+
+:host {
+  display: block;
+  --sky-blue: #38a8dc;
+  --sky-blue-hover: #2196c4;
+  --sky-blue-light: #e8f4fd;
+  --sky-blue-soft: #c8e6f5;
+
+  --navy-900: #0f2a3d;
+  --navy-700: #23435e;
+  --navy-500: #526e85;
+  --navy-300: #bcccdc;
+  --navy-100: #f0f4f8;
+}
+
 .friends-page {
   width: 100%;
-  max-width: 640px;
+  max-width: 680px;
   margin: 0 auto;
-  padding: 20px 0;
+  padding: 24px 0;
 }
 
 .friends-main-header {
@@ -14,32 +33,37 @@
 }
 
 .friends-main-header h2 {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
-  color: #0d2b26;
+  color: var(--navy-900);
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-/* FB User Card */
+/* User Card */
 .fb-user-card {
   display: flex;
   align-items: center;
-  gap: 14px;
-  background: #fff;
-  border-radius: 12px;
-  padding: 14px 18px;
-  margin-bottom: 10px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-  border: 1px solid #e8f5f3;
+  gap: 16px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 20px rgba(15, 42, 61, 0.04);
+  border: 1px solid var(--navy-100);
   cursor: pointer;
-  transition: background 0.15s, box-shadow 0.15s;
+  transition: all 0.2s ease;
   width: 100%;
   box-sizing: border-box;
 }
 
 .fb-user-card:hover {
-  background: #f0faf9;
-  box-shadow: 0 4px 14px rgba(26, 158, 143, 0.12);
+  background: #ffffff;
+  border-color: var(--sky-blue-soft);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(56, 168, 220, 0.12);
 }
 
 .fb-user-avatar {
@@ -47,18 +71,23 @@
 }
 
 .fb-user-avatar img {
-  width: 62px;
-  height: 62px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #e8f5f3;
+  border: 2px solid var(--sky-blue-soft);
+  transition: border-color 0.2s ease;
+}
+
+.fb-user-card:hover .fb-user-avatar img {
+  border-color: var(--sky-blue);
 }
 
 .fb-avatar-placeholder {
-  width: 62px;
-  height: 62px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #1a9e8f, #0d6b5e);
+  background: linear-gradient(135deg, var(--sky-blue), var(--sky-blue-hover));
   color: white;
   font-size: 24px;
   display: flex;
@@ -73,47 +102,55 @@
 }
 
 .fb-user-info h4 {
-  margin: 0 0 4px;
-  font-size: 15px;
+  margin: 0 0 6px;
+  font-size: 16px;
   font-weight: 700;
-  color: #0d2b26;
+  color: var(--navy-900);
+  transition: color 0.15s ease;
+}
+
+.fb-user-card:hover .fb-user-info h4 {
+  color: var(--sky-blue);
 }
 
 .fb-city {
   font-size: 13px;
-  color: #7a9e99;
+  color: var(--navy-500);
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
 .friend-badge-inline {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 12px;
-  color: #0d6b5e;
-  background: #e8f5f3;
-  padding: 2px 10px;
+  color: var(--sky-blue-hover);
+  background: var(--sky-blue-light);
+  padding: 3px 12px;
   border-radius: 20px;
   font-weight: 600;
 }
 
 .fb-view-btn {
   flex-shrink: 0;
-  background: #e8f5f3;
-  color: #0d6b5e;
+  background: var(--sky-blue-light);
+  color: var(--sky-blue-hover);
   border: none;
   padding: 8px 18px;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: all 0.2s ease;
   white-space: nowrap;
 }
 
 .fb-user-card:hover .fb-view-btn {
-  background: #1a9e8f;
+  background: var(--sky-blue);
   color: white;
+  box-shadow: 0 2px 8px rgba(56, 168, 220, 0.3);
 }
 
 /* Status Banners */
@@ -121,16 +158,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 16px;
-  border-radius: 12px;
-  font-size: 13.5px;
+  gap: 10px;
+  padding: 18px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 500;
   margin-bottom: 16px;
 }
 
 .loading-banner {
-  background: #f0faf9;
-  color: #7a9e99;
+  background: var(--sky-blue-light);
+  color: var(--sky-blue-hover);
 }
 
 .spinning {
@@ -149,7 +187,10 @@
   align-items: center;
   justify-content: center;
   padding: 60px 20px;
-  color: #7a9e99;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px dashed var(--navy-300);
+  color: var(--navy-500);
   gap: 12px;
   text-align: center;
 }
@@ -161,6 +202,7 @@
 .search-empty-state span:last-child {
   font-size: 15px;
   font-weight: 500;
+  color: var(--navy-700);
 }
 
 /* Animation */

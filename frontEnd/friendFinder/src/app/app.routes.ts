@@ -1,6 +1,9 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/guards';
 import { guestGuard } from './core/guest/guest';
+import {friendsCheckGuard} from './pages/friendsCheckguard/friend-check-guard/friend-check-guard';
+import {IfNothasAnyFriends} from './pages/ifNothasAnyFriends/if-nothas-any-friends/if-nothas-any-friends';
+import {Home} from './pages/home/home';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -13,6 +16,15 @@ export const routes: Routes = [
     path: 'updateProfile',
     loadComponent: () => import('./pages/user/updateProfile/update-profile/update-profile').then(m => m.UpdateProfile),
     canActivate: [authGuard]
+  },
+  {
+    path: 'home',
+    component: Home,
+    canActivate: [friendsCheckGuard] // 👈 فحص الأصدقاء قبل دخول الهوم
+  },
+  {
+    path: 'welcome',
+    component: IfNothasAnyFriends // 👈 صفحة إضافة الاهتمامات والأصدقاء
   },
   {
     path: 'signup',

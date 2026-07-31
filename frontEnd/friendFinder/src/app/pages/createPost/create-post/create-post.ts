@@ -1,9 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import {CreatePostRequest, PostService} from '../../../core/services/posts/posts-service';
-import {UploadService} from '../../../core/services/upload/upload-service';
+import { CreatePostRequest, PostService } from '../../../core/services/posts/posts-service';
+import { UploadService } from '../../../core/services/upload/upload-service';
+import { AuthService } from '../../../core/services/auth/auth';
 
 @Component({
   selector: 'app-create-post',
@@ -13,17 +14,32 @@ import {UploadService} from '../../../core/services/upload/upload-service';
   styleUrl: './create-post.css'
 })
 export class CreatePost {
-  private postService = inject(PostService);
+  private postService   = inject(PostService);
   private uploadService = inject(UploadService);
-  private router = inject(Router);
+  private authService   = inject(AuthService);
+  private router        = inject(Router);
 
-  content = '';
+  content  = '';
   imageUrl = '';
-  privacy = 'PUBLIC';
-  loading = false;
+  privacy  = 'PUBLIC';
+  loading  = false;
   uploading = false;
-  error = '';
+  error    = '';
   selectedFile: File | null = null;
+
+  // Current user info for avatar display
+  currentUserPicture: string | null = null;
+  currentUserName = '';
+
+  constructor() {
+    effect(() => {
+      const user = this.authService.currentUser();
+      this.currentUserPicture = user?.profilePicture ?? null;
+      this.currentUserName    = user
+        ? `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim()
+        : '';
+    });
+  }
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -35,7 +51,6 @@ export class CreatePost {
 
   uploadFile() {
     if (!this.selectedFile) return;
-
     this.uploading = true;
     this.error = '';
 
@@ -45,7 +60,7 @@ export class CreatePost {
         this.uploading = false;
       },
       error: (err) => {
-        this.error = 'Failed to upload image';
+        this.error = 'Failed to upload image. Please try again.';
         this.uploading = false;
         console.error(err);
       }
@@ -54,7 +69,7 @@ export class CreatePost {
 
   submitPost() {
     if (!this.content.trim()) {
-      this.error = 'Please write something';
+      this.error = 'Please write something before posting.';
       return;
     }
 
@@ -63,9 +78,7 @@ export class CreatePost {
 
     const postData: CreatePostRequest = {
       content: this.content,
-      media: this.imageUrl
-        ? [{ url: this.imageUrl, type: 'IMAGE' }]
-        : [],
+      media: this.imageUrl ? [{ url: this.imageUrl, type: 'IMAGE' }] : [],
       privacy: this.privacy
     };
 

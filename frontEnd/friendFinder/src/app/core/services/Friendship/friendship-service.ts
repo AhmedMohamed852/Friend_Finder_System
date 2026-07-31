@@ -104,6 +104,10 @@ export class FriendshipService {
     );
   }
 
+  hasAnyFriends(): Observable<boolean> {
+    return this.http.get<boolean>(`${this.apiUrl}/if_heHasAnyFriends`);
+  }
+
   // ✕ دالة لتنظيف حالة البحث والعودة للـ Feed الطبيعي
   clearSearch(): void {
     this.searchResults.set([]);

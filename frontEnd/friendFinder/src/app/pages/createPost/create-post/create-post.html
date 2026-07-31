@@ -1,22 +1,37 @@
 <div class="cp-wrapper">
   <div class="cp-card">
 
+    <!-- Header -->
     <div class="cp-header">
-      <h2>Create Post</h2>
+      <h2>Create Post ✍️</h2>
       <p class="cp-subtitle">Share something with your network</p>
     </div>
 
+    <!-- Error alert -->
     @if (error) {
       <div class="cp-alert">
-        <span class="cp-alert-icon">⚠</span>
+        <span class="cp-alert-icon">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </span>
         <span>{{ error }}</span>
       </div>
     }
 
+    <!-- Author row -->
     <div class="cp-author">
-      <div class="cp-avatar">👤</div>
+      <div class="cp-avatar">
+        @if (currentUserPicture) {
+          <img [src]="currentUserPicture" alt="My Avatar">
+        } @else {
+          👤
+        }
+      </div>
       <div class="cp-author-info">
-        <strong>Your Post</strong>
+        <strong>{{ currentUserName || 'Your Post' }}</strong>
         <select [(ngModel)]="privacy" class="cp-privacy-pill">
           <option value="PUBLIC">🌍 Public</option>
           <option value="FRIENDS">👥 Friends</option>
@@ -25,6 +40,7 @@
       </div>
     </div>
 
+    <!-- Content textarea -->
     <textarea
       [(ngModel)]="content"
       placeholder="What's on your mind?"
@@ -32,13 +48,15 @@
       class="cp-textarea"
     ></textarea>
 
+    <!-- Image preview -->
     @if (imageUrl) {
       <div class="cp-preview-wrapper">
-        <img [src]="imageUrl" alt="preview" class="cp-preview-img">
-        <button class="cp-remove-img" (click)="imageUrl = ''">✕</button>
+        <img [src]="imageUrl" alt="Preview" class="cp-preview-img">
+        <button class="cp-remove-img" (click)="imageUrl = ''" title="Remove image">✕</button>
       </div>
     }
 
+    <!-- Upload progress -->
     @if (uploading) {
       <div class="cp-uploading">
         <span class="cp-spinner"></span>
@@ -46,10 +64,11 @@
       </div>
     }
 
+    <!-- Toolbar -->
     <div class="cp-toolbar">
       <label class="cp-tool-btn">
         <span class="cp-tool-icon">🖼️</span>
-        <span>Photo/Video</span>
+        <span>Photo / Video</span>
         <input
           type="file"
           accept="image/*,video/*"
@@ -59,18 +78,21 @@
       </label>
     </div>
 
-    <button
-      class="cp-submit-btn"
-      (click)="submitPost()"
-      [disabled]="loading || uploading"
-    >
-      @if (loading) {
-        <span class="cp-spinner light"></span>
-        <span>Posting...</span>
-      } @else {
-        <span>Post</span>
-      }
-    </button>
+    <!-- Submit -->
+    <div class="cp-footer">
+      <button
+        class="cp-submit-btn"
+        (click)="submitPost()"
+        [disabled]="loading || uploading"
+      >
+        @if (loading) {
+          <span class="cp-spinner light"></span>
+          <span>Posting...</span>
+        } @else {
+          <span>Post Now</span>
+        }
+      </button>
+    </div>
 
   </div>
 </div>

@@ -1,140 +1,300 @@
 <div class="update-profile-page animate-fade">
   <div class="update-card">
 
+    <!-- ── Header ── -->
     <div class="card-header">
-      <h2>✏️ Edit Profile</h2>
-      <p>Update your personal information and profile pictures.</p>
+      <h2>Edit Profile ✏️</h2>
+      <p>Update your personal information and profile pictures</p>
     </div>
 
+    <!-- ── Alerts ── -->
     @if (serverErrorMessage) {
       <div class="status-msg error-box">
-        ⚠️ {{ serverErrorMessage }}
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        {{ serverErrorMessage }}
       </div>
     }
-
     @if (successMessage) {
       <div class="status-msg success-box">
-        🎉 {{ successMessage }}
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        {{ successMessage }}
       </div>
     }
 
+    <!-- ═══════════════════════════════════════
+         COVER + AVATAR
+    ═══════════════════════════════════════ -->
     <div class="profile-images-section">
-      <div class="cover-edit-container" [style.backgroundImage]="'url(' + (coverPreview || 'assets/default-cover.jpg') + ')'">
-        <button type="button" class="camera-btn cover-camera" (click)="coverInput.click()" [disabled]="isUploadingCover">
-          📷 @if(isUploadingCover){ <span>...</span> }
+
+      <!-- Cover -->
+      <div class="cover-edit-container"
+           [style.backgroundImage]="coverPreview
+       ? 'url(' + coverPreview + ')'
+       : 'linear-gradient(135deg, #c8e6f5, #e8f4fd)'">
+        <button type="button" class="camera-btn cover-camera"
+                (click)="coverInput.click()" [disabled]="isUploadingCover" title="Change cover">
+          @if (isUploadingCover) {
+            <span class="spinner" style="border-color:rgba(56,168,220,0.3);border-top-color:#38a8dc;width:14px;height:14px;"></span>
+          } @else {
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+          }
         </button>
         <input type="file" #coverInput (change)="onFileSelected($event, 'cover')" accept="image/*" hidden>
       </div>
 
+      <!-- Avatar -->
       <div class="avatar-edit-container">
-        <img [src]="avatarPreview || 'assets/default-avatar.png'" alt="Profile Picture" class="profile-avatar">
-        <button type="button" class="camera-btn avatar-camera" (click)="avatarInput.click()" [disabled]="isUploadingAvatar">
-          📷 @if(isUploadingAvatar){ <span>...</span> }
+        <img [src]="avatarPreview || 'assets/images/avatar-placeholder.png'"
+             alt="Profile Picture" class="profile-avatar">
+        <button type="button" class="camera-btn avatar-camera"
+                (click)="avatarInput.click()" [disabled]="isUploadingAvatar" title="Change photo">
+          @if (isUploadingAvatar) {
+            <span class="spinner" style="border-color:rgba(56,168,220,0.3);border-top-color:#38a8dc;width:11px;height:11px;"></span>
+          } @else {
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+          }
         </button>
         <input type="file" #avatarInput (change)="onFileSelected($event, 'avatar')" accept="image/*" hidden>
       </div>
+
     </div>
 
-    <form [formGroup]="updateForm" (ngSubmit)="onSubmit()">
+    <!-- ═══════════════════════════════════════
+         FORM
+    ═══════════════════════════════════════ -->
+    <div class="form-body">
+      <form [formGroup]="updateForm" (ngSubmit)="onSubmit()">
 
-      <div class="form-row">
-        <div class="form-group">
-          <label for="firstName">First Name <span class="required">*</span></label>
-          <input
-            type="text"
-            id="firstName"
-            formControlName="firstName"
-            [class.input-error]="isFieldInvalid('firstName')"
-            placeholder="Enter your first name">
+        <!-- Section: Personal Info -->
+        <div class="form-section">
+          <div class="form-section-title">Personal Information</div>
 
-          @if (isFieldInvalid('firstName')) {
-            <span class="error-text">First name is required (Max 50 characters).</span>
+          <div class="form-row">
+            <!-- First Name -->
+            <div class="form-group">
+              <label for="firstName">First Name <span class="required">*</span></label>
+              <div class="input-wrap">
+                <span class="input-icon">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
+                </span>
+                <input type="text" id="firstName" formControlName="firstName"
+                       placeholder="Ahmed"
+                       [class.input-error]="isFieldInvalid('firstName')">
+              </div>
+              @if (isFieldInvalid('firstName')) {
+                <span class="error-text">First name is required (max 50 chars).</span>
+              }
+            </div>
+
+            <!-- Last Name -->
+            <div class="form-group">
+              <label for="lastName">Last Name <span class="required">*</span></label>
+              <div class="input-wrap">
+                <span class="input-icon">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
+                </span>
+                <input type="text" id="lastName" formControlName="lastName"
+                       placeholder="Mohamed"
+                       [class.input-error]="isFieldInvalid('lastName')">
+              </div>
+              @if (isFieldInvalid('lastName')) {
+                <span class="error-text">Last name is required (max 50 chars).</span>
+              }
+            </div>
+          </div>
+
+          <!-- Bio -->
+          <div class="form-group">
+            <label for="bio">Bio</label>
+            <textarea id="bio" formControlName="bio" rows="3"
+                      class="no-icon"
+                      placeholder="Tell people a little about yourself..."></textarea>
+          </div>
+        </div>
+
+        <!-- Section: Location -->
+        <div class="form-section">
+          <div class="form-section-title">Location</div>
+
+          <div class="form-row">
+            <!-- City -->
+            <div class="form-group">
+              <label for="city">City</label>
+              <div class="input-wrap">
+                <span class="input-icon">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                  </svg>
+                </span>
+                <input type="text" id="city" formControlName="city" placeholder="Cairo">
+              </div>
+            </div>
+
+            <!-- Country -->
+            <div class="form-group">
+              <label for="country">Country</label>
+              <div class="input-wrap">
+                <span class="input-icon">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="2" y1="12" x2="22" y2="12"/>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"/>
+                  </svg>
+                </span>
+                <input type="text" id="country" formControlName="country" placeholder="Egypt">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Details -->
+        <div class="form-section">
+          <div class="form-section-title">Details</div>
+
+          <div class="form-row">
+            <!-- Date of Birth -->
+            <div class="form-group">
+              <label for="dateOfBirth">Date of Birth <span class="required">*</span></label>
+              <div class="input-wrap">
+                <span class="input-icon">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                    <line x1="16" y1="2" x2="16" y2="6"/>
+                    <line x1="8" y1="2" x2="8" y2="6"/>
+                    <line x1="3" y1="10" x2="21" y2="10"/>
+                  </svg>
+                </span>
+                <input type="date" id="dateOfBirth" formControlName="dateOfBirth"
+                       [class.input-error]="isFieldInvalid('dateOfBirth')">
+              </div>
+              @if (isFieldInvalid('dateOfBirth')) {
+                <span class="error-text">Date of birth is required and must be in the past.</span>
+              }
+            </div>
+
+            <!-- Gender -->
+            <div class="form-group">
+              <label for="gender">Gender <span class="required">*</span></label>
+              <div class="input-wrap select-wrap">
+                <span class="input-icon">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="4"/>
+                    <path d="M16 8l3-3m0 0h-3m3 0v3"/>
+                    <path d="M8 16l-3 3m0 0h3m-3 0v-3"/>
+                  </svg>
+                </span>
+                <select id="gender" formControlName="gender"
+                        [class.input-error]="isFieldInvalid('gender')">
+                  <option value="">Select Gender</option>
+                  <option value="MALE">Male</option>
+                  <option value="FEMALE">Female</option>
+                </select>
+                <span class="select-arrow">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                </span>
+              </div>
+              @if (isFieldInvalid('gender')) {
+                <span class="error-text">Gender is required.</span>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════
+             SECTION: INTERESTS & TOPICS (Collapsible)
+        ═══════════════════════════════════════ -->
+        <div class="form-section">
+          <div class="form-section-title">Interests & Topics</div>
+
+          <!-- زر التحكم بإظهار/إخفاء الاهتمامات -->
+          <button type="button" class="interests-toggle-btn" (click)="toggleInterestsSection()">
+            <div class="toggle-left">
+              <span class="toggle-icon">🏷️</span>
+              <span class="toggle-text">Manage Your Interests</span>
+              @if (selectedInterests.length > 0) {
+                <span class="interests-count-badge">{{ selectedInterests.length }} Selected</span>
+              }
+            </div>
+            <span class="toggle-arrow" [class.open]="showInterestsSection">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </span>
+          </button>
+
+          <!-- قائمة الاهتمامات بتظهر لما تدوس على الزرار -->
+          @if (showInterestsSection) {
+            <div class="interests-collapsible-content animate-slide-down">
+              <p class="section-desc">Select topic tags to personalize your profile and recommendations:</p>
+
+              @if (isLoadingInterests) {
+                <div class="interests-loading">
+                  <span class="spinner dark"></span> Loading available interests...
+                </div>
+              } @else {
+                <div class="interests-grid">
+                  @for (interest of availableInterests; track interest.id || interest.category) {
+                    <button type="button"
+                            class="interest-chip"
+                            [class.active]="isInterestSelected(interest)"
+                            (click)="toggleInterest(interest)">
+                      <span class="interest-icon">{{ getInterestIcon(interest.category) }}</span>
+                      <span class="interest-name">{{ interest.category }}</span>
+
+                      <span class="check-icon">
+                        <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                          <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                      </span>
+                    </button>
+                  }
+                </div>
+              }
+            </div>
           }
         </div>
 
-        <div class="form-group">
-          <label for="lastName">Last Name <span class="required">*</span></label>
-          <input
-            type="text"
-            id="lastName"
-            formControlName="lastName"
-            [class.input-error]="isFieldInvalid('lastName')"
-            placeholder="Enter your last name">
+        <!-- ── Actions ── -->
+        <div class="form-actions">
+          <button type="button" class="cancel-btn"
+                  (click)="onCancel()" [disabled]="isSubmitting">
+            Cancel
+          </button>
 
-          @if (isFieldInvalid('lastName')) {
-            <span class="error-text">Last name is required (Max 50 characters).</span>
-          }
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="bio">Bio</label>
-        <textarea
-          id="bio"
-          formControlName="bio"
-          rows="3"
-          placeholder="Tell people a little about yourself..."></textarea>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label for="city">City</label>
-          <input type="text" id="city" formControlName="city" placeholder="e.g. Cairo">
+          <button type="submit" class="submit-btn"
+                  [disabled]="updateForm.invalid || isSubmitting || isUploadingAvatar || isUploadingCover">
+            @if (isSubmitting) {
+              <span class="spinner"></span>
+              <span>Saving...</span>
+            } @else if (isUploadingAvatar || isUploadingCover) {
+              <span>Uploading image...</span>
+            } @else {
+              <span>Save Changes</span>
+            }
+          </button>
         </div>
 
-        <div class="form-group">
-          <label for="country">Country</label>
-          <input type="text" id="country" formControlName="country" placeholder="e.g. Egypt">
-        </div>
-      </div>
+      </form>
+    </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label for="dateOfBirth">Date of Birth <span class="required">*</span></label>
-          <input
-            type="date"
-            id="dateOfBirth"
-            formControlName="dateOfBirth"
-            [class.input-error]="isFieldInvalid('dateOfBirth')">
-
-          @if (isFieldInvalid('dateOfBirth')) {
-            <span class="error-text">Date of birth is required and must be in the past.</span>
-          }
-        </div>
-
-        <div class="form-group">
-          <label for="gender">Gender <span class="required">*</span></label>
-          <select
-            id="gender"
-            formControlName="gender"
-            [class.input-error]="isFieldInvalid('gender')">
-            <option value="">Select Gender</option>
-            <option value="MALE">Male</option>
-            <option value="FEMALE">Female</option>
-          </select>
-
-          @if (isFieldInvalid('gender')) {
-            <span class="error-text">Gender is required.</span>
-          }
-        </div>
-      </div>
-
-      <div class="form-actions">
-        <button type="button" class="cancel-btn" (click)="onCancel()" [disabled]="isSubmitting">
-          Cancel
-        </button>
-
-        <button type="submit" class="submit-btn" [disabled]="updateForm.invalid || isSubmitting || isUploadingAvatar || isUploadingCover">
-          @if (isSubmitting) {
-            <span class="spinner">⏳</span> Saving...
-          } @else if (isUploadingAvatar || isUploadingCover) {
-            <span>⚡ Uploading image...</span>
-          } @else {
-            Save Changes
-          }
-        </button>
-      </div>
-
-    </form>
   </div>
 </div>

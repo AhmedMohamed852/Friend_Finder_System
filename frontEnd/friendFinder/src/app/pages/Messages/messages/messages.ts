@@ -9,7 +9,6 @@ import { AuthService } from '../../../core/services/auth/auth';
 import { MessagesDto } from '../../../core/models/MessagesDto';
 import { UserService } from '../../../core/services/user/user-service';
 import { MessagesService } from '../../../core/services/Messages/message-service';
-// 👇 تأكد من صحة مسار الـ import الخاص بـ FriendshipService بداخل مشروعك
 import { FriendshipService } from '../../../core/services/Friendship/friendship-service';
 
 interface Conversation {
@@ -30,14 +29,14 @@ interface Conversation {
 })
 export class MessagesComponent implements OnInit, OnDestroy {
 
-  private messagesService  = inject(MessagesService);
-  private authService      = inject(AuthService);
-  private userService      = inject(UserService);
-  private friendshipService = inject(FriendshipService); // 👈 حقن السيرفيس المطلوبة للبحث
-  private route            = inject(ActivatedRoute);
-  private router           = inject(Router);
-  private cdr              = inject(ChangeDetectorRef);
-  private destroy$         = new Subject<void>();
+  private messagesService   = inject(MessagesService);
+  private authService       = inject(AuthService);
+  private userService       = inject(UserService);
+  private friendshipService = inject(FriendshipService);
+  private route             = inject(ActivatedRoute);
+  private router            = inject(Router);
+  private cdr               = inject(ChangeDetectorRef);
+  private destroy$          = new Subject<void>();
 
   currentUserId  = 0;
   conversations  = signal<Conversation[]>([]);
@@ -53,7 +52,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
   errorChat      = '';
   errorSend      = '';
 
-  // السيرش المحلي يعمل تلقائياً إذا أردت استخدامه
   filteredConversations = computed(() => {
     const q = this.searchQuery.toLowerCase().trim();
     if (!q) return this.conversations();
@@ -66,11 +64,9 @@ export class MessagesComponent implements OnInit, OnDestroy {
     return this.conversations().reduce((sum, c) => sum + c.unreadCount, 0);
   }
 
-  // 🔄 الدالة المطلوبة لضرب الـ API Request للبحث من خلال السيرفيس
   filterConversations(): void {
     const key = this.searchQuery.trim();
 
-    // إذا تم مسح مربع البحث، نعيد المحادثات الأصلية
     if (!key) {
       this.loadInbox();
       return;
@@ -79,7 +75,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.loadingInbox = true;
     this.errorInbox = '';
 
-    // ضرب الـ Request المذكور في سيلف الخدمة
     this.friendshipService.search(key).pipe(
       takeUntil(this.destroy$),
       catchError(err => {
@@ -89,17 +84,15 @@ export class MessagesComponent implements OnInit, OnDestroy {
         return of([]);
       })
     ).subscribe(users => {
-      // تحويل نتائج البحث القادمة (UserSimpleDto[]) لشكل الـ Conversation لتعرض في القائمة
       const searchAsConversations: Conversation[] = users.map(user => ({
         userId: user.id,
         firstName: user.firstName,
         lastName: user.lastName,
         profilePicture: user.profilePicture || 'assets/default-avatar.png',
-        lastMessage: 'Tap to start a new conversation', // رسالة افتراضية للأشخاص الجدد
+        lastMessage: 'Tap to start a new conversation',
         unreadCount: 0
       }));
 
-      // تحديث قائمة المحادثات المعروضة بالنتائج الجديدة
       this.conversations.set(searchAsConversations);
       this.loadingInbox = false;
       this.cdr.detectChanges();
@@ -133,7 +126,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
     const urlUserId = this.route.snapshot.params['userId'];
     if (urlUserId) this.openConversationById(+urlUserId);
 
-    // نقوم بتعطيل الإنترفال التلقائي مؤقتاً أثناء قيام المستخدم بالبحث لكي لا يمسح نتائج البحث
     interval(10000).pipe(takeUntil(this.destroy$)).subscribe(() => {
       if (!this.searchQuery.trim()) {
         this.refreshInbox();
@@ -147,7 +139,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  // ── INBOX — بيجيب inbox + sent مع بعض ────────────────────
+  // ── INBOX ─────────────────────────────────────────────────
   loadInbox(): void {
     this.loadingInbox = true;
     this.errorInbox   = '';

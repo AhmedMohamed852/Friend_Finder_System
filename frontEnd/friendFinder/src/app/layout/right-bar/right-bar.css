@@ -1,5 +1,24 @@
+/* ==========================================================
+   Friend Finder — Right Bar Panel
+   Brand Palette: Sky Blue (#38a8dc) & Navy (#0f2a3d)
+   ========================================================== */
+
 :host {
   display: block;
+  --sky-blue: #38a8dc;
+  --sky-blue-hover: #2196c4;
+  --sky-blue-light: #e8f4fd;
+  --sky-blue-soft: #c8e6f5;
+
+  --ink-900: #0f2a3d;
+  --ink-700: #334e68;
+  --ink-500: #627d98;
+  --ink-300: #bcccdc;
+  --ink-100: #f0f4f8;
+  --ink-50:  #f8fafc;
+
+  --red-50:  #ffebee;
+  --red-600: #e53935;
 }
 
 .right-panel {
@@ -16,12 +35,21 @@
   overflow-y: auto;
 }
 
+/* Custom Scrollbar for Right Panel */
+.right-panel::-webkit-scrollbar {
+  width: 4px;
+}
+.right-panel::-webkit-scrollbar-thumb {
+  background: var(--ink-300);
+  border-radius: 99px;
+}
+
 .panel-card {
   background: #ffffff;
-  border-radius: 14px;
+  border-radius: 16px;
   padding: 18px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e8f5f3;
+  box-shadow: 0 4px 20px rgba(15, 42, 61, 0.05);
+  border: 1px solid var(--ink-100);
 }
 
 .panel-header {
@@ -30,33 +58,34 @@
   justify-content: space-between;
   margin-bottom: 14px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #e8f5f3;
+  border-bottom: 1px solid var(--ink-100);
 }
 
 .panel-header h4 {
   margin: 0;
   font-size: 14px;
   font-weight: 700;
-  color: #0d2b26;
+  color: var(--ink-900);
 }
 
 .refresh-btn {
-  background: #e8f5f3;
+  background: var(--sky-blue-light);
   border: none;
   cursor: pointer;
   font-size: 13px;
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  transition: background 0.2s;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #1a9e8f;
+  color: var(--sky-blue);
 }
 
 .refresh-btn:hover:not(:disabled) {
-  background: #c5e8e4;
+  background: var(--sky-blue-soft);
+  color: var(--sky-blue-hover);
 }
 
 .refresh-btn:disabled {
@@ -78,18 +107,18 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 0;
+  padding: 10px 0;
 }
 
 .person + .person {
-  border-top: 1px solid #e8f5f3;
+  border-top: 1px solid var(--ink-100);
 }
 
 .avatar-sm {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #1a9e8f, #0d6b5e);
+  background: linear-gradient(135deg, var(--sky-blue), var(--sky-blue-hover));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -104,6 +133,7 @@
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
+  border: 1.5px solid var(--sky-blue-soft);
 }
 
 .person-info {
@@ -116,15 +146,20 @@
 
 .person-info strong {
   font-size: 13px;
-  color: #0d2b26;
+  color: var(--ink-900);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: color 0.15s;
+}
+
+.person-info:hover strong {
+  color: var(--sky-blue);
 }
 
 .person-info small {
   font-size: 11.5px;
-  color: #7a9e99;
+  color: var(--ink-500);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -132,8 +167,8 @@
 
 /* Buttons */
 .add-btn {
-  background: #e8f5f3;
-  color: #0d6b5e;
+  background: var(--sky-blue-light);
+  color: var(--sky-blue-hover);
   border: none;
   padding: 6px 12px;
   border-radius: 8px;
@@ -141,18 +176,19 @@
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.2s, color 0.2s;
+  transition: all 0.2s ease;
   flex-shrink: 0;
 }
 
 .add-btn:hover {
-  background: #1a9e8f;
+  background: var(--sky-blue);
   color: white;
+  box-shadow: 0 2px 8px rgba(56, 168, 220, 0.3);
 }
 
 .cancel-btn {
-  background: #f1f5f4;
-  color: #65676b;
+  background: var(--ink-100);
+  color: var(--ink-700);
   border: none;
   padding: 6px 12px;
   border-radius: 8px;
@@ -160,13 +196,13 @@
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.2s, color 0.2s;
+  transition: all 0.2s ease;
   flex-shrink: 0;
 }
 
 .cancel-btn:hover {
-  background: #fee2e2;
-  color: #dc2626;
+  background: var(--red-50);
+  color: var(--red-600);
 }
 
 /* Action Group */
@@ -177,42 +213,42 @@
 }
 
 .accept-btn, .reject-btn {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   border: none;
-  font-size: 11px;
+  font-size: 12px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s, color 0.2s;
+  transition: all 0.2s ease;
 }
 
 .accept-btn {
-  background: #e8f5f3;
-  color: #0d6b5e;
+  background: var(--sky-blue-light);
+  color: var(--sky-blue-hover);
 }
 
 .accept-btn:hover {
-  background: #0d6b5e;
+  background: var(--sky-blue);
   color: white;
 }
 
 .reject-btn {
-  background: #fef2f2;
-  color: #991b1b;
+  background: var(--red-50);
+  color: var(--red-600);
 }
 
 .reject-btn:hover {
-  background: #991b1b;
+  background: var(--red-600);
   color: white;
 }
 
 .add-requests-btn {
   width: 100%;
-  margin-top: 12px;
-  background: linear-gradient(135deg, #1a9e8f, #0d6b5e);
+  margin-top: 14px;
+  background: linear-gradient(135deg, var(--sky-blue), var(--sky-blue-hover));
   color: white;
   border: none;
   padding: 10px;
@@ -220,17 +256,19 @@
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: transform 0.15s ease, filter 0.15s ease;
+  box-shadow: 0 4px 12px rgba(56, 168, 220, 0.25);
 }
 
 .add-requests-btn:hover {
-  opacity: 0.9;
+  transform: translateY(-1px);
+  filter: brightness(1.05);
 }
 
 /* Tabs */
 .tabs-container {
   display: flex;
-  background: #f0faf9;
+  background: var(--ink-100);
   border-radius: 10px;
   padding: 4px;
   margin-bottom: 14px;
@@ -244,7 +282,7 @@
   padding: 8px;
   font-size: 12px;
   font-weight: 600;
-  color: #7a9e99;
+  color: var(--ink-500);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -252,24 +290,24 @@
 
 .tabs-container button.active {
   background: #ffffff;
-  color: #0d6b5e;
-  box-shadow: 0 2px 6px rgba(13, 107, 94, 0.15);
+  color: var(--sky-blue-hover);
+  box-shadow: 0 2px 6px rgba(15, 42, 61, 0.08);
 }
 
 .cancel-btn-sm {
-  background: #fef2f2;
-  color: #dc2626;
+  background: var(--red-50);
+  color: var(--red-600);
   border: none;
   padding: 5px 10px;
   border-radius: 6px;
   font-size: 11.5px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
 }
 
 .cancel-btn-sm:hover {
-  background: #fca5a5;
+  background: var(--red-600);
   color: white;
 }
 
@@ -278,11 +316,11 @@
   text-align: center;
   padding: 16px 0;
   font-size: 13px;
-  color: #7a9e99;
+  color: var(--ink-500);
 }
 
 .error-text {
-  color: #dc2626;
+  color: var(--red-600);
 }
 
 .animate-fade {

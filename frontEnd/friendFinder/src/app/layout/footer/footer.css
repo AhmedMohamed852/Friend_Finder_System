@@ -1,5 +1,6 @@
 /* ==========================================================================
    Friend Finder — Minimal Footer
+   Theme: Navy (#0f2a3d) & Sky Blue (#38a8dc)
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
@@ -7,8 +8,8 @@
 .footer {
   width: 100%;
   height: 48px;
-  background: #0B4F47;
-  color: #fff;
+  background: #0f2a3d;
+  color: #bcccdc;
 
   display: flex;
   align-items: center;
@@ -17,8 +18,8 @@
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   font-weight: 500;
+  border-top: 1px solid #23435e;
 
-  /* مهم: لا تخليه ثابت */
   position: static;
 }
 
@@ -41,6 +42,15 @@
 .footer-copy,
 .footer-credit {
   margin: 0;
+}
+
+.footer-copy {
+  color: #bcccdc;
+}
+
+.footer-copy strong {
+  color: #38a8dc;
+  font-weight: 600;
 }
 
 .footer-credit {

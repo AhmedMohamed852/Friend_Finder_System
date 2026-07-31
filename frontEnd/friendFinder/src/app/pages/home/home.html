@@ -1,86 +1,135 @@
+<!-- ═══════════════════════════════════════
+     STORIES BAR
+     ═══════════════════════════════════════ -->
 @if (!isSearchActive() && currentActiveView === 'feed') {
   <div class="stories-container animate-fade">
 
-    <label class="story-card create-story" style="cursor: pointer;">
+    <!-- Create Story -->
+    <label class="create-story">
       <input type="file" accept="image/*,video/*" (change)="onStoryFileSelected($event)" style="display: none;" [disabled]="isUploadingStory" />
-
-      <div class="my-avatar-wrapper">
-        @if (isUploadingStory) {
-          <span class="spinning" style="font-size: 24px; margin-top: 25px; display: inline-block;">🔄</span>
+      <div class="create-story-ring">
+        @if (currentUserProfilePicture) {
+          <img [src]="currentUserProfilePicture" alt="Me">
         } @else {
-          <img [src]="currentUserProfilePicture || 'assets/images/avatar-placeholder.png'" alt="My Profile" />
+          <div class="no-pic">👤</div>
+        }
+        <div class="plus-badge">+</div>
+
+        @if (isUploadingStory) {
+          <div class="upload-overlay">
+            <span class="spinning">🔄</span>
+          </div>
         }
       </div>
-      <div class="create-story-footer">
-        <div class="plus-icon">+</div>
-        <span>{{ isUploadingStory ? 'Uploading...' : 'Add New Story' }}</span>
-      </div>
+      <span class="story-label">{{ isUploadingStory ? 'Uploading...' : 'Your Story' }}</span>
     </label>
 
+    <!-- My Story -->
     @if (myStory) {
-      <div class="story-card active-story animate-fade" (click)="openStoryModal(myStory)">
-        <img class="story-user-avatar" [src]="myStory.user?.profilePicture || 'assets/images/avatar-placeholder.png'" alt="My Avatar">
-
-        @if (myStory.type === 'VIDEO') {
-          <div class="video-thumbnail-placeholder">🎥 Video Story</div>
-        } @else {
-          <img class="story-bg-image" [src]="myStory.url" alt="My Story Content">
-        }
-
-        <span class="story-username">My Story</span>
+      <div class="story-card my-story animate-fade" (click)="openStoryModal(0)">
+        <div class="story-avatar-ring">
+          @if (myStory.user?.profilePicture) {
+            <img [src]="myStory.user?.profilePicture" alt="My Story">
+          } @else {
+            <div class="no-pic">😊</div>
+          }
+        </div>
+        <span class="story-label">My Story</span>
       </div>
     }
 
-    <!-- 👇 جديد: ستوريهات الأصحاب -->
-    @for (story of friendsStories; track story.id) {
-      <div class="story-card animate-fade" (click)="openStoryModal(story)">
-        <img class="story-user-avatar" [src]="story.user?.profilePicture || 'assets/images/avatar-placeholder.png'" alt="Avatar">
-
-        @if (story.type === 'VIDEO') {
-          <div class="video-thumbnail-placeholder">🎥 Video Story</div>
-        } @else {
-          <img class="story-bg-image" [src]="story.url" alt="Story Content">
-        }
-
-        <span class="story-username">{{ story.user?.firstName }}</span>
+    <!-- Friends Stories -->
+    @for (story of friendsStories; track story.id; let i = $index) {
+      <div class="story-card animate-fade" (click)="openStoryModal(myStory ? i + 1 : i)">
+        <div class="story-avatar-ring">
+          @if (story.user?.profilePicture) {
+            <img [src]="story.user?.profilePicture" alt="{{ story.user?.firstName }}">
+          } @else {
+            <div class="no-pic">👤</div>
+          }
+        </div>
+        <span class="story-label">{{ story.user?.firstName }}</span>
       </div>
     }
 
   </div>
 }
 
-@if (isStoryModalOpen && selectedStory) {
+<!-- ═══════════════════════════════════════
+     STORY LIGHTBOX
+     ═══════════════════════════════════════ -->
+@if (isStoryModalOpen && currentStory) {
   <div class="story-lightbox-overlay" (click)="closeStoryModal()">
     <div class="story-lightbox-wrapper" (click)="$event.stopPropagation()">
 
+      <div class="story-bg-gradient"></div>
+      <div class="story-top-fade"></div>
+      <div class="story-bottom-fade"></div>
+
+      <!-- Progress bars -->
       <div class="story-progress-bar">
-        <div class="story-progress-fill" [style.animationDuration]="'300s'"></div>
+        @for (s of allStories; track s.id; let i = $index) {
+          <div class="story-progress-segment">
+            <div class="story-progress-fill"
+                 [class.done]="i < currentStoryIndex"
+                 [class.active]="i === currentStoryIndex">
+            </div>
+          </div>
+        }
       </div>
 
+      <!-- Header -->
       <div class="story-lightbox-header">
         <div class="story-header-left">
-          <img [src]="selectedStory.user?.profilePicture || 'assets/images/avatar-placeholder.png'" alt="Avatar" class="story-viewer-avatar">
+          <img
+            [src]="currentStory.user?.profilePicture || 'assets/images/avatar-placeholder.png'"
+            alt="Avatar"
+            class="story-viewer-avatar"
+          >
           <div class="story-viewer-info">
-            <strong>{{ selectedStory.user?.firstName }} {{ selectedStory.user?.lastName }}</strong>
-            <span>📍 {{ selectedStory.user?.city || 'Story' }}</span>
+            <strong>{{ currentStory.user?.firstName }} {{ currentStory.user?.lastName }}</strong>
+            <span>📍 {{ currentStory.user?.city || 'Story' }}</span>
           </div>
         </div>
         <button class="story-close-btn" (click)="closeStoryModal()">✕</button>
       </div>
 
+      <!-- Media content -->
       <div class="story-viewer-content">
-        @if (selectedStory.type === 'VIDEO') {
-          <video [src]="selectedStory.url" autoplay controls style="max-width: 100%; max-height: 80vh;"></video>
+        @if (currentStory.type === 'VIDEO') {
+          <video [src]="currentStory.url" autoplay [muted]="true" playsinline></video>
         } @else {
-          <img [src]="selectedStory.url" alt="Story Content">
+          <img [src]="currentStory.url" alt="Story">
         }
       </div>
+
+      <!-- Nav buttons -->
+      @if (currentStoryIndex > 0) {
+        <button class="story-nav-btn prev" (click)="prevStory($event)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </button>
+      }
+
+      @if (currentStoryIndex < allStories.length - 1) {
+        <button class="story-nav-btn next" (click)="nextStory($event)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
+      }
+
     </div>
   </div>
 }
 
+<!-- ═══════════════════════════════════════
+     MAIN FEED
+     ═══════════════════════════════════════ -->
 <div class="feed">
 
+  <!-- SEARCH RESULTS -->
   @if (isSearchActive()) {
     <div class="search-results-page">
       <div class="friends-main-header">
@@ -115,10 +164,11 @@
 
   } @else {
 
+    <!-- HOME FEED VIEW -->
     @if (currentActiveView === 'feed') {
       <div class="feed-header">
         <h2>Home Feed</h2>
-        <button class="refresh-btn" (click)="refreshFeed()" [disabled]="loading" title="Refresh feed">
+        <button class="refresh-btn" (click)="refreshFeed()" [disabled]="loading" title="Refresh">
           <span [class.spinning]="loading">🔄</span>
         </button>
       </div>
@@ -132,14 +182,15 @@
 
       @for (post of posts; track post.id) {
         <div class="post-card animate-fade">
+
           <div class="post-header">
-            <img [src]="post.authorPicture" alt="Author Avatar" class="post-avatar" (click)="viewProfile(post.authorId)">
+            <img [src]="post.authorPicture" alt="Avatar" class="post-avatar" (click)="viewProfile(post.authorId)">
             <div class="post-author-info">
               <strong>{{ post.authorName }}</strong>
               <span>{{ post.timeAgo }}</span>
             </div>
             @if (!post.isMock && !isMe(post.authorId)) {
-              <button class="msg-btn" (click)="openChat(post.authorId)" title="Send message">💬</button>
+              <button class="msg-btn" (click)="openChat(post.authorId)" title="Send message">💬 Message</button>
             }
             <span class="more">···</span>
           </div>
@@ -149,7 +200,7 @@
           }
 
           @if (post.postImage) {
-            <img [src]="post.postImage" alt="post" class="post-feed-image" (click)="openImageModal(post)">
+            <img [src]="post.postImage" alt="Post image" class="post-feed-image" (click)="openImageModal(post)">
           }
 
           <div class="post-actions">
@@ -159,11 +210,13 @@
               <span class="count">({{ post.countLikes }})</span>
             </button>
             <button (click)="openPost(post.id)">
-              💬 Comment
+              💬
+              <span>Comment</span>
               <span class="count">({{ post.countComments || 0 }})</span>
             </button>
           </div>
-          <a href="#" class="mutual">See Mutual Friends</a>
+
+          <a href="#" class="mutual">👥 See Mutual Friends</a>
         </div>
       } @empty {
         @if (!loading) {
@@ -186,6 +239,7 @@
       }
     }
 
+    <!-- FRIENDS VIEW -->
     @if (currentActiveView === 'friends') {
       <div class="search-results-page">
         <div class="friends-main-header">
@@ -227,6 +281,7 @@
       </div>
     }
 
+    <!-- NOTIFICATIONS VIEW -->
     @if (currentActiveView === 'notifications') {
       <div class="search-results-page">
         <div class="friends-main-header">
@@ -245,48 +300,34 @@
             <div class="fb-user-card animate-fade"
                  [class.fb-notif-unread]="!n.read"
                  (click)="openNotification(n)">
+
+              <!-- Avatar Section -->
               <div class="fb-user-avatar">
                 @if (n.triggeredBy?.profilePicture) {
-                  <img [src]="n.triggeredBy.profilePicture" alt="User">
+                  <img [src]="getProfilePic(n.triggeredBy?.profilePicture)" alt="User">
                 } @else {
                   <div class="fb-avatar-placeholder">👤</div>
                 }
               </div>
+
+              <!-- Content Section -->
               <div class="fb-user-info">
-                <h4>{{ n.triggeredBy?.firstName }} {{ n.triggeredBy?.lastName }}</h4>
-                <span class="fb-city">{{ n.content }}</span>
+                <h4>{{ n.content }}</h4>
+                <span class="fb-city">{{ n.createdDate }}</span>
               </div>
+
               @if (!n.read) {
-                <span class="fb-unread-dot"></span>
+                <div class="fb-unread-dot"></div>
               }
             </div>
           } @empty {
             <div class="search-empty-state">
-              <span>✨</span>
-              <span>You're all caught up 🎉</span>
+              <span>🔔</span>
+              <span>No notifications yet.</span>
             </div>
           }
         }
       </div>
     }
-
-  }
-
-  @if (isModalOpen && selectedPostForModal) {
-    <div class="fb-lightbox-overlay" (click)="closeImageModal()">
-      <div class="lightbox-top-bar" (click)="$event.stopPropagation()">
-        <span class="lightbox-author-name">{{ selectedPostForModal.authorName }}</span>
-        <div class="lightbox-actions">
-          <!--<button class="lightbox-download-btn" (click)="downloadImage(post.postImage, selectedPostForModal.authorName)" title="Download Image">
-            📥 Download
-          </button>-->
-          <button class="lightbox-close-btn" (click)="closeImageModal()">✕</button>
-        </div>
-      </div>
-      <div class="lightbox-content-box" (click)="$event.stopPropagation()">
-        <img [src]="selectedPostForModal.postImage" alt="Facebook Style View">
-      </div>
-    </div>
-  }
-
+    }
 </div>

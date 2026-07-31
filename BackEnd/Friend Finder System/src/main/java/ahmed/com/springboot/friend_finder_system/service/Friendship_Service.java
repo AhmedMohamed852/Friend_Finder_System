@@ -14,6 +14,8 @@ public interface Friendship_Service {
 
     void sendFriendRequest(Long user2);
 
+    Boolean if_heHasAnyFriends();
+
     List<FriendShipRequestsDto> getFriendshipsByUser1Id();
 
     List<FriendShipRequestsDto> getSentFriendships();

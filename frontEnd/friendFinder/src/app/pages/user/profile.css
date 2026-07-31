@@ -1,3 +1,27 @@
+/* ==========================================================
+   Friend Finder — Profile Page
+   Theme: Sky Blue (#38a8dc) & Navy (#0f2a3d)
+   ========================================================== */
+
+:host {
+  display: block;
+  --sky-blue: #38a8dc;
+  --sky-blue-hover: #2196c4;
+  --sky-blue-light: #e8f4fd;
+  --sky-blue-soft: #c8e6f5;
+
+  --navy-900: #0f2a3d;
+  --navy-700: #23435e;
+  --navy-500: #526e85;
+  --navy-300: #bcccdc;
+  --navy-100: #f0f4f8;
+
+  --danger-red: #ef4444;
+  --danger-bg: #fef2f2;
+  --success-green: #10b981;
+  --success-bg: #ecfdf5;
+}
+
 .profile-page,
 .profile-page * {
   box-sizing: border-box;
@@ -11,33 +35,37 @@
 
 .status-msg {
   text-align: center;
-  padding: 20px;
-  color: #7a9e99;
+  padding: 24px;
+  color: var(--navy-500);
   font-size: 14px;
+  font-weight: 500;
 }
 
-.error-text { color: #dc2626; }
+.error-text {
+  color: var(--danger-red);
+}
 
-/* ── هيكلية رأس البروفايل ── */
+/* ── Profile Header Container ── */
 .fb-header-container {
-  background: white;
-  border-radius: 18px 18px 0 0;
+  background: #ffffff;
+  border-radius: 20px 20px 0 0;
   position: relative;
   width: 100%;
+  border: 1px solid var(--navy-100);
+  border-bottom: none;
 }
 
 .cover-photo-wrapper {
   width: 100%;
   height: auto;
   min-height: 220px;
-  max-height: 340px;
-  border-radius: 18px;
+  max-height: 320px;
+  border-radius: 20px 20px 0 0;
   overflow: hidden;
-  background-color: #f0faf9;
+  background-color: var(--navy-100);
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 2px 10px rgba(0,0,0,.06);
 }
 
 .cover-photo-img {
@@ -49,15 +77,14 @@
 .cover-placeholder {
   width: 100%;
   height: 260px;
-  background: linear-gradient(135deg, #1a9e8f, #0d6b5e);
+  background: linear-gradient(135deg, var(--sky-blue), var(--navy-900));
 }
 
-/* 🟢 تحسين المسافات هنا لمنع التداخل نهائياً وجعل الاسم يهبط تحت الغلاف بسلاسة */
 .fb-profile-bar {
   display: flex;
   align-items: flex-end;
   padding: 0 32px;
-  margin-top: -45px; /* رفع النصف العلوي فقط من الصورة الشخصية */
+  margin-top: -55px;
   position: relative;
   z-index: 5;
   gap: 20px;
@@ -69,30 +96,34 @@
 
 .profile-avatar,
 .profile-avatar-placeholder {
-  width: 128px;
-  height: 128px;
+  width: 130px;
+  height: 130px;
   border-radius: 50%;
-  border: 5px solid white;
-  box-shadow: 0 4px 12px rgba(0,0,0,.12);
+  border: 4px solid #ffffff;
+  box-shadow: 0 8px 24px rgba(15, 42, 61, 0.12);
 }
-.profile-avatar { object-fit: cover; background: white; }
+
+.profile-avatar {
+  object-fit: cover;
+  background: #ffffff;
+}
+
 .profile-avatar-placeholder {
-  background: linear-gradient(135deg, #1a9e8f, #0d6b5e);
+  background: linear-gradient(135deg, var(--sky-blue), var(--sky-blue-hover));
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 50px;
+  font-size: 52px;
   color: white;
 }
 
-/* 🟢 تم تظبيط الـ Row ليدفع الأزرار والاسم لتبتعد عن مساحة الصورة */
 .fb-name-actions-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   padding-bottom: 8px;
-  margin-top: 50px; /* ضمان نزول النص ليكون موازياً لأسفل الصورة الشخصية تماماً */
+  margin-top: 60px;
 }
 
 .fb-user-titles {
@@ -102,29 +133,32 @@
 .fb-header-container h1 {
   font-size: 24px;
   font-weight: 800;
-  color: #0d2b26;
+  color: var(--navy-900);
   margin: 0 0 4px;
 }
 
-.username { font-size: 14px; color: #7a9e99; font-weight: 500; }
+.username {
+  font-size: 14px;
+  color: var(--navy-500);
+  font-weight: 600;
+}
 
-/* بطاقة التفاصيل والـ Bio */
+/* Details & Bio Card */
 .identity-details-card {
-  background: white;
-  border-radius: 0 0 18px 18px;
-  padding: 20px 32px 24px; /* زيادة الـ padding العلوي للتناسق */
+  background: #ffffff;
+  border-radius: 0 0 20px 20px;
+  padding: 20px 32px 24px;
   margin-bottom: 24px;
-  border-bottom: 1px solid #e8f5f3;
-  border-left: 1px solid #e8f5f3;
-  border-right: 1px solid #e8f5f3;
-  box-shadow: 0 4px 14px rgba(0,0,0,.03);
+  border: 1px solid var(--navy-100);
+  border-top: none;
+  box-shadow: 0 4px 20px rgba(15, 42, 61, 0.04);
 }
 
 .bio {
-  font-size: 14px;
-  color: #4b6b66;
+  font-size: 14.5px;
+  color: var(--navy-700);
   line-height: 1.6;
-  margin: 8px 0 16px;
+  margin: 8px 0 18px;
   text-align: left;
 }
 
@@ -132,28 +166,29 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  gap: 8px;
+  gap: 10px;
 }
 
 .pill {
-  background: #f0faf9;
-  color: #0d6b5e;
+  background: var(--sky-blue-light);
+  color: var(--sky-blue-hover);
   padding: 6px 14px;
   border-radius: 20px;
-  font-size: 12.5px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
 }
 
-/* ── الأزرار التفاعلية ── */
+/* ── Interactive Action Buttons ── */
 .profile-actions {
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .action-btn {
-  padding: 10px 20px;
-  border-radius: 8px;
+  padding: 10px 18px;
+  border-radius: 10px;
   font-size: 13.5px;
   font-weight: 600;
   cursor: pointer;
@@ -161,94 +196,243 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  transition: transform .15s, filter .15s;
+  transition: all 0.2s ease;
 }
-.action-btn:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.03); }
-.action-btn:disabled { opacity: .7; cursor: not-allowed; }
 
-/* ✏️ تنسيق زر تعديل الملف الشخصي (القلم المودرن) */
+.action-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.action-btn:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+}
+
+/* Edit Profile Button */
 .edit-profile-btn {
-  background: #ffffff;
-  color: #0d9488;
-  border: 1.5px solid #0d9488;
+  background: var(--sky-blue-light);
+  color: var(--sky-blue-hover);
+  border: 1px solid var(--sky-blue-soft);
 }
+
 .edit-profile-btn:hover {
-  background: #f0faf9;
+  background: var(--sky-blue);
+  color: #ffffff;
+  border-color: var(--sky-blue);
+  box-shadow: 0 4px 12px rgba(56, 168, 220, 0.25);
 }
+
 .edit-profile-btn svg {
   width: 16px;
   height: 16px;
 }
 
-.add-btn { background: linear-gradient(135deg, #0d9488, #14b8a6); color: #fff; }
-.cancel-btn { background: #f3f4f6; color: #6b7280; border: 1px solid #d1d5db; }
-.accept-btn { background: linear-gradient(135deg, #16a34a, #22c55e); color: #fff; }
-.reject-btn { background: #fff; color: #dc2626; border: 1px solid #fca5a5; }
-.friends-btn { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; cursor: default; }
-.msg-btn { background: #fff; color: #0d9488; border: 1px solid #0d9488; }
-.unfriend-btn { background: #fff; color: #ef4444; border: 1px solid #fecaca; }
+.add-btn {
+  background: var(--sky-blue);
+  color: #ffffff;
+}
+.add-btn:hover {
+  background: var(--sky-blue-hover);
+  box-shadow: 0 4px 12px rgba(56, 168, 220, 0.25);
+}
 
-.action-loading, .friendship-error { margin-top: 8px; font-size: 13px; text-align: left; }
-.friendship-error { color: #dc2626; }
+.cancel-btn {
+  background: var(--navy-100);
+  color: var(--navy-700);
+  border: 1px solid var(--navy-300);
+}
 
-/* ── صور البيد والمنشورات ── */
+.accept-btn {
+  background: var(--success-green);
+  color: #ffffff;
+}
+
+.reject-btn {
+  background: #ffffff;
+  color: var(--danger-red);
+  border: 1px solid #fca5a5;
+}
+
+.friends-btn {
+  background: var(--sky-blue-light);
+  color: var(--sky-blue-hover);
+  border: 1px solid var(--sky-blue-soft);
+  cursor: default;
+}
+
+.msg-btn {
+  background: #ffffff;
+  color: var(--sky-blue-hover);
+  border: 1.5px solid var(--sky-blue);
+}
+.msg-btn:hover {
+  background: var(--sky-blue-light);
+}
+
+.unfriend-btn {
+  background: #ffffff;
+  color: var(--danger-red);
+  border: 1.5px solid #fca5a5;
+}
+.unfriend-btn:hover {
+  background: var(--danger-bg);
+}
+
+.action-loading,
+.friendship-error {
+  margin-top: 10px;
+  font-size: 13px;
+  text-align: left;
+}
+
+.friendship-error {
+  color: var(--danger-red);
+}
+
+/* ── Feed & Posts ── */
+.profile-posts-section {
+  padding: 0 4px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy-900);
+  margin: 0 0 16px;
+  text-align: left;
+}
+
+.post-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 20px rgba(15, 42, 61, 0.04);
+  border: 1px solid var(--navy-100);
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.post-header img,
+.post-avatar-sm {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.post-avatar-sm {
+  background: linear-gradient(135deg, var(--sky-blue), var(--sky-blue-hover));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: white;
+}
+
+.post-header strong {
+  font-size: 15px;
+  display: block;
+  color: var(--navy-900);
+  text-align: left;
+}
+
+.post-header span {
+  color: var(--navy-500);
+  font-size: 12px;
+  display: block;
+  text-align: left;
+}
+
+.post-card p {
+  color: var(--navy-900);
+  font-size: 14.5px;
+  line-height: 1.6;
+  margin-bottom: 12px;
+  text-align: left;
+}
+
 .post-feed-image {
   width: 100%;
   height: auto;
   display: block;
-  border-radius: 10px;
+  border-radius: 12px;
   margin: 12px 0;
   cursor: pointer;
   object-fit: contain;
+  transition: opacity 0.2s ease;
 }
 
-.profile-posts-section { padding: 0 4px; }
-.section-title { font-size: 16px; font-weight: 700; color: #0d2b26; margin: 0 0 16px; text-align: left; }
-
-.post-card {
-  background: white;
-  border-radius: 14px;
-  padding: 18px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 10px rgba(0,0,0,.04);
-  border: 1px solid #e8f5f3;
+.post-feed-image:hover {
+  opacity: 0.95;
 }
 
-.post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-.post-header img, .post-avatar-sm { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
-.post-avatar-sm {
-  background: linear-gradient(135deg, #1a9e8f, #0d6b5e);
-  display: flex; align-items: center; justify-content: center; font-size: 18px; color: white;
+.post-actions {
+  display: flex;
+  gap: 20px;
+  padding-top: 14px;
+  border-top: 1px solid var(--navy-100);
 }
-.post-header strong { font-size: 14px; display: block; color: #0d2b26; text-align: left; }
-.post-header span { color: #7a9e99; font-size: 12px; display: block; text-align: left; }
 
-.post-card p { color: #333; font-size: 14px; line-height: 1.55; margin-bottom: 12px; text-align: left; }
-
-.post-actions { display: flex; gap: 16px; padding-top: 12px; border-top: 1px solid #e8f5f3; }
 .post-actions button {
-  border: none; background: none; cursor: pointer; color: #5b7a75; font-size: 13px; font-weight: 500;
-  display: flex; align-items: center; gap: 4px; transition: color .2s;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--navy-500);
+  font-size: 13.5px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s ease;
 }
-.post-actions button:hover { color: #1a9e8f; }
-.like-btn { transition: color .2s, transform .1s; }
-.like-btn:active { transform: scale(.92); }
-.like-btn.liked { color: #dc2626; }
-.comment-stat-btn:hover { color: #1a9e8f; text-decoration: underline; }
 
-.scroll-anchor { height: 1px; width: 100%; }
-.animate-fade { animation: fadeIn .3s ease; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-.loading-btn { background: #f3f4f6; color: #9ca3af; border: 1px solid #e5e7eb; min-width: 80px; }
+.post-actions button:hover {
+  color: var(--sky-blue);
+}
 
-/* ── عارض اللايت بوكس ── */
+.like-btn.liked {
+  color: var(--danger-red);
+}
+
+.comment-stat-btn:hover {
+  color: var(--sky-blue);
+}
+
+.scroll-anchor {
+  height: 1px;
+  width: 100%;
+}
+
+.animate-fade {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.loading-btn {
+  background: var(--navy-100);
+  color: var(--navy-500);
+  border: 1px solid var(--navy-300);
+  min-width: 80px;
+}
+
+/* Lightbox Modal */
 .fb-lightbox-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.96);
+  background-color: rgba(15, 42, 61, 0.95);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -271,22 +455,35 @@
   z-index: 10002;
 }
 
-.lightbox-author-name { color: #ffffff; font-size: 15px; font-weight: 600; }
-.lightbox-actions { display: flex; align-items: center; gap: 14px; }
+.lightbox-author-name {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.lightbox-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
 
 .lightbox-download-btn {
   background: rgba(255, 255, 255, 0.15);
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.25);
   padding: 8px 16px;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s ease;
   backdrop-filter: blur(4px);
 }
-.lightbox-download-btn:hover { background: #1a9e8f; border-color: #1a9e8f; }
+
+.lightbox-download-btn:hover {
+  background: var(--sky-blue);
+  border-color: var(--sky-blue);
+}
 
 .lightbox-close-btn {
   background: rgba(255, 255, 255, 0.15);
@@ -300,19 +497,130 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s;
+  transition: background 0.2s ease;
 }
-.lightbox-close-btn:hover { background: #dc2626; }
 
-.lightbox-content-box { width: 90%; height: 82vh; display: flex; justify-content: center; align-items: center; z-index: 10001; }
-.lightbox-content-box img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px; }
+.lightbox-close-btn:hover {
+  background: var(--danger-red);
+}
 
-/* شاشات الموبايل المتجاوبة */
+.lightbox-content-box {
+  width: 90%;
+  height: 82vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10001;
+}
+
+.lightbox-content-box img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+/* Responsive Styles */
 @media (max-width: 600px) {
-  .fb-profile-bar { flex-direction: column; align-items: center; margin-top: -50px; padding: 0 16px; gap: 10px; }
-  .fb-name-actions-row { flex-direction: column; align-items: center; text-align: center; gap: 14px; margin-top: 10px; }
-  .fb-user-titles { text-align: center; }
-  .identity-details-card { padding: 12px 16px 20px; }
-  .bio { text-align: center; }
-  .info-pills { justify-content: center; }
+  .fb-profile-bar {
+    flex-direction: column;
+    align-items: center;
+    margin-top: -60px;
+    padding: 0 16px;
+    gap: 10px;
+  }
+  .fb-name-actions-row {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+    margin-top: 10px;
+  }
+  .fb-user-titles {
+    text-align: center;
+  }
+  .profile-actions {
+    justify-content: center;
+  }
+  .identity-details-card {
+    padding: 16px 20px 20px;
+  }
+  .bio {
+    text-align: center;
+  }
+  .info-pills {
+    justify-content: center;
+  }
+}
+
+/* ── Interests Section Styles (Horizontal Chips) ── */
+.interests-section {
+  margin: 14px 0 18px;
+  text-align: left;
+}
+
+.interests-title {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--navy-500);
+  margin-bottom: 10px;
+}
+
+/* التأكد من العرض الأفقي بجانب بعض */
+.interests-chips-wrapper {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  gap: 8px 10px !important;
+  align-items: center;
+}
+
+/* شكل الـ Chip/Badge لكل اهتمام */
+.interest-chip-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background-color: var(--sky-blue-light);
+  border: 1px solid var(--sky-blue-soft);
+  color: var(--navy-900);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap; /* يمنع نزول النص لسطر جديد */
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 5px rgba(15, 42, 61, 0.04);
+}
+
+.interest-chip-badge:hover {
+  transform: translateY(-2px);
+  background-color: #ffffff;
+  border-color: var(--sky-blue);
+  box-shadow: 0 4px 12px rgba(56, 168, 220, 0.18);
+}
+
+.interest-chip-badge .chip-icon {
+  font-size: 14px;
+  line-height: 1;
+  display: inline-block !important;
+}
+
+.interest-chip-badge .chip-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  text-transform: capitalize;
+  color: var(--navy-900);
+  display: inline-block !important;
+}
+
+@media (max-width: 600px) {
+  .interests-section {
+    text-align: center;
+  }
+  .interests-chips-wrapper {
+    justify-content: center !important;
+  }
 }

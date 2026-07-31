@@ -1,6 +1,6 @@
 import {
   Component, computed, inject, ElementRef,
-  HostListener, OnInit, OnDestroy
+  HostListener, OnInit, OnDestroy, effect
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -29,24 +29,39 @@ export class Header implements OnInit, OnDestroy {
 
   public isLoggedIn = computed(() => this.authService.isLoggedIn());
 
-  public notifications: NotificationDto[] = [];
-  public notifOpen     = false;
-  public menuOpen      = false;
-  public searchOpen    = false;
-  public searchQuery   = '';
-  public loadingNotif  = false;
-  public searchLoading = false;
+  public notifications: NotificationDto[]  = [];
+  public notifOpen          = false;
+  public avatarDropdownOpen = false;
+  public searchQuery        = '';
+  public loadingNotif       = false;
+  public searchLoading      = false;
+
+  // Current user info for avatar & dropdown
+  public currentUserPicture: string | null = null;
+  public currentUserName    = '';
+  public currentUserId      = 0;
 
   private sub?: Subscription;
   private searchSub?: Subscription;
   private searchSubject = new Subject<string>();
 
+  constructor() {
+    // Keep avatar in sync with auth state
+    effect(() => {
+      const user = this.authService.currentUser();
+      this.currentUserPicture = user?.profilePicture ?? null;
+      this.currentUserName    = user ? `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim() : '';
+      this.currentUserId      = user?.id ?? 0;
+    });
+  }
+
   ngOnInit(): void {
     if (this.authService.isLoggedIn()) {
+      this.currentUserId = this.authService.getCurrentUserId();
       this.loadNotifications();
     }
 
-    // ✅ Live search بـ debounce 400ms
+    // Live search with debounce
     this.searchSub = this.searchSubject.pipe(
       debounceTime(400),
       distinctUntilChanged()
@@ -76,7 +91,7 @@ export class Header implements OnInit, OnDestroy {
     this.loadingNotif = true;
     this.sub = this.notifService.getNotifications().subscribe({
       next:  (res) => { this.notifications = res ?? []; this.loadingNotif = false; },
-      error: (err) => { console.error('Notif error:', err); this.loadingNotif = false; }
+      error: ()    => { this.loadingNotif = false; }
     });
   }
 
@@ -84,20 +99,23 @@ export class Header implements OnInit, OnDestroy {
     return this.notifications.filter(n => !n.read).length;
   }
 
-  // ✅ بيتنفذ كل ما يكتب حرف
   onSearchInput(): void {
     this.searchSubject.next(this.searchQuery);
   }
 
-  toggleMenu():   void { this.menuOpen   = !this.menuOpen; }
-  closeMenu():    void { this.menuOpen   = false; }
-  toggleSearch(): void { this.searchOpen = !this.searchOpen; this.notifOpen = false; }
-
   toggleNotifications(): void {
-    this.notifOpen  = false;
-    this.searchOpen = false;
-    this.closeMenu();
-    this.router.navigate(['/home'], { queryParams: { view: 'notifications' } });
+    this.notifOpen          = !this.notifOpen;
+    this.avatarDropdownOpen = false;
+  }
+
+  toggleAvatarDropdown(): void {
+    this.avatarDropdownOpen = !this.avatarDropdownOpen;
+    this.notifOpen          = false;
+  }
+
+  goToMyProfile(): void {
+    this.avatarDropdownOpen = false;
+    this.router.navigate(['/profile', this.currentUserId]);
   }
 
   openNotification(n: NotificationDto): void {
@@ -115,20 +133,19 @@ export class Header implements OnInit, OnDestroy {
       case 'FRIEND_REJECT':
         if (n.triggeredBy?.id) this.router.navigate(['/profile', n.triggeredBy.id]);
         break;
-      default:
-        console.log('Unknown type:', n.type);
     }
   }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(e: MouseEvent): void {
     if (!this.elRef.nativeElement.contains(e.target)) {
-      this.notifOpen  = false;
-      this.searchOpen = false;
+      this.notifOpen          = false;
+      this.avatarDropdownOpen = false;
     }
   }
 
   onLogout(): void {
+    this.avatarDropdownOpen = false;
     this.authService.logout();
     this.router.navigate(['/login']);
   }

@@ -368,4 +368,10 @@ public class FriendShipController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/if_heHasAnyFriends")
+    public ResponseEntity<Boolean> if_heHasAnyFriends() {
+        return ResponseEntity.ok(friendship_service.if_heHasAnyFriends());
+    }
+
 }

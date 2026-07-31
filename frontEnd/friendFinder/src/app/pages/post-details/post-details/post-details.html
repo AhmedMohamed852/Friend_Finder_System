@@ -10,6 +10,7 @@
 
   @if (!loading && post) {
 
+    <!-- ── Post Card ── -->
     <div class="post-card animate-fade">
       <div class="post-header">
         <img [src]="post.authorPicture" alt="Author" class="post-avatar">
@@ -24,7 +25,7 @@
       }
 
       @if (post.postImage) {
-        <img [src]="post.postImage" alt="post image" class="post-img">
+        <img [src]="post.postImage" alt="Post image" class="post-img">
       }
 
       <div class="post-stats">
@@ -33,6 +34,7 @@
       </div>
     </div>
 
+    <!-- ── Comments Section ── -->
     <div class="comments-section">
       <h3 class="section-title">Comments ({{ post.countComments }})</h3>
 
@@ -43,6 +45,7 @@
       @for (c of comments; track c.id) {
         <div class="comment animate-fade">
 
+          <!-- Comment header -->
           <div class="comment-header">
             <div class="author-avatar-wrap" (click)="openProfile(c.authorId)">
               @if (c.authorImage) {
@@ -59,29 +62,29 @@
             </div>
 
             <div class="comment-actions-right">
-
               @if (c.hasMoreReplies || c.replies.length > 0) {
-                <button
-                  class="replies-toggle-btn"
-                  (click)="toggleRepliesView(c)"
-                  [class.active]="c.repliesVisible">
+                <button class="replies-toggle-btn"
+                        (click)="toggleRepliesView(c)"
+                        [class.active]="c.repliesVisible">
                   💬 {{ c.repliesVisible ? 'Hide' : 'View' }} replies
                   @if (!c.repliesLoaded && c.hasMoreReplies) {
                     <span class="replies-dot"></span>
                   }
                 </button>
               }
-
-              <button class="reply-action-btn" (click)="toggleReplyBox(c)" [class.active]="c.showReplyBox">
+              <button class="reply-action-btn"
+                      (click)="toggleReplyBox(c)"
+                      [class.active]="c.showReplyBox">
                 {{ c.showReplyBox ? '✕ Cancel' : '↩ Reply' }}
               </button>
-
               <button class="delete-btn" (click)="deleteComment(c.id)" title="Delete">🗑</button>
             </div>
           </div>
 
+          <!-- Comment text -->
           <p class="comment-content">{{ c.content }}</p>
 
+          <!-- Reply input -->
           @if (c.showReplyBox) {
             <div class="reply-box animate-fade">
               <input
@@ -91,14 +94,14 @@
                 placeholder="Write a reply..."
                 class="comment-input"
                 (keydown.enter)="addReply(c, replyInput.value); replyInput.value = ''">
-              <button
-                class="send-btn send-btn-sm"
-                (click)="addReply(c, replyInput.value); replyInput.value = ''">
+              <button class="send-btn send-btn-sm"
+                      (click)="addReply(c, replyInput.value); replyInput.value = ''">
                 Send
               </button>
             </div>
           }
 
+          <!-- Replies list -->
           @if (c.repliesVisible) {
             <div class="replies-section">
 
@@ -109,7 +112,6 @@
               @for (r of c.replies; track r.id) {
                 <div class="reply-item animate-fade">
                   <div class="reply-thread-line"></div>
-
                   <div class="reply-body">
                     <div class="comment-header">
                       <div class="author-avatar-wrap" (click)="openProfile(r.authorId)">
@@ -119,26 +121,18 @@
                           <div class="comment-avatar-placeholder comment-avatar-sm">👤</div>
                         }
                       </div>
-
                       <div class="comment-meta">
-                        <span class="reply-author-name" (click)="openProfile(r.authorId)">
-                          {{ r.authorName }}
-                        </span>
+                        <span class="reply-author-name" (click)="openProfile(r.authorId)">{{ r.authorName }}</span>
                         <span class="reply-badge">replied to</span>
-                        <span class="comment-author" (click)="openProfile(c.authorId)">
-                          {{ c.authorName }}
-                        </span>
+                        <span class="comment-author" (click)="openProfile(c.authorId)">{{ c.authorName }}</span>
                       </div>
-
                       <div class="reply-to-reply-action">
-                        <button
-                          class="reply-action-btn sub-reply-btn"
-                          (click)="prepareReplyToReply(c, r.authorName)">
+                        <button class="reply-action-btn sub-reply-btn"
+                                (click)="prepareReplyToReply(c, r.authorName)">
                           ↩ Reply
                         </button>
                       </div>
                     </div>
-
                     <p class="comment-content reply-content">{{ r.content }}</p>
                   </div>
                 </div>
@@ -172,7 +166,8 @@
         <div class="status-msg">🔄 Loading more...</div>
       }
 
-      <div class="add-comment-box" style="margin-top: 24px; margin-bottom: 0;">
+      <!-- Add comment -->
+      <div class="add-comment-box" style="margin-bottom: 0;">
         <input
           #commentInput
           type="text"
@@ -180,10 +175,9 @@
           class="comment-input"
           [disabled]="submittingComment"
           (keydown.enter)="addComment(commentInput.value); commentInput.value = ''">
-        <button
-          class="send-btn"
-          [disabled]="submittingComment"
-          (click)="addComment(commentInput.value); commentInput.value = ''">
+        <button class="send-btn"
+                [disabled]="submittingComment"
+                (click)="addComment(commentInput.value); commentInput.value = ''">
           {{ submittingComment ? '...' : 'Send' }}
         </button>
       </div>

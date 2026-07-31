@@ -1,5 +1,6 @@
 <div class="right-panel">
 
+  <!-- Suggestions Card -->
   <div class="panel-card">
     <div class="panel-header">
       <h4>People You May Know</h4>
@@ -45,6 +46,7 @@
     }
   </div>
 
+  <!-- Friend Requests Tabs Card -->
   <div class="panel-card">
     <div class="tabs-container">
       <button [class.active]="activeTab === 'received'" (click)="switchTab('received')">
@@ -58,8 +60,8 @@
     @if (activeTab === 'received') {
       @for (request of friendRequests; track request.Friendship_Id) {
         <div class="person animate-fade">
-          <img [src]="request.profilePicture || 'https://randomuser.me/api/portraits/men/default.jpg'" class="avatar-img" alt="User Avatar" (click)="openProfile(request.userSenderId)">
-          <div class="person-info" (click)="openProfile(request.userSenderId)">
+          <img [src]="request.profilePicture || 'assets/default-avatar.png'" class="avatar-img" alt="User Avatar" (click)="openProfile(request.userSenderId)" style="cursor: pointer;">
+          <div class="person-info" (click)="openProfile(request.userSenderId)" style="cursor: pointer;">
             <strong>{{ request.firstName }} {{ request.last_Name }}</strong>
             <small>Wants to be friends</small>
           </div>
@@ -76,8 +78,8 @@
     @if (activeTab === 'sent') {
       @for (req of sentRequests; track req.Friendship_Id) {
         <div class="person animate-fade">
-          <img [src]="req.profilePicture || 'https://randomuser.me/api/portraits/men/default.jpg'" class="avatar-img" alt="User Avatar" (click)="openProfile(req.id)">
-          <div class="person-info" (click)="openProfile(req.id)">
+          <img [src]="req.profilePicture || 'assets/default-avatar.png'" class="avatar-img" alt="User Avatar" (click)="openProfile(req.id)" style="cursor: pointer;">
+          <div class="person-info" (click)="openProfile(req.id)" style="cursor: pointer;">
             <strong>{{ req.firstName }} {{ req.last_Name }}</strong>
             <small>Waiting for approval...</small>
           </div>

@@ -5,8 +5,11 @@ import { catchError, of, forkJoin } from 'rxjs';
 import { UserService, UserProfile } from '../../core/services/user/user-service';
 import { PostService } from '../../core/services/posts/posts-service';
 import { LikeService } from '../../core/services/Like/like-service';
-import { Friendship, FriendshipService } from '../../core/services/Friendship/friendship-service';
+import { FriendshipService } from '../../core/services/Friendship/friendship-service';
 import { AuthService } from '../../core/services/auth/auth';
+import { InterestsService } from '../../core/services/interests/interests-service';
+import { InterestCategory } from '../../core/models/InterestCategory';
+import { InterestsDto } from '../../core/models/InterestsDto';
 
 export interface DisplayPost {
   id: number;
@@ -34,6 +37,7 @@ export class Profile implements OnInit, AfterViewInit, OnDestroy {
   private likeService       = inject(LikeService);
   private friendshipService = inject(FriendshipService);
   private authService       = inject(AuthService);
+  private interestsService  = inject(InterestsService); // 👈 حقن سيرفس الاهتمامات
   private cdr               = inject(ChangeDetectorRef);
   private router            = inject(Router);
 
@@ -42,6 +46,10 @@ export class Profile implements OnInit, AfterViewInit, OnDestroy {
   userId        = 0;
   currentUserId = 0;
   user: UserProfile | null = null;
+
+  // 👈 مصفوفة تخزين اهتمامات المستخدم الجاية من الـ API الخارجي
+  userInterests: InterestsDto[] = [];
+  isLoadingInterests = false;
 
   posts: DisplayPost[] = [];
   currentPage  = 1;
@@ -61,6 +69,26 @@ export class Profile implements OnInit, AfterViewInit, OnDestroy {
   friendshipError = '';
 
   private observer?: IntersectionObserver;
+
+  // خريطة الأيقونات المخصصة لكل تصنيف
+  private categoryIcons: Record<string, string> = {
+    [InterestCategory.SPORTS]: '⚽',
+    [InterestCategory.TECHNOLOGY]: '💻',
+    [InterestCategory.ARTS]: '🎨',
+    [InterestCategory.MUSIC]: '🎵',
+    [InterestCategory.MOVIES]: '🎬',
+    [InterestCategory.BOOKS]: '📚',
+    [InterestCategory.TRAVEL]: '✈️',
+    [InterestCategory.FOOD]: '🍕',
+    [InterestCategory.GAMING]: '🎮',
+    [InterestCategory.FITNESS]: '🏋️',
+    [InterestCategory.PHOTOGRAPHY]: '📸',
+    [InterestCategory.FASHION]: '👠',
+    [InterestCategory.EDUCATION]: '🎓',
+    [InterestCategory.BUSINESS]: '💼',
+    [InterestCategory.SCIENCE]: '🔬',
+    [InterestCategory.OTHER]: '✨'
+  };
 
   get isMe(): boolean       { return this.userId === this.currentUserId; }
   get isLoading(): boolean  { return this.friendshipState === 'loading'; }
@@ -83,6 +111,7 @@ export class Profile implements OnInit, AfterViewInit, OnDestroy {
       this.userId = Number(params.get('id'));
       this.resetState();
       this.loadProfile();
+      this.loadUserInterests(); // 👈 استدعاء جلب الاهتمامات بالـ API الخارجي
       this.loadPosts();
       if (!this.isMe) this.loadFriendshipStatus();
     });
@@ -93,11 +122,12 @@ export class Profile implements OnInit, AfterViewInit, OnDestroy {
 
   private resetState(): void {
     this.user             = null;
+    this.userInterests    = [];
     this.posts            = [];
     this.currentPage      = 1;
     this.hasMorePosts     = true;
     this.errorProfile     = '';
-    this.errorPosts     = '';
+    this.errorPosts       = '';
     this.friendshipState  = 'loading';
     this.friendshipId     = 0;
     this.friendshipError  = '';
@@ -106,7 +136,28 @@ export class Profile implements OnInit, AfterViewInit, OnDestroy {
     this.selectedPostForModal = null;
   }
 
-  // 🟢 دالة التوجيه إلى صفحة تعديل الملف الشخصي
+  // 👈 دالة جلب اهتمامات المستخدم بـ API من السيرفس
+  loadUserInterests(): void {
+    if (!this.userId) return;
+    this.isLoadingInterests = true;
+    this.interestsService.getUserInterests(this.userId).subscribe({
+      next: (interests) => {
+        this.userInterests = interests || [];
+        this.isLoadingInterests = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Failed to load user interests:', err);
+        this.isLoadingInterests = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  getInterestIcon(category: InterestCategory | string): string {
+    return this.categoryIcons[category] || '🏷️';
+  }
+
   goToUpdateProfile(): void {
     this.router.navigate(['/updateProfile']);
   }
@@ -357,7 +408,7 @@ export class Profile implements OnInit, AfterViewInit, OnDestroy {
         this.cdr.detectChanges();
         return of(null);
       })
-    ).subscribe(res => {
+    ).subscribe(() => {
       this.actionLoading = false;
       this.friendshipState = 'none';
       this.friendshipId = 0;

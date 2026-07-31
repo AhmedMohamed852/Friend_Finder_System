@@ -38,7 +38,7 @@
           <div class="profile-actions">
             @if (isMe) {
               <button class="action-btn edit-profile-btn" (click)="goToUpdateProfile()" title="Edit Profile">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                 </svg>
                 <span>Edit Profile</span>
@@ -68,6 +68,22 @@
 
     <div class="identity-details-card">
       @if (user.bio) { <p class="bio">{{ user.bio }}</p> }
+
+      <!-- 👈 سكشن الاهتمامات المربوط بـ userInterests الجاي من الـ API الخارجي -->
+      <!-- سكشن الاهتمامات -->
+      @if (userInterests && userInterests.length > 0) {
+        <div class="interests-section">
+          <span class="interests-title">Interests</span>
+          <div class="interests-chips-wrapper">
+            @for (interest of userInterests; track $index) {
+              <div class="interest-chip-badge">
+                <span class="chip-icon">{{ getInterestIcon(interest.category) }}</span>
+                <span class="chip-label">{{ interest.category }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
 
       <div class="info-pills">
         @if (user.city || user.country) {

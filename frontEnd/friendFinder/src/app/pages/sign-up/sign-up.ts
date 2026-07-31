@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../core/services/auth/auth'; // 👈 تأكد إن المسار ده مظبوط عندك للـ auth.ts
+import { AuthService } from '../../core/services/auth/auth';
 
 @Component({
   selector: 'app-signup',
@@ -22,17 +22,16 @@ export class SignupComponent {
     private authService: AuthService,
     private router: Router
   ) {
-    // بناء الفورم مطابقة لـ JSON الباك-إند بالظبط
     this.signupForm = this.fb.group({
-      username: ['', [Validators.required, Validators.minLength(3)]],
-      firstName: ['', [Validators.required, Validators.minLength(2)]],
-      lastName: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      gender: ['MALE', Validators.required],
+      username:    ['', [Validators.required, Validators.minLength(3)]],
+      firstName:   ['', [Validators.required, Validators.minLength(2)]],
+      lastName:    ['', [Validators.required, Validators.minLength(2)]],
+      email:       ['', [Validators.required, Validators.email]],
+      password:    ['', [Validators.required, Validators.minLength(6)]],
+      gender:      ['MALE', Validators.required],
       dateOfBirth: ['2000-01-01', Validators.required],
-      country: ['Egypt', Validators.required],
-      city: ['', Validators.required]
+      country:     ['Egypt', Validators.required],
+      city:        ['', Validators.required]
     });
   }
 
@@ -46,7 +45,6 @@ export class SignupComponent {
     this.errorMessage = '';
     this.successMessage = '';
 
-    // 👇 تم تحديد نوع الـ (response: any) والـ (err: any) عشان نطير خطأ الـ Terminal
     this.authService.signUp(this.signupForm.value).subscribe({
       next: (response: any) => {
         this.loading = false;

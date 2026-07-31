@@ -1,67 +1,109 @@
 <div class="auth-container">
   <div class="auth-card-wrapper">
-
-    <div class="bg-shapes" aria-hidden="true">
-      <span class="shape shape-tl"></span>
-      <span class="shape shape-tr"></span>
-      <span class="shape shape-bl"></span>
-      <span class="shape shape-br"></span>
-    </div>
-
     <div class="auth-card">
 
-      <!-- LEFT BANNER -->
+      <!-- ═══════════════════════════════════════
+           LEFT BANNER — full height photo + overlay
+           ═══════════════════════════════════════ -->
       <div class="auth-side-banner">
 
-        <div class="banner-logo">
+        <!-- Photo layer -->
+        <div class="banner-people-img"></div>
+        <!-- Blue overlay -->
+        <div class="banner-blur-overlay"></div>
+
+        <!-- Floating decoration circles -->
+        <div class="banner-deco-circle c1"></div>
+        <div class="banner-deco-circle c2"></div>
+        <div class="banner-deco-circle c3"></div>
+
+        <!-- Dot grid top-right -->
+        <div class="banner-dots" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+
+        <!-- TOP: logo + app name + tagline -->
+        <div class="banner-top">
           <div class="banner-logo-icon">
-            <svg width="22" height="22" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24">
+            <svg width="36" height="36" fill="none" stroke="#fff" stroke-width="1.8" viewBox="0 0 24 24">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
               <circle cx="9" cy="7" r="4"/>
               <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
               <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
             </svg>
           </div>
-          <span class="banner-logo-name">Friend<strong>Finder</strong></span>
+          <div class="banner-app-name">Friend Finder</div>
+          <div class="banner-tagline">Find your people. Build real connections.</div>
         </div>
 
-        <div class="banner-people-img"></div>
-        <div class="banner-blur-overlay"></div>
+        <!-- QUOTE at bottom -->
+        <div class="banner-quote">
+          <div class="banner-quote-mark">"</div>
+          <div class="banner-quote-text">Good friends<br>make the journey better.</div>
+          <div class="banner-quote-heart">💙</div>
+        </div>
 
-        <div class="banner-wave-shape s1"></div>
-        <div class="banner-wave-shape s2"></div>
-
+        <!-- BOTTOM overlay: avatars + title + badge -->
         <div class="banner-overlay">
           <div class="banner-avatars">
             <span class="bav">A</span>
-            <span class="bav" style="background:rgba(255,255,255,0.35)">M</span>
-            <span class="bav" style="background:rgba(255,255,255,0.25)">S</span>
+            <span class="bav" style="background:rgba(255,255,255,0.32)">M</span>
+            <span class="bav" style="background:rgba(255,255,255,0.22)">S</span>
             <span class="bav-count">+2k</span>
           </div>
           <h2>Welcome Back!</h2>
           <p>Connect with professional developers and expand your technical network safely.</p>
           <div class="tech-badge">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
             </svg>
             Secure Gateway Verified
           </div>
         </div>
+
       </div>
 
-      <!-- RIGHT FORM -->
+      <!-- ═══════════════════════════════════════
+           RIGHT FORM
+           ═══════════════════════════════════════ -->
       <div class="auth-form-section">
-        <div class="form-deco-circle"></div>
 
-        <div class="form-header">
-          <h3>Sign In</h3>
-          <p>Enter your credentials to access your dashboard</p>
+        <!-- Top bar: language + settings -->
+        <div class="form-top-bar">
+          <button class="form-top-bar-btn" type="button">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="2" y1="12" x2="22" y2="12"/>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+            English
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <button class="form-top-bar-btn" type="button" aria-label="Settings">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </button>
         </div>
 
+        <!-- Header -->
+        <div class="form-header">
+          <h3>Welcome back 👋</h3>
+          <p>Login to continue your journey</p>
+        </div>
+
+        <!-- Error alert -->
         @if (errorMessage) {
           <div class="alert-error">
             <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
             </svg>
             {{ errorMessage }}
           </div>
@@ -69,43 +111,59 @@
 
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
+          <!-- Username -->
           <div class="form-group">
-            <label for="username">Username</label>
+            <label for="username">Email or Username</label>
             <div class="input-wrap">
+              <span class="input-icon-left">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+              </span>
               <input
                 id="username"
                 type="text"
                 formControlName="username"
-                placeholder="Ahmed"
+                placeholder="Enter your email or username"
                 [ngClass]="{'input-error': loginForm.get('username')?.touched && loginForm.get('username')?.invalid}"
               >
-              <span class="input-icon">
-                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                  <circle cx="12" cy="7" r="4"/>
-                </svg>
-              </span>
             </div>
             @if (loginForm.get('username')?.touched && loginForm.get('username')?.invalid) {
               <div class="error-msg">Username is required.</div>
             }
           </div>
 
+          <!-- Password -->
           <div class="form-group">
             <label for="password">Password</label>
             <div class="input-wrap">
-              <input
-                id="password"
-                type="password"
-                formControlName="password"
-                placeholder="••••••••"
-                [ngClass]="{'input-error': loginForm.get('password')?.touched && loginForm.get('password')?.invalid}"
-              >
-              <span class="input-icon">
+              <span class="input-icon-left">
                 <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                   <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                 </svg>
+              </span>
+              <input
+                id="password"
+                [type]="showPassword ? 'text' : 'password'"
+                formControlName="password"
+                placeholder="Enter your password"
+                [ngClass]="{'input-error': loginForm.get('password')?.touched && loginForm.get('password')?.invalid}"
+              >
+              <span class="input-icon-right toggle-password" (click)="togglePassword()">
+                @if (!showPassword) {
+                  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                } @else {
+                  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                    <line x1="1" y1="1" x2="23" y2="23"/>
+                  </svg>
+                }
               </span>
             </div>
             @if (loginForm.get('password')?.touched && loginForm.get('password')?.invalid) {
@@ -113,9 +171,19 @@
             }
           </div>
 
+          <!-- Remember me + Forgot password -->
+          <div class="form-row-extras">
+            <label class="remember-label">
+              <input type="checkbox" class="remember-checkbox">
+              <span>Remember me</span>
+            </label>
+            <a href="#" class="forgot-link">Forgot password?</a>
+          </div>
+
+          <!-- Submit button -->
           <button type="submit" class="auth-btn" [disabled]="loading">
             @if (!loading) {
-              <span>Login</span>
+              <span>Log In</span>
             } @else {
               <span class="loading-dots">
                 <span></span><span></span><span></span>
@@ -125,11 +193,12 @@
 
         </form>
 
+        <!-- Footer -->
         <div class="auth-footer">
-          Don't have an account? <a routerLink="/signup">Create one</a>
+          Don't have an account? <a routerLink="/signup">Sign up</a>
         </div>
-      </div>
 
+      </div>
     </div>
   </div>
 </div>

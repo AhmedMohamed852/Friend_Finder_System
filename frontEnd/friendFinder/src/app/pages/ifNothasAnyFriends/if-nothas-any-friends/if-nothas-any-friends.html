@@ -1,0 +1,120 @@
+<div class="onboarding-overlay">
+
+  <!-- حالة التحقق الأولية -->
+  @if (checkingStatus) {
+    <div class="loading-box">
+      <div class="spinner"></div>
+      <p>Checking your profile...</p>
+    </div>
+  } @else {
+
+    <div class="onboarding-card animate-fade">
+
+      <!-- Stepper Indicator -->
+      <div class="steps-header">
+        <div class="step-item" [class.active]="currentStep === 'interests'" [class.completed]="currentStep === 'suggestions'">
+          <span class="step-num">1</span>
+          <span class="step-text">Interests</span>
+        </div>
+        <div class="step-divider"></div>
+        <div class="step-item" [class.active]="currentStep === 'suggestions'">
+          <span class="step-num">2</span>
+          <span class="step-text">Suggestions</span>
+        </div>
+      </div>
+
+      <!-- ================= STEP 1: INTERESTS ================= -->
+      @if (currentStep === 'interests') {
+        <div class="step-content">
+          <h2>Welcome to Friend Finder! 👋</h2>
+          <p class="subtitle">Select your interests so we can connect you with like-minded people.</p>
+
+          <div class="interests-grid">
+            @for (cat of availableInterests; track cat) {
+              <button
+                type="button"
+                class="interest-item"
+                [class.selected]="isInterestSelected(cat)"
+                (click)="toggleInterest(cat)">
+                <span class="cat-icon">{{ getIcon(cat) }}</span>
+                <span class="cat-name">{{ cat }}</span>
+              </button>
+            }
+          </div>
+
+          <div class="card-footer">
+            <button
+              class="primary-btn"
+              [disabled]="selectedInterests.length === 0 || savingInterests"
+              (click)="goToSuggestions()">
+              @if (savingInterests) {
+                <span>Saving...</span>
+              } @else {
+                <span>Next Step ➔</span>
+              }
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- ================= STEP 2: SUGGESTIONS ================= -->
+      @if (currentStep === 'suggestions') {
+        <div class="step-content">
+          <h2>Suggested Friends 👥</h2>
+          <p class="subtitle">Based on your interests, here are people you might want to connect with.</p>
+
+          @if (loadingData) {
+            <div class="inline-loader">
+              <div class="spinner-sm"></div>
+              <span>Finding matches for you...</span>
+            </div>
+          } @else {
+            <div class="friends-list">
+              @for (friend of suggestedFriends; track friend.id) {
+                <div class="friend-card">
+                  <div class="friend-info">
+                    @if (friend.profilePicture) {
+                      <img [src]="friend.profilePicture" class="friend-avatar" alt="User">
+                    } @else {
+                      <div class="avatar-placeholder">👤</div>
+                    }
+                    <div class="friend-details">
+                      <strong>{{ friend.firstName }} {{ friend.lastName }}</strong>
+                      <span class="location">📍 {{ friend.city }}, {{ friend.country }}</span>
+                    </div>
+                  </div>
+
+                  <button
+                    class="add-btn"
+                    [class.added]="addedFriendIds.has(friend.id)"
+                    [disabled]="addingFriendId === friend.id || addedFriendIds.has(friend.id)"
+                    (click)="addFriend(friend.id)">
+                    @if (addingFriendId === friend.id) {
+                      <span>...</span>
+                    } @else if (addedFriendIds.has(friend.id)) {
+                      <span>✅ Sent</span>
+                    } @else {
+                      <span>➕ Add</span>
+                    }
+                  </button>
+                </div>
+              } @empty {
+                <div class="empty-state">
+                  <span>✨ No suggestions found at the moment.</span>
+                </div>
+              }
+            </div>
+          }
+
+          <div class="card-footer">
+            <button class="primary-btn finish-btn" (click)="finishSetup()">
+              Go to Home Page 🚀
+            </button>
+          </div>
+        </div>
+      }
+
+    </div>
+  }
+
+</div>

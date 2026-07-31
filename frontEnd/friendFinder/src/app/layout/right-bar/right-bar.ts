@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core'; // 1. استيراد ChangeDetectorRef
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subscription, interval } from 'rxjs';
@@ -23,7 +23,7 @@ export class RightBarComponent implements OnInit, OnDestroy {
   private matchService = inject(MatchService);
   private friendshipService = inject(FriendshipService);
   private router = inject(Router);
-  private cdr = inject(ChangeDetectorRef); // 2. حقن الخدمة هنا
+  private cdr = inject(ChangeDetectorRef);
 
   matches: ExtendedMatch[] = [];
   friendRequests: Friendship[] = [];
@@ -63,7 +63,7 @@ export class RightBarComponent implements OnInit, OnDestroy {
 
   switchTab(tab: 'received' | 'sent'): void {
     this.activeTab = tab;
-    this.cdr.detectChanges(); // تحديث الواجهة عند تنقل التبويبات
+    this.cdr.detectChanges();
   }
 
   loadMatches(): void {
@@ -81,7 +81,7 @@ export class RightBarComponent implements OnInit, OnDestroy {
         } else {
           this.matches = data.map(item => ({ ...item, isPending: false }));
         }
-        this.cdr.detectChanges(); // 3. إجبار الواجهة على التحديث
+        this.cdr.detectChanges();
       },
       error: (err: any) => {
         this.loading = false;
@@ -102,7 +102,7 @@ export class RightBarComponent implements OnInit, OnDestroy {
         } else {
           this.friendRequests = data;
         }
-        this.cdr.detectChanges(); // 3. إجبار الواجهة على التحديث
+        this.cdr.detectChanges();
       },
       error: (err: any) => console.error(err)
     });
@@ -118,7 +118,7 @@ export class RightBarComponent implements OnInit, OnDestroy {
         } else {
           this.sentRequests = data;
         }
-        this.cdr.detectChanges(); // 3. إجبار الواجهة على التحديث
+        this.cdr.detectChanges();
       },
       error: (err: any) => console.error('Error fetching sent requests:', err)
     });

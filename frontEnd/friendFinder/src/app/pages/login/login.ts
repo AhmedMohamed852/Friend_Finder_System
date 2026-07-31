@@ -1,8 +1,9 @@
-import { ChangeDetectorRef, Component, inject, NgZone } from '@angular/core'; // 👈 استيراد NgZone
+import { ChangeDetectorRef, Component, inject, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth/auth';
+import { FriendshipService } from '../../core/services/Friendship/friendship-service';
 import { timeout } from 'rxjs/operators';
 import { TimeoutError } from 'rxjs';
 
@@ -17,11 +18,11 @@ export class LoginComponent {
   loginForm: FormGroup;
   loading = false;
   errorMessage = '';
+  showPassword = false;
 
   private cdr            = inject(ChangeDetectorRef);
-  private ngZone         = inject(NgZone); // 👈 حقن الـ NgZone باستخدام inject()
-
-  // عشان نقدر نلغي التايمر القديم لو حصل error جديد قبل ما الـ 5 ثواني تخلص
+  private ngZone         = inject(NgZone);
+  private friendshipService = inject(FriendshipService);
   private errorTimeoutId: any = null;
 
   constructor(
@@ -35,8 +36,11 @@ export class LoginComponent {
     });
   }
 
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
+  }
+
   onSubmit() {
-    // لو الفورم غلط، اعرض الـ errors ووقف — من غير ما تشغل loading أصلاً
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       this.cdr.detectChanges();
@@ -47,16 +51,32 @@ export class LoginComponent {
     this.errorMessage = '';
 
     this.authService.login(this.loginForm.value).pipe(
-      timeout(10000) // لو الباك ما ردش في 10 ثواني، اعتبره فشل
+      timeout(10000)
     ).subscribe({
       next: () => {
-        this.ngZone.run(() => { // 👈 تشغيل التوجيه إلى الصفحة الرئيسية داخل الـ NgZone
-          this.loading = false;
-          this.router.navigate(['/home']);
+        // فحص حالة الأصدقاء بعد اللوجين لتحديد مسار التوجيه
+        this.friendshipService.hasAnyFriends().subscribe({
+          next: (hasFriends) => {
+            this.ngZone.run(() => {
+              this.loading = false;
+              if (hasFriends) {
+                this.router.navigate(['/home']);
+              } else {
+                this.router.navigate(['/welcome']);
+              }
+            });
+          },
+          error: () => {
+            // كخيار احتياطي في حالة حدوث خطأ أثناء الفحص
+            this.ngZone.run(() => {
+              this.loading = false;
+              this.router.navigate(['/home']);
+            });
+          }
         });
       },
       error: (err) => {
-        this.ngZone.run(() => { // 👈 تشغيل الـ Error State داخل الـ NgZone لضمان تحديث الـ Loader فوراً
+        this.ngZone.run(() => {
           this.loading = false;
 
           if (err instanceof TimeoutError) {
@@ -64,7 +84,6 @@ export class LoginComponent {
             return;
           }
 
-          // الباك بيرجع { message_ar: '...', message_en: '...' }
           const message = err.error?.message_ar
             || err.error?.message_en
             || err.error?.message
@@ -76,23 +95,20 @@ export class LoginComponent {
     });
   }
 
-  // بتعرض رسالة الخطأ فوراً، وتخفيها تلقائياً بعد 5 ثواني
   private showError(message: string): void {
-    // لو فيه تايمر شغال من قبل، نلغيه الأول عشان منعملش تعارض
     if (this.errorTimeoutId) {
       clearTimeout(this.errorTimeoutId);
     }
 
     this.errorMessage = message;
-    this.cdr.detectChanges(); // تحديث الفيو فوراً لظهور الرسالة
+    this.cdr.detectChanges();
 
-    // تشغيل الـ setTimeout داخل الـ NgZone لضمان اختفاء الرسالة تلقائياً بعد 5 ثواني
     this.errorTimeoutId = setTimeout(() => {
       this.ngZone.run(() => {
         this.errorMessage = '';
         this.errorTimeoutId = null;
-        this.cdr.detectChanges(); // تحديث الفيو لإخفاء الرسالة
+        this.cdr.detectChanges();
       });
-    }, 5000); // 5 ثواني
+    }, 5000);
   }
 }

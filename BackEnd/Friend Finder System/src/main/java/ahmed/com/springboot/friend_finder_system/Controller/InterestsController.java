@@ -98,7 +98,7 @@ public class InterestsController {
     }
 
 
-    //TODO:_______________ Set List Of Interests ____________________________
+    //TODO _______________ Set List Of Interests ____________________________
 
     @Operation(
             summary = "Set User Interests",

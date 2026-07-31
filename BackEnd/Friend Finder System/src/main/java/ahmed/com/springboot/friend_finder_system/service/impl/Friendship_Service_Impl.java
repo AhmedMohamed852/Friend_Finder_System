@@ -72,6 +72,11 @@ public class Friendship_Service_Impl implements Friendship_Service {
 
     }
 
+    @Override
+    public Boolean if_heHasAnyFriends() {
+       return friendShip_Repo.existsByUser1IdOrUser2_Id(CurrentUser.currentUserId() , CurrentUser.currentUserId()) ? true : false;
+    }
+
 
     //TODO:_______________ Get Friendship Requests ____________________________
     @Override
