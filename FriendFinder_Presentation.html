@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark" style="color-scheme: dark;"><head><!-- frame-runtime --><script>window.__FRAME_PREAMBLE={"v":1,"cred":"cookie","capabilities":{"artifact":"artifact.O-h4mzdy.js","assets":"assets.DhQw8DTi.js","comments":"comments.DrhK3r8W.js","db":"db.DV02l9iB.js","downloads":"downloads.axDW2QAi.js","embed":"embed.swQslL0W.js","endpoints":"endpoints.BPfoKaE1.js","mcp":"mcp.C8qKIFvQ.js","network":"network.B5UA9Su4.js","permissions":"permissions.DWFFeHI0.js","room":"room.BF1j0KPr.js","sample":"sample.C7KQQdQj.js","self":"artifact.O-h4mzdy.js","user":"user.CCh6oTS_.js"},"transforms":"_transforms.B5T5EGpo.js","comments":"_comments.D8Q8NfHc.js","translate":"_translate.DqxC5ek1.js","ldx":"_ldx.CqNtBrkk.js"}                                                                                                                                                                                                                                     </script><script>(function(){"use strict";var Cn=3e5;function rr(t,e){try{const n=t("navigation")[0],o=[n.responseStart,n.redirectEnd-n.redirectStart,n.domContentLoadedEventStart,e()];for(let a=0;a<o.length;a++){if(!(o[a]>=0&&o[a]<=3e5))return;o[a]=o[a]|0}return o}catch{return}}var nr=["light","dark","system"],or=/^[A-Za-z0-9_-]{1,64}$/,wt=/^[a-zA-Z_:][a-zA-Z0-9_:.-]{0,127}$/,ar=new Set(["class","hidden","value","checked","style","title","alt","placeholder","lang","dir","role","tabindex","disabled","readonly","contenteditable","open","colspan","rowspan"]);function sr(t){const e=t.toLowerCase();return e.startsWith("data-")||e.startsWith("aria-")||ar.has(e)}var bt="data-ldx-props";function ir(t,e){if(e.toLowerCase()===bt)return!0;const n=t.getAttribute(bt);if(n===null)return!1;try{const o=JSON.parse(n);if(o===null||typeof o!="object"||Array.isArray(o))return!0;const a=e.toLowerCase();return Object.keys(o).some(s=>s.toLowerCase()===a)}catch{return!0}}var jn="http://www.w3.org/1999/xhtml",lr="http://www.w3.org/2000/svg",cr=new Set(["script","style","iframe","noscript","noframes","noembed","xmp","plaintext","template","title","textarea","object","embed"]),ur=new Set(["script","style"]);function fr(t){const e=t.localName.toLowerCase();return t.namespaceURI==="http://www.w3.org/1999/xhtml"?!cr.has(e):t.namespaceURI===lr?!ur.has(e):!1}function We(t,e){return t===e||(t===160||t===32)&&(e===160||e===32)}function dr(t,e){const n=t.length,o=e.length;let a=0;for(;a<n&&a<o&&We(t.charCodeAt(a),e.charCodeAt(a));)a++;let s=0;for(;s<n-a&&s<o-a&&We(t.charCodeAt(n-1-s),e.charCodeAt(o-1-s));)s++;return{p:a,s}}function hr(t,e){const n=t.firstChild;if(t.childNodes.length!==1||n===null||n.nodeType!==Node.TEXT_NODE){t.textContent=e;return}const o=n.data,a=o.length,s=e.length,{p:c,s:d}=dr(o,e);c===a&&d===0&&a===s||n.replaceData(c,a-c-d,e.slice(c,s-d));const L=n.data,g=t.ownerDocument.getSelection?.()??null,b=g!==null&&g.rangeCount>0&&(g.anchorNode===n||g.focusNode===n)?{anchor:g.anchorNode,anchorOffset:g.anchorOffset,focus:g.focusNode,focusOffset:g.focusOffset}:null;let m=-1,O=-1;for(let h=0;h<L.length&&h<e.length;h++){const R=L.charCodeAt(h),B=e.charCodeAt(h);R!==B&&We(R,B)&&(m<0&&(m=h),O=h)}const v=m>=0;if(v&&n.replaceData(m,O-m+1,e.slice(m,O+1)),v&&b!==null&&b.anchor!==null&&b.focus!==null)try{g.setBaseAndExtent(b.anchor,b.anchorOffset,b.focus,b.focusOffset)}catch{}}var pr=new Set(["html","head","body","frameset"]);function mr(t){return t.namespaceURI==="http://www.w3.org/1999/xhtml"&&pr.has(t.localName)}function vr(t){if(t===null||typeof t!="object")return!1;const e=t;if(typeof e.target!="string"||!or.test(e.target)||e.text!==void 0&&typeof e.text!="string")return!1;if(e.attrsSet!==void 0){if(e.attrsSet===null||typeof e.attrsSet!="object")return!1;for(const[n,o]of Object.entries(e.attrsSet))if(!wt.test(n)||typeof o!="string")return!1}if(e.attrsRemoved!==void 0){if(!Array.isArray(e.attrsRemoved))return!1;for(const n of e.attrsRemoved)if(typeof n!="string"||!wt.test(n))return!1}return!0}function _r(t,e){if(t===null||typeof t!="object")return!1;const{seq:n,elements:o}=t;if(typeof n!="number"||!Number.isSafeInteger(n)||!Array.isArray(o)||o.length===0||o.length>64)return!1;for(let a=0;a<o.length;a++)if(!e(o[a]))return!1;return!0}function yr(t){return t===null||typeof t!="object"?!1:_r(t.__frame_patch,vr)}function gr(t){if(t===null||typeof t!="object")return!1;const e=t.__frame_init;return e!==null&&typeof e=="object"}function wr(t){return t!==null&&typeof t=="object"&&t.__frame_size_poke===!0}function br(t){if(t===null||typeof t!="object")return!1;const e=t.__frame_host_visible;return e!==null&&typeof e=="object"&&typeof e.visible=="boolean"}function Er(t){if(t===null||typeof t!="object")return!1;const e=t.__frame_theme;if(e===null||typeof e!="object")return!1;const n=e.theme;return typeof n=="string"&&nr.includes(n)}var Sr=["ok","empty","snapshot_error","snapshot_timeout","unclonable","oversize","unavailable","restore_error","withheld"],Ar=["TypeError","RangeError","ReferenceError","SyntaxError","DataCloneError","QuotaExceededError","AbortError","TimeoutError","SecurityError","Error","other"];function kr(t){return typeof t=="string"&&Ar.includes(t)?t:"other"}var Rr=Object.freeze({until:null,now:!1}),Tr="__claude_hot",Lr="__claude_hot_in",Or=/^__claude_hot(?:_in)?(?::|$)/,Et=/^[0-9a-z]{1,32}$/,Ve=t=>t===void 0?Tr:"__claude_hot:"+t,ye=t=>t===void 0?Lr:"__claude_hot_in:"+t;function Mr(t,e){const n=[];for(let o=0;o<t.length;o++){const a=t.key(o);a!==null&&a!==e&&Or.test(a)&&n.push(a)}for(const o of n)t.removeItem(o)}function Pr(t){let e=null;try{e=U(JSON.parse(t)?.hot)}catch{return null}return e===null||typeof e.k!="string"||!Et.test(e.k)?null:ae(e.g)?{k:e.k,g:e.g}:{k:e.k}}var In=262144,Nr=3e3,Cr=5e3,St=/^[a-z0-9._:-]{1,64}$/,jr=["none","hot-restart","hard-reload"],Ir=["asset","doc","added","removed"],Fr=1500,Dr=/^[0-9a-f]{64}$/;function U(t){return t!==null&&typeof t=="object"?t:null}function ae(t){return typeof t=="number"&&Number.isInteger(t)&&t>=0&&t<2**31}function At(t){return t===void 0||typeof t=="number"&&Number.isFinite(t)}function xr(t){return t===void 0||typeof t=="string"&&St.test(t)}function kt(t){const e=U(t);return e!==null&&(e.until===null||typeof e.until=="number"&&Number.isFinite(e.until))&&typeof e.now=="boolean"}function Xe(t){const e=U(t);return e!==null&&typeof e.ver=="string"&&e.ver.length<=128&&At(e.seq)&&typeof e.handoff=="string"&&Sr.includes(e.handoff)&&xr(e.note)}function Hr(t){const e=U(t);return e!==null&&ae(e.gen)&&(e.phase==="final"||e.phase==="pending")&&(e.from===null||Xe(e.from))}function Br(t){const e=U(t);return e!==null&&e.kv===1&&ae(e.gen)&&Xe(e.from)&&Object.hasOwn(e,"data")}function qr(t){const e=U(t);return e!==null&&e.__frame_hot_snapshot===!0&&ae(e.gen)&&typeof e.timeoutMs=="number"&&e.timeoutMs>=0&&e.timeoutMs<=6e4&&(e.handoff===void 0||typeof e.handoff=="boolean")&&(e.deadline===void 0||kt(e.deadline))&&At(e.seq)&&(e.note===void 0||typeof e.note=="string")&&(e.key===void 0||typeof e.key=="string")}function Ur(t){const e=U(t);return e!==null&&e.__frame_hot_start===!0&&ae(e.gen)&&Xe(e.from)}function Gr(t){return typeof t=="string"&&t.length>=1&&t.length<=128}function Rt(t){return U(t)!==null&&!Array.isArray(t)}function zr(t){const e=U(t);return e!==null&&e.__frame_cap_grant===!0&&typeof e.cap=="string"&&Gr(e.ver)&&(e.grant===void 0||Rt(e.grant))&&(e.budgets===void 0||Rt(e.budgets)&&Object.values(e.budgets).every(Number.isFinite))&&(e.brokerGen===void 0||ae(e.brokerGen))}function Kr(t){const e=U(t);return e!==null&&e.__frame_cap_rewired===!0&&(e.caps===void 0||Array.isArray(e.caps)&&e.caps.every(n=>typeof n=="string"))&&(e.brokerGen===void 0||ae(e.brokerGen))}function Tt(t){const e=U(t);return e!==null&&typeof e.ver=="string"&&e.ver.length<=128&&Number.isFinite(e.seq)}function Lt(t){if(t==null||typeof t=="string")return!0;const e=U(t);return e!==null&&typeof e.doc=="string"&&typeof e.profile=="string"}function $r(t){const e=U(t);return e!==null&&typeof e.path=="string"&&Ir.includes(e.kind)&&Lt(e.from)&&Lt(e.to)}function Wr(t){return t===null?null:Object.freeze(t.filter($r))}function Vr(t){const e=U(t);return e!==null&&e.__frame_hot_update===!0&&Number.isFinite(e.id)&&Tt(e.from)&&Tt(e.to)&&(e.changed===null||Array.isArray(e.changed))&&jr.includes(e.required)&&kt(e.deadline)&&typeof e.verdictTimeoutMs=="number"&&e.verdictTimeoutMs>=0&&e.verdictTimeoutMs<=6e4&&(e.preflight===void 0||typeof e.preflight=="string"&&Dr.test(e.preflight))}var se=/^[\w.-]+\.js$/;function Xr(t,e,n){return n?"inert":typeof e=="string"&&se.test(e)?t?[e]:"inert":t?"inert":"framed"}var Ot=Object.freeze({[Symbol("claude.hot.restart")]:!0});function Mt(t,e){let n;try{n=t??sessionStorage}catch{return null}const o=Ve(e?.k),a=ye(e?.k);let s=null;try{s=n.getItem(o)}catch{}try{n.removeItem(o)}catch{}try{Mr(n,a)}catch{}let c=null;if(s!==null&&!(e!==null&&e.g===void 0))try{const d=JSON.parse(s);Br(d)&&(e===null||d.gen===e.g)&&(c=d)}catch{}if(c===null)try{n.removeItem(a)}catch{}return c}function Pt(){const t=/^\/_f\/([^/]{1,128})\//.exec(location.pathname);return t?t[1]:""}var Yr=/^[^/\\?#]{1,128}$/,Nt=t=>Yr.test(t)&&t!=="."&&t!=="..";function Ct(t,e,n){const o=new URL(t),a="/_f/"+e+"/";if(!e||!o.pathname.startsWith(a)||!Nt(n))return null;const s=o.search.slice(1).split("&").filter(c=>!/^__frame_t(?:=|$)/.test(c)).join("&");return o.origin+"/_f/"+n+"/"+o.pathname.slice(a.length)+(s?"?"+s:"")+o.hash}var Ce="{}";function ge(t){if(!t)return null;const e={ver:t.ver,handoff:t.handoff};return t.seq!==void 0&&(e.seq=t.seq),t.note!==void 0&&(e.note=t.note),e}function jt(t,e){return t!==null&&t.note===void 0&&e?.note!==void 0?{...t,note:e.note}:t}function It(t){const e=t?.k;return e!==null&&typeof e=="object"?e:void 0}function Jr(t,e,n,o=null){const a=setTimeout,s=clearTimeout,c=queueMicrotask,d=performance.now.bind(performance),L=new TextEncoder;let g=null,b=null;try{g=history,b=g.replaceState.bind(g)}catch{}const m=(...r)=>{try{console.warn(...r)}catch{}};let O=Pt(),v=null;try{v=sessionStorage}catch{}const h={storage:v,fetch:typeof fetch=="function"?fetch.bind(globalThis):null,entry:location.origin+location.pathname+location.search,ver:O,key:o?.k};let R=o?.k;const B=typeof requestAnimationFrame=="function"?requestAnimationFrame:r=>a(()=>r(d()),16);let _=e?.data??{},C=ge(e?.from),T=e?.gen??0,F=e!==null,W=!1,Q=!1,V=null,Se=!1;const Ae=new AbortController;let ke=null,q=null,Re=null,Te=!1,l=()=>{};const p=new Promise(r=>{l=r});let w=!1,D=!1,j=!1,x,P=null,ce=!1,xe=!1,re=!1,Le=!1,ne=!1,de=!1;const oe=r=>{for(const u of[Ve(r),ye(r)])try{v?.removeItem(u)}catch{}},H=(r,u)=>{try{u!==null&&n.post(r,u)}catch{}},he=()=>ne||=re&&(q===null||Le),X=()=>{const r={__frame_hot:!0,ready:q!==null,accept:Re!==null,demand:!0};de=!ne,de&&(r.booting=!0),w&&(r.readData=!0),j&&(r.threw=!0),P?.assess&&(r.preflight=!0),H(r,V)};let Oe=!1,Me=!1,i=!1,E=!1;const y=()=>{Oe||!Se||i||(Oe=!0,H({__frame_reveal_hold:!0},"*"))},N=()=>new Promise(r=>{let u,f=0;const S=I=>{if(u===void 0)u=I;else if(I!==u||++f>=8){r();return}try{B(S)}catch{r()}};try{B(S)}catch{r()}}),Y=()=>{i=!0,H({__frame_reveal_ready:!0},"*")},$=r=>{Me||(Me=!0,r.then(u=>{if(u===!1)return;let f=null;try{f=P?.settle?.()??null}catch{}return(f===null?N():new Promise(S=>{a(S,50),Promise.resolve(f).then(S,S)}).then(N)).then(Y)}))},Pe=()=>{if(E||!i)return;E=!0;const r=()=>{try{P?.afterReveal?.()}catch{}};r(),N().then(()=>{r(),Y()})},He=(r=!1)=>{if(Te||q===null||!F||!Q)return;Te=!0;const u=q,f=_;c(()=>{let S;try{S=u(f)}catch(G){throw l(!1),G}let I=!1;try{I=typeof S?.then=="function"}catch{}if(!I){l(!0);return}Promise.resolve(S).then(()=>l(!0),G=>{l(!1),c(()=>{throw G})})}),$(r?p:n.dcl.then(()=>p))},Be=r=>typeof r=="string"&&St.test(r)?r:void 0,ct=r=>{const u={__frame_hot_restart:!0},f=Be(r?.note);f!==void 0&&(u.note=f),r?.required==="hard-reload"&&(u.required="hard-reload"),H(u,V)},Vt=Object.freeze({get data(){return Q||(D=!0),!F&&!w&&(w=!0,Q&&X()),_},get from(){return C},get gen(){return T},signal:Ae.signal,snapshot(r){typeof r=="function"&&(ke=r)},ready(r){typeof r!="function"||q!==null||(q=r,y(),X(),W&&H({__frame_hot_ready:!0,gen:T},V),He())},accept(r){typeof r=="function"&&(Re=r,X())},restart(r){const u={note:r?.note,required:r?.required};if(Q){ct(u);return}const f=x;x={note:Be(f?.note)??u.note,required:f?.required==="hard-reload"||u.required==="hard-reload"?"hard-reload":void 0}}});let qe=null,Xt=()=>{};const kn=new Promise(r=>{Xt=r});let Rn=null;const Yt=()=>Rn??=n.dcl.then(()=>{let r=!1;try{r=qe!==null&&qe.expect()}catch{}if(!r)return;const u=qe.maxMs;return new Promise(f=>{kn.then(f),a(f,u)})}),Jt=()=>{if(!ce||xe||P===null)return;xe=!0;const r=P;Yt().then(()=>{try{i||r.afterStart(It(e),!1)}catch{}})},Zt=r=>{e!==null&&D&&(w=!0),_={},C=null,T=0;try{v?.removeItem(ye(o?.k))}catch{}e!==null&&!r&&$(n.dcl.then(()=>q!==null?p:void 0))},Tn=()=>{ce=!0,$(Yt().then(()=>q!==null?p:void 0)),Jt()};try{addEventListener("error",()=>{j||q!==null||(j=!0,X())})}catch{}const Qt=()=>{a(()=>{!ne&&he()&&de&&X()},0)};try{re=document.readyState==="complete",re||addEventListener("load",()=>{re=!0,Qt()},{once:!0})}catch{re=!0}he(),p.then(()=>{Le=!0,Qt()});let ue=-1,ut,ft,Ne=!0,dt=!1,ht,Ue=null;const pt=r=>{const u=Ue===null;Ue=Ne&&r[0]!=="withheld"?r:["withheld",r[1],Ce];let f=r[0];if(Ne&&f!=="withheld"){const I={ver:O,handoff:f};ut!==void 0&&(I.seq=ut),ft!==void 0&&(I.note=ft);try{if(v===null)throw new Error("no storage");v.setItem(Ve(R),'{"kv":1,"gen":'+ue+',"from":'+JSON.stringify(I)+(ht!==void 0?',"k":'+JSON.stringify(ht):"")+',"data":'+(f==="ok"?r[2]:Ce)+"}")}catch{f="unavailable"}}else{f="withheld",oe(R);try{P?.release?.()}catch{}}const S={__frame_hot_snapshotted:!0,gen:ue,handoff:f,bytes:r[1]};r[3]!==void 0&&(S.errName=r[3]),H(S,V),u&&(f==="snapshot_error"||f==="unclonable"||f==="oversize")&&m("claude.hot: snapshot",f,r[3])},pe=r=>{try{return kr(r?.name)}catch{return"other"}},me=(r,u,f=0)=>pt(u===void 0?[r,f,Ce]:[r,f,Ce,pe(u)]),Ln=r=>{if(r.gen<=ue)return;const u=ue>=0;if(ue=r.gen,ut=r.seq,ft=Be(r.note),typeof r.key=="string"&&Et.test(r.key)&&r.key!==R&&(oe(R),R=r.key),Ne&&=r.handoff!==!1,u){Ue!==null?pt(Ue):dt&&H({__frame_hot_held:!0,gen:ue},V);return}Ae.abort();const f=Object.freeze({handoff:Ne,timeoutMs:r.timeoutMs,deadline:r.deadline??Rr}),S=ke,I=()=>{if(Ne)try{ht=P?.capture()}catch{}if(S===null){me("empty");return}let k=!1;const z=a(()=>{k||(k=!0,me("snapshot_timeout"))},Math.max(0,f.timeoutMs));Promise.resolve().then(()=>S(f)).then(ve=>{if(k)return;k=!0,s(z);let ee;try{ee=JSON.stringify(ve)}catch(mt){me("unclonable",mt);return}if(typeof ee!="string"){me("unclonable");return}let te=ee.length;try{te=L.encode(ee).length}catch{}if(te>262144){me("oversize",void 0,te);return}pt(["ok",te,ee])},ve=>{k||(k=!0,s(z),me("snapshot_error",ve))})};let G=null;try{G=P?.holdForIme()??null}catch{}if(G===null)I();else{dt=!0,H({__frame_hot_held:!0,gen:ue},V);const k=()=>{dt=!1,I()};G.then(k,k)}},On=r=>{if(!W||F||q===null||r.gen!==T)return;let u=null;try{u=Mt(v,o&&{k:o.k,g:r.gen})}catch{}if(u!==null&&u.gen!==r.gen){u=null;try{v?.removeItem(ye(o?.k))}catch{}}_=u?.data??{},C=jt(ge(u?.from??r.from),ge(r.from)),u!==null&&(T=u.gen),F=!0,W=!1;const f=It(u);p.then(S=>{try{S&&P?.afterStart(f,!0)}catch{}}),He(!0)};let Ge=0;const Mn=r=>{const u=Re;if(u===null||r.id<=Ge)return;Ge=r.id;const f=P?.assess;if(r.preflight===void 0||f===void 0){er(r,u);return}let S=!1;const I=z=>{S||(S=!0,s(k),r.id===Ge&&er(r,u,z))},G=()=>I(f.timeout(r)),k=a(G,Fr+100);f.run(r,window).then(I,G)},er=(r,u,f)=>{let S,I=!1,G=!1,k,z,ve=null;const ee=A=>{if(G)return!1;if(k!==void 0&&k!==A)return m(`claude.hot: u.${A}() ignored - u.${k}() was called first`),!1;const Z=k===void 0;return k=A,Z},te=A=>{k="restart",m(`claude.hot: ${A} - restarting`)},mt=()=>{if(!ee("adopt")||r.id!==Ge)return;const A=r.to.ver;if(ze.required!=="none"){te(`u.adopt() needs required 'none', it is '${ze.required}'`);return}if(!Nt(A)){te("u.adopt() cannot address this version");return}if(!O||A===O)return;const Z=O,J=h.entry;let Ke="",_t,_e=null,$e;try{Ke=location.href,_t=g.state,_e=Ct(Ke,Z,A),_e!==null&&(b(_t,"",_e),location.pathname.startsWith("/_f/"+A+"/")?_e=location.href:$e="navigate event canceled")}catch(gt){$e=pe(gt)}if($e!==void 0){z="adopt_failed",te(`adopt_failed ${$e}; URL not changed`);return}_e===null?(z="adopt_skipped",m(`claude.hot: adopt_skipped - page already left /_f/${Z}/; URL not changed, update still applied`)):z="adopted",O=h.ver=A;try{h.entry=Ct(J,Z,A)??J}catch{}const yt=_e;ve=()=>{if(O===A){if(yt!==null)try{if(location.href!==yt)m("claude.hot: adopt_revert_skipped - update not applied; URL left where the page navigated");else{if(b(_t,"",Ke),location.href!==Ke){m("claude.hot: adopt_revert_failed navigate event canceled - URL still at the new version");return}z="adopt_reverted",m("claude.hot: adopt_reverted - adopt() was called but the handler threw; URL restored")}}catch(gt){m(`claude.hot: adopt_revert_failed ${pe(gt)} - URL still at the new version`);return}O=h.ver=Z,h.entry=J,yt===null&&(z=void 0)}}},ze=Object.freeze({from:{ver:r.from.ver,seq:r.from.seq},to:{ver:r.to.ver,seq:r.to.seq},changed:Wr(r.changed),required:r.required,deadline:r.deadline,adopt:mt,defer(){return ee("defer")&&ze.deadline.now&&te("u.defer() past the deadline"),Ot},restart(A){return ee("restart"),k==="restart"&&!G&&(S??=Be(A?.note),I||=A?.required==="hard-reload"),Ot},...f?.update}),Pn=(A,Z)=>{G=!0,A==="threw"?(ve?.(),S??=pe(Z).toLowerCase()):k===void 0&&m(A==="timeout"?"claude.hot: accept handler did not answer in time - restarting":"claude.hot: accept handler settled without defer/restart/adopt - restarting");const J={__frame_hot_verdict:!0,id:r.id};J.verdict=A==="threw"||k===void 0||k==="restart"?"restart":k==="adopt"?"applied":"deferred",J.verdict==="restart"&&(I&&(J.required="hard-reload"),S!==void 0&&(J.note=S)),z!==void 0&&(J.verdict==="applied"||z!=="adopted")&&(J.adopt=z),H(Object.assign(J,f?.verdict),V)};let tr=!1;const vt=(A,Z)=>tr?!1:(tr=!0,s(Nn),Pn(A,Z),!0),Nn=a(()=>vt("timeout"),r.verdictTimeoutMs);Promise.resolve().then(()=>u(ze)).then(()=>vt("settled"),A=>{!vt("threw",A)&&k==="adopt"&&ct({note:pe(A).toLowerCase()}),m("claude.hot: accept",pe(A))})};try{t.hot===void 0&&Object.defineProperty(t,"hot",{value:Vt,writable:!1,configurable:!1,enumerable:!1})}catch{}return{hot:Vt,boot:h,afterConnect(){Se=!0,(e!==null||q!==null)&&y()},onInit(r,u){V=u,Q=!0;const f=Hr(r)?r:null;f?.phase==="final"&&e!==null&&e.gen===f.gen?(F=!0,C=jt(C,ge(f.from)),Tn()):(W=f?.phase==="pending",Zt(W),F=!W,T=f?.gen??0,C=ge(f?.from)),X(),de&&a(()=>{ne||(ne=!0,X())},Cr),W&&q!==null&&H({__frame_hot_ready:!0,gen:T},u),x!==void 0&&(ct(x),x=void 0),He()},onNoInit(){Q=!0,Zt(!1),F=!0,He()},onShell(r){return r?.__frame_revealed===!0?(Pe(),!1):qr(r)?(Ln(r),!0):Ur(r)?(On(r),!0):Vr(r)?(Mn(r),!0):!1},attachExtras(r){P=r,Jt(),r.assess&&X()},inSlot:()=>ye(R),hydration(r,u){qe??={expect:r,maxMs:u}},hydrated(){Xt()},carried(){return F?_:{}},presented:()=>i}}var Fn="frame_ldx_runtime",Zr="frame_ldx_build",Dn="script#an-form",Qr=256;function Ft(t,e,n){for(const o of t)n(o)&&t.delete(o);t.size>=Qr&&!t.has(e)&&t.delete(t.values().next().value),t.add(e)}function Ye(t,e,n){try{const o=t[e];if(typeof o!="function")return;t[e]=function(...a){const s=o.apply(this,a);try{n(this)}catch{}return s}}catch{}}var Je;function en(){if(Je)return Je;const t={media:new Set,contexts:new Set,onStart:null,onPause:null};Je=t;const e=window.HTMLMediaElement?.prototype;e&&(Ye(e,"play",a=>{Ft(t.media,a,s=>s.paused),t.onStart?.(a)}),Ye(e,"pause",a=>t.onPause?.(a)));const n=window.AudioContext,o=window.AudioNode?.prototype;return n&&o&&Ye(o,"connect",a=>{const s=a.context;s instanceof n&&(Ft(t.contexts,s,c=>c.state==="closed"),t.onStart?.(s))}),t}function tn(t){let e=window;for(let n=0;e.parent&&e.parent!==e&&n<8;n++)if(e=e.parent,t(e))return!0;return!1}function rn(){let t=null;const e=()=>t??parent,n=o=>t?o===t:tn(a=>a===o);return{post(o,a){if(t){e().postMessage(o,a);return}let s=parent;for(let c=0;c<8&&(s.postMessage(o,a),!(!s.parent||s.parent===s));c++)s=s.parent},on(o){const a=s=>{const c=s.source;n(c)&&o(s.data,s.origin,s.isTrusted,()=>{t??=c})};return addEventListener("message",a),()=>removeEventListener("message",a)},port:o=>({post(a,s){if(s?.activation){e().postMessage(a,{targetOrigin:o,includeUserActivation:!0});return}if(s?.transfer){e().postMessage(a,o,s.transfer);return}e().postMessage(a,o)},on(a,s){const c=d=>{n(d.source)&&d.origin===o&&a(d.data,d)};return addEventListener("message",c,s),()=>removeEventListener("message",c,s)}})}}function nn(){const t={post:()=>{},on:()=>()=>{}};return{...t,port:()=>t}}var on=500,an=2e4,sn="data-token-reads",ln=/(?:^|\s)stylesheet(?:\s|$)/i;function cn(t,e){let n="";if(t instanceof HTMLScriptElement?n=t.src:t instanceof HTMLLinkElement&&ln.test(t.rel)&&(n=t.href),!n)return null;try{const o=new URL(n);return o.origin===location.origin&&o.pathname.startsWith(e)?o.origin+o.pathname:null}catch{return null}}function un(t,e,n){if(!t||e!=="query")return;const o="/_f/"+t+"/",a=location.href,s=fetch,c=setTimeout,d={method:"HEAD",cache:"no-store",credentials:"same-origin"},L=h=>h.ok||h.status===304;let g=!1,b=!1;const m=()=>removeEventListener("error",v,!0),O=async h=>{const R=await s(h,d);if(L(R))b=!0;else if(R.status===403){const B=await s(a,d);if(L(B)){const _=(await s(h,d)).status;_===403?(b=!0,n()):_<500&&(b=!0)}else B.status>=400&&B.status<500&&(b=!0)}},v=h=>{if(b||g)return;if(document.documentElement.hasAttribute(sn)){b=!0,m();return}const R=cn(h.target,o);R&&(g=!0,c(()=>{O(R).catch(()=>{}).finally(()=>{g=!1,b&&m()})},on))};addEventListener("error",v,!0),addEventListener("load",m,{once:!0}),c(m,an)}var Ze="__frame_scroll",fn=150,dn=310,hn=160,pn=3e4;function mn(){let t=0,e=!1,n=!1,o=!1,a=0,s=null;const c=_=>{try{sessionStorage.setItem(Ze,JSON.stringify({y:_}))}catch{}},d=()=>{if(clearTimeout(t),s===null)return;const _=s;s=null,c(_)},L=()=>{if(e){e=!1;return}n=!0,s=scrollY,clearTimeout(t),t=setTimeout(d,fn)};try{addEventListener("scroll",L,{passive:!0}),addEventListener("pagehide",d)}catch{}const g=()=>{let _;try{_=sessionStorage.getItem(Ze)}catch{return null}if(_===null)return null;let C;try{C=JSON.parse(_)}catch{C=null}const T=C?.y;if(!(typeof T=="number"&&Number.isFinite(T)&&T>=0)){try{sessionStorage.removeItem(Ze)}catch{}return null}return T};let b=!1;const m=_=>{try{const C=scrollY;scrollTo({top:_,left:0,behavior:"instant"}),a=_,o=!0,clearTimeout(t),s=null,c(_);const T=scrollY;T!==C&&(e=!0),T!==_&&!b&&(b=!0,addEventListener("load",()=>{try{if(scrollY===T){const F=g();m(F!==null?F:a)}}catch{}},{once:!0}))}catch{}},O=()=>{try{return!!location.hash}catch{return!0}};let v=!1;const h=()=>{try{if(v||innerWidth>dn||innerHeight>hn)return;v=!0;const _=Date.now(),C=()=>{try{removeEventListener("resize",C)}catch{}if(Date.now()-_>pn||n||O())return;const T=g();m(T!==null?T:a)};addEventListener("resize",C)}catch{}};let R=!1,B=!1;return{restore(){if(R||(R=!0,O()))return;const _=g();_!==null&&(m(_),h())},promoted(){if(B||(B=!0,O()))return;const _=g();_!==null?(m(_),h()):o&&m(a)}}}function vn(t,e,n,o){let a=null;try{a=window.trustedTypes?.createPolicy("frame-runtime",{createScriptURL:L=>L})??null}catch{}const s=window.Worker,c=s?.prototype,d=Object.freeze({Worker:s,workerOn:c?.addEventListener,workerPost:c?.postMessage,workerTerminate:c?.terminate,fetch:window.fetch.bind(window),preventDefault:Event.prototype.preventDefault,now:Date.now,policy:a,origins:e});n(t).then(L=>L?.bootTopLevel?L.bootTopLevel(d,o):o.settle()).catch(()=>o.settle())}var xn="modulepreload",Hn=function(t){return"/"+t},Bn={},_n=function(e,n,o){let a=Promise.resolve();function s(c){const d=new Event("vite:preloadError",{cancelable:!0});if(d.payload=c,window.dispatchEvent(d),!d.defaultPrevented)throw c}return a.then(c=>{for(const d of c||[])d.status==="rejected"&&s(d.reason);return e().catch(s)})},yn=window===top,Dt=Object.getOwnPropertyDescriptor(window,"claude"),je=Xr(yn,window.__FRAME_PREAMBLE?.topLevel,Dt?.writable===!1),Qe=typeof je=="object"&&je[0],M=Qe?nn():rn();(function(){const t=Object.defineProperty,e=globalThis,n=["RTCPeerConnection","webkitRTCPeerConnection","RTCDataChannel","RTCIceCandidate","RTCSessionDescription","RTCRtpSender","RTCRtpReceiver"];let o=0;for(let a=0;a<n.length;a++){const s=n[a];try{t(e,s,{value:void 0,writable:!1,configurable:!1})}catch{try{delete e[s]}catch{}try{t(e,s,{value:void 0,writable:!1,configurable:!0})}catch{}}typeof e[s]=="function"&&o++}if(o&&je==="framed")try{M.post({__frame_rtc_lockdown_failed:o},"*")}catch{}})();var xt=1e4,gn=2e3,et=2e3,Ht=Object.freeze([...window.__FRAME_PREAMBLE?.origins??["https://claude.ai","https://preview.claude.ai"]]);function Bt(t){for(const e of Ht)if(e.endsWith(":*"))try{const n=new URL(t);if(`${n.protocol}//${n.hostname}:*`===e)return!0}catch{}else if(t===e)return!0;return!1}var we=Object.freeze({...window.__FRAME_PREAMBLE?.capabilities}),Ie=window.__FRAME_PREAMBLE?.transforms,tt=window.__FRAME_PREAMBLE?.comments,rt=window.__FRAME_PREAMBLE?.translate,be=window.__FRAME_PREAMBLE?.ldx,wn=window.__FRAME_PREAMBLE?.cred;function qt(t){return _n(()=>import("/_runtime/"+t),void 0)}var Ee=new Set,bn=setTimeout,En=800+800*Math.random();function ie(t){return qt(t).catch(()=>new Promise(e=>bn(e,En)).then(()=>qt(t+"?r=1")).then(e=>(e!==void 0&&Ee.add(t),e)))}function Ut(t,e,n){return{contract:t.contract,changes:new Set(t.changes??[]),flags:new Set(t.flags??[]),capabilities:t.capabilities??{},capBudgets:t.capBudgets??{},brokerGen:t.brokerGen,transforms:new Map,shellOrigin:e,shell:n,mount:lt,hooks:Fe,pipe:()=>({wrap:(o,a)=>(...s)=>{try{return a(...s)}catch(c){return Promise.reject(c)}}})}}var fe=null,K=null;function Gt(t,e,n){try{Object.defineProperty(t,e,{value:n,writable:!1,configurable:!1,enumerable:!0})}catch{try{Object.defineProperty(t,e,{value:n,writable:!1,configurable:!0,enumerable:!0})}catch{}}}var nt=!1,Fe={editBefore:null,edit:null};function Sn(t,e,n=!1){const o=[];let a;if(n)try{Fe.editBefore?.(t)}catch{}for(const s of t.elements){const c=document.querySelector(`[data-id="${s.target}"]`);if(!c){a=s.target;break}if([...Object.keys(s.attrsSet??{}),...s.attrsRemoved??[]].some(d=>!sr(d)||ir(c,d))){a=s.target;break}if(s.text!==void 0&&(!fr(c)||mr(c))){a=s.target;break}for(const[d,L]of Object.entries(s.attrsSet??{}))if(!Kt(c,d)){try{c.setAttribute(d,L)}catch{}zt(c,d,L)}for(const d of s.attrsRemoved??[])Kt(c,d)||(c.removeAttribute(d),zt(c,d,null));typeof s.text=="string"&&hr(c,s.text),o.push(s.target)}if(n)try{Fe.edit?.(t.seq,o,a)}catch{}if(a!==void 0){M.post({__frame_patch_miss:{seq:t.seq}},e);return}try{document.dispatchEvent(new CustomEvent("claude:edit",{detail:{seq:t.seq,targets:o}}))}catch{}}function zt(t,e,n){if(!(t instanceof HTMLInputElement))return;const o=e.toLowerCase();o==="checked"?t.checked=n!==null:o==="value"&&t.type!=="file"&&(t.value=n??"")}function Kt(t,e){const n=e.toLowerCase(),o=t;return n==="data-id"||(n==="value"||n==="checked")&&(o.__artifactSecret===!0||/^(password|hidden|file)$/.test(o.type??"")||/(^|\s)(cc-|one-time-code|current-password|new-password)/i.test(`${t.getAttribute("autocomplete")??""} ${o.autocomplete??""}`))}function $t(t){const e=document.documentElement;t==="light"||t==="dark"?(e.dataset.theme=t,e.style.colorScheme=t,nt=!0):nt&&(delete e.dataset.theme,e.style.colorScheme="",nt=!1)}var le=new Map,ot=null;function at(){let t;const e={u:new Promise(n=>{t=n}),r:n=>{e.done=!0,t(n)},done:!1,nulled:!1};return e}function De(t,e){t.nulled=!0,t.ver=e,t.r(null)}function st(t,e){for(const[n,o]of le)o.done||(e&&o.asked?e(n,o):De(o,t))}var An=Object.freeze(Object.assign(Object.create(null),{call:Function.prototype.call,apply:Function.prototype.apply,bind:Function.prototype.bind})),it=!1,lt=(t,e)=>{let n=le.get(t);if(n?.nulled&&it)n=at(),le.set(t,n);else if(!n||n.done){n?.nulled&&K&&M.post({__frame_cap_telemetry:{kind:"cap-load-error",cap:t,phase:"install"}},K);return}const o=typeof e=="function"?Object.setPrototypeOf(e,An):Object.assign(Object.create(null),e);typeof o.then=="function"&&delete o.then,n.want=void 0,n.r(Object.freeze(o))};function Wt(){const t=Dt?.value??{};Gt(window,"claude",t);for(const e of Object.keys(we)){if(t[e]!==void 0){Gt(t,e,t[e]);continue}le.set(e,at())}if(t.use===void 0){const e=n=>{if(typeof n!="string"||!Object.hasOwn(we,n))return Promise.resolve(null);let o=le.get(n);return o?(ot&&(o.nulled||o.want!==void 0)&&(o=ot(n,o)),o.asked=!0,o.u):Promise.resolve(t[n]??null)};try{Object.defineProperty(t,"use",{value:e,writable:!0,configurable:!0,enumerable:!1})}catch{}}return t}if(je==="framed"){const t=Ie&&se.test(Ie)?ie(Ie).catch(()=>{}):Promise.resolve(void 0),e=l=>{if(l.type==="auxclick"&&l.button!==1)return;const p=l.target,w=p&&p.closest?p.closest("a[href],area[href]"):null;if(!w)return;const D=w.getAttribute("href");if(!D)return;let j;try{j=new URL(D,document.baseURI)}catch{return}if((j.protocol==="http:"||j.protocol==="https:")&&j.origin!==location.origin){l.preventDefault();const x=(w.getAttribute("target")??"").toLowerCase(),P=l.type==="auxclick"||l.metaKey||l.ctrlKey||l.shiftKey||l.altKey||!["","_self","_top","_parent"].includes(x);M.post({__frame_nav:!0,url:j.href,newTab:P},"*")}};addEventListener("click",e,!0),addEventListener("auxclick",e,!0);const n={},o=l=>{l.isTrusted&&(n.pointer=!0)},a=l=>{l.isTrusted&&(n.click=!0)};addEventListener("pointermove",o,{capture:!0,passive:!0}),addEventListener("click",a,{capture:!0,passive:!0});const s={cb:null};addEventListener("keydown",l=>s.cb?.(l),!0);const c={cb:null};addEventListener("keydown",l=>c.cb?.(l));const d=en();t.then(l=>l?.installEscapeForward?.(s,p=>{K&&M.post(p,K)})),t.then(l=>{try{l?.installFocusKeep?.()}catch{}}),t.then(l=>{if(!l?.wireNav)return;const p=M.port("*");l.wireNav(p),removeEventListener("click",e,!0),removeEventListener("auxclick",e,!0),removeEventListener("pointermove",o,!0),removeEventListener("click",a,!0),l.wireEngagement?.(n,p,d)});let L=null;try{L=mn()}catch{}const g=document.readyState==="loading"?new Promise(l=>document.addEventListener("DOMContentLoaded",()=>l(),{once:!0})):Promise.resolve();let b=null,m=null;try{m=Pr(window.name),b=Mt(null,m)}catch{}const O=Wt();let v=null;try{v=Jr(O,b,{post:(l,p)=>M.post(l,p),dcl:g},m)}catch{}t.then(l=>{try{v&&l?.installHotExtras?.(v)}catch{}});let h=null;const R=()=>Array.isArray(h?.flags)&&h.flags.includes("frame_ldx_runtime")&&!!be&&se.test(be)&&document.querySelector("script#an-form")!==null;try{v?.hydration(R,Nr)}catch{}let B=null,_=0;const C=M.on((l,p,w,D)=>{Bt(p)&&gr(l)&&(D(),h=l.__frame_init,K=p,C(),clearTimeout(_),B?.())});M.post({__frame_connect:!0},"*");try{v?.afterConnect()}catch{}const T=setTimeout,F=clearTimeout;let W=()=>NaN,Q=()=>[];try{W=performance.now.bind(performance),Q=performance.getEntriesByType.bind(performance)}catch{}let V=0;const Se=()=>{try{M.post({__frame_alive:!0},"*")}catch{}V=T(Se,gn)},Ae=()=>F(V);Se(),addEventListener("load",Ae,{once:!0});const ke=new Promise(l=>{B=l,_=setTimeout(()=>{C(),l()},xt)}),q=new WeakSet;addEventListener("error",l=>{l.target&&q.add(l.target)},!0);try{un(Pt(),wn,()=>{t.then(l=>{try{l?.drawRefusedNotice?.()}catch{}})})}catch{}const Re=()=>{let l=[];try{l=[...document.querySelectorAll("link[rel~=stylesheet]:not([rel~=alternate])")].filter(w=>!w.sheet&&!w.disabled&&!q.has(w)&&w.getAttribute("href")&&URL.canParse(w.href)&&(!w.media||matchMedia(w.media).matches))}catch{}let p=l.length;return p===0?Promise.resolve():new Promise(w=>{try{const D=et-W(),j=T(w,D>0?D<et?D:et:0),x=()=>{--p===0&&(F(j),w())};for(const P of l)P.addEventListener("load",x,{once:!0}),P.addEventListener("error",x,{once:!0})}catch{w()}})};g.then(()=>{try{L?.restore()}catch{}}),Promise.all([ke,g,t]).then(([,,l])=>{if(h?.hostOverlays!==!0||!K)return;let p=!1;try{p=l?.declaresCover?.()===!0}catch{}M.post({__frame_layout:{cover:p}},K)});const Te={cb:null};M.on((l,p)=>{if(Bt(p)&&wr(l)){try{L?.promoted()}catch{}Te.cb?.()}}),ke.then(async()=>{if(!h||!K){st();try{v?.onNoInit()}catch{}return}if($t(h.theme),h.hostVisible===!1&&t.then(i=>i?.applyHostVisible?.(!1,d)),h.hostKeys!==void 0){const i=K,E=h.hostKeys;t.then(y=>y?.installHostKeyForward?.(c,E,N=>M.post(N,i)))}try{v?.onInit(h.hot,K)}catch{}const l=K,p=M.port(l),w=(i,E)=>M.post({__frame_cap_telemetry:{kind:"cap-load-error",cap:i,phase:E}},l),D=i=>M.post({__frame_cap_recovered:{cap:i}},l);let j=h.brokerGen;const x=()=>v?.boot.ver??"",P=x(),ce=(i,E)=>{const y=x();F(E.t),E.want=y,E.t=T(()=>{E.done||De(E,y)},xt),M.post({__frame_cap_want:!0,cap:i,ver:y},l)},xe=(i,E)=>{const y=le.get(i.cap),N=we[i.cap];if(!E||!y||y.done||y.want!==i.ver||!se.test(N))return;if(F(y.t),y.want=void 0,j=i.brokerGen??j,i.ver!==x()){ce(i.cap,y);return}if(!i.grant||i.cap==="network"){De(y,i.ver);return}const Y=fe,$=fe={...Y,capabilities:{...Y.capabilities,[i.cap]:i.grant},capBudgets:{...Y.capBudgets,[i.cap]:{...Y.capBudgets[i.cap],...i.budgets}}};ie(N).then(Pe=>{Ee.has(N)&&D(i.cap),$.brokerGen=j,it=!0;try{Pe?.install?.($)}catch{w(i.cap,"install")}finally{it=!1}},()=>w(i.cap)).then(()=>{y.done||De(y,i.ver)})};let re=!1,Le=!1;M.on((i,E,y)=>{if(E!==l)return;try{if(v?.onShell(i))return}catch{}if(Er(i)&&$t(i.__frame_theme.theme),zr(i)&&xe(i,y),y&&Kr(i)&&(j=i.brokerGen??j),br(i)){const $=i.__frame_host_visible.visible;t.then(Pe=>Pe?.applyHostVisible?.($,d))}yr(i)&&Sn(i.__frame_patch,l,y);const N=i?.__fc_mode;N&&typeof N=="object"&&!re&&tt&&se.test(tt)&&(re=!0,ie(tt).then($=>$.install?.(l,N.on===!0,p)).catch(()=>{}));const Y=i?.__ft_cmd;Y&&typeof Y=="object"&&!Le&&rt&&se.test(rt)&&(Le=!0,ie(rt).then($=>$.install?.(l,Y,p)).catch(()=>{}))});const ne=Object.keys(h.capabilities??{}).filter(i=>Object.hasOwn(we,i)).map(i=>[i,we[i]]).filter(i=>typeof i[1]=="string"&&se.test(i[1])),de=await Promise.allSettled(ne.map(([,i])=>ie(i))),oe=await t,H=l;if(oe?.buildBoot||w("_transforms"),oe?.buildBoot)try{fe=oe.buildBoot(h,oe.TRANSFORMS??{},{shellOrigin:H,mount:lt,hooks:Fe,shell:p},i=>M.post({__frame_cap_telemetry:i},H))}catch{w("_transforms","install"),fe=Ut(h,H,p)}else fe=Ut(h,H,p);oe?.buildBoot&&Ee.has(Ie??"")&&D("_transforms");const he=fe;he.brokerGen=j,de.forEach((i,E)=>{const[y,N]=ne[E];if(i.status!=="fulfilled"){w(y);return}Ee.has(N)&&D(y);try{i.value?.install?.(he)}catch{w(y,"install")}});const X=h.capWants===!0;X&&(ot=(i,E)=>{const y=x();if(!y)return E;if(!E.nulled)return E.want!==y&&ce(i,E),E;if(y===E.ver)return E;const N=at();return le.set(i,N),ce(i,N),N}),st(P,X&&x()!==P?ce:void 0),await g,await Re(),Ae();const Oe=rr(Q,W);M.post(Oe?{__frame_ready:!0,nav:Oe}:{__frame_ready:!0},K),t.then(i=>{i?.installSizeReporter?.(H,Te,p),i?.installPaintReporter?.(p)});let Me=!1;try{Me=R()}catch{}be&&Me?ie(be).then(i=>i?.boot?.({shellOrigin:l,build:he.flags.has(Zr),hot:v?.hot??null,carried:v?.carried(),presented:()=>v?.presented()??!0})).catch(()=>!1).then(i=>{v?.hydrated(),i!==!0?w("_ldx"):Ee.has(be)&&D("_ldx")}):v?.hydrated()})}else Qe&&(Wt(),vn(Qe,Ht,ie,{settle:st,mount:lt}))})();</script><!-- /frame-runtime -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Friend Finder System</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --sky:#29BCD4;--sky-dark:#1AA3B8;--sky-light:#A8E6F0;
+  --bg:#EBF8FD;--white:#fff;--card:#F4FBFD;
+  --text:#1A2E35;--mid:#4A7080;--muted:#8AADB8;
+}
+html,body{height:100%;overflow:hidden;font-family:'Cairo',sans-serif;background:var(--bg)}
+
+/* ── shell ── */
+#app{display:flex;flex-direction:column;height:100vh}
+
+/* ── navbar ── */
+nav{background:var(--sky);height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+nav .brand{color:#fff;font-size:17px;font-weight:700}
+nav .controls{display:flex;align-items:center;gap:10px}
+.counter{color:#fff;font-size:13px;opacity:.85;min-width:46px;text-align:center}
+.nbtn{background:rgba(255,255,255,.18);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:17px;transition:.2s;display:flex;align-items:center;justify-content:center}
+.nbtn:hover{background:rgba(255,255,255,.35)}
+.nbtn:disabled{opacity:.3;cursor:default}
+.dl{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.45);color:#fff;padding:4px 13px;border-radius:18px;cursor:pointer;font-size:12px;font-family:'Cairo',sans-serif;font-weight:700;transition:.2s}
+.dl:hover{background:rgba(255,255,255,.3)}
+
+/* ── stage ── */
+#stage{flex:1;overflow:hidden;position:relative}
+.slide{position:absolute;inset:0;padding:32px 44px 24px;display:none;flex-direction:column;animation:fi .3s ease}
+.slide.active{display:flex}
+@keyframes fi{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ── dots ── */
+#dots{display:flex;justify-content:center;gap:7px;padding:9px;flex-shrink:0;background:var(--white)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--sky-light);cursor:pointer;transition:.25s}
+.dot.on{background:var(--sky);transform:scale(1.35)}
+
+/* ── shared ── */
+h1{font-size:28px;font-weight:900;color:var(--text);margin-bottom:20px}
+h1 em{color:var(--sky);font-style:normal}
+.card{background:var(--white);border-radius:14px;border:1px solid var(--sky-light);box-shadow:0 3px 14px rgba(41,188,212,.09);padding:16px 20px}
+.pill{display:inline-block;background:var(--sky);color:#fff;border-radius:18px;padding:4px 14px;font-size:12px;font-weight:700}
+.pill.lt{background:var(--sky-light);color:var(--text)}
+.ico{width:42px;height:42px;border-radius:50%;background:var(--sky);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+
+/* ════ S1 HERO ════ */
+#s1{padding:0;overflow:hidden}
+.h-top{background:var(--sky);flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;padding:28px;gap:10px}
+.h-circle{position:absolute;border-radius:50%;background:rgba(0,0,0,.08)}
+.h-top h2{color:#fff;font-size:48px;font-weight:900;z-index:1;text-align:center;line-height:1.1}
+.h-top p{color:var(--sky-light);font-size:17px;z-index:1;text-align:center}
+.h-bot{background:var(--white);padding:20px 40px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.tags{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.tag{background:var(--sky);color:#fff;padding:6px 18px;border-radius:22px;font-size:13px;font-weight:700}
+.h-by{font-size:12px;color:var(--muted);text-align:center}
+.h-stack{font-size:13px;color:var(--mid);text-align:center}
+
+/* ════ S2 IDEA ════ */
+#s2 .idea-box{background:var(--white);border-radius:16px;border:1px solid var(--sky-light);padding:20px 26px;margin-bottom:16px;border-right:5px solid var(--sky)}
+#s2 .idea-box h2{font-size:17px;font-weight:700;color:var(--sky);margin-bottom:8px}
+#s2 .idea-box p{font-size:14px;color:var(--mid);line-height:1.9}
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;flex:1}
+.why-card{background:var(--white);border:1px solid var(--sky-light);border-radius:13px;padding:14px 16px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px}
+.why-card .ei{font-size:30px}
+.why-card h3{font-size:13px;font-weight:700;color:var(--text)}
+.why-card p{font-size:11.5px;color:var(--mid);line-height:1.6}
+
+/* ════ S3 TECH ════ */
+#s3 .tech-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;flex:1}
+.tc{background:var(--white);border:1px solid var(--sky-light);border-radius:14px;padding:16px;box-shadow:0 3px 12px rgba(41,188,212,.07)}
+.tc-head{display:flex;align-items:center;gap:11px;margin-bottom:10px}
+.tc-head h3{font-size:13.5px;font-weight:700;color:var(--text)}
+.tc-tags{display:flex;flex-wrap:wrap;gap:6px}
+.tt{background:var(--bg);color:var(--sky-dark);border:1px solid var(--sky-light);border-radius:9px;padding:3px 10px;font-size:11px;font-weight:600}
+
+/* ════ S4 DB ════ */
+#s4 .db-note{font-size:12px;color:var(--mid);margin-bottom:14px;padding:8px 14px;background:var(--white);border-radius:10px;border:1px solid var(--sky-light)}
+#s4 .db-note strong{color:var(--sky)}
+.db-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;flex:1}
+.db-card{background:var(--white);border-radius:11px;border:1px solid var(--sky-light);overflow:hidden;display:flex;flex-direction:column}
+.db-head{background:var(--sky);color:#fff;padding:6px 11px;font-size:11.5px;font-weight:700}
+.db-body{padding:7px 11px;font-size:10px;color:var(--mid);line-height:1.75;flex:1}
+.db-foot{text-align:center;font-size:10px;font-weight:700;color:var(--muted);padding:4px;border-top:1px solid var(--sky-light)}
+
+/* ════ S5 SECURITY ════ */
+#s5 .flow-box{background:var(--white);border:1px solid var(--sky-light);border-radius:14px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:4px}
+.fs{display:flex;flex-direction:column;align-items:center;gap:5px}
+.fp{background:var(--sky);color:#fff;padding:6px 14px;border-radius:18px;font-size:11px;font-weight:700;text-align:center;white-space:nowrap}
+.fp.lt{background:var(--sky-light);color:var(--text)}
+.fi2{font-size:20px}
+.fa{color:var(--sky);font-size:18px;padding:0 4px;margin-top:4px}
+.sec-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;flex:1}
+.sc{background:var(--white);border-radius:13px;border:1px solid var(--sky-light);padding:13px;box-shadow:0 2px 10px rgba(41,188,212,.07)}
+.sc-head{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.sc-head h3{font-size:12px;font-weight:700;color:var(--text);line-height:1.3}
+.sc ul{list-style:none;display:flex;flex-direction:column;gap:5px}
+.sc ul li{font-size:10.5px;color:var(--mid);display:flex;gap:5px}
+.sc ul li span{color:var(--sky);font-weight:700}
+
+/* ════ S6 FEATURES ════ */
+#s6 .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;flex:1}
+.fc{background:var(--white);border:1px solid var(--sky-light);border-radius:13px;padding:14px;box-shadow:0 2px 10px rgba(41,188,212,.07)}
+.fc-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.fc-head h3{font-size:13px;font-weight:700;color:var(--text)}
+.fc-count{background:var(--sky);color:#fff;border-radius:10px;padding:2px 9px;font-size:11px;font-weight:700;margin-right:auto}
+.fc ul{list-style:none;display:flex;flex-direction:column;gap:5px}
+.fc ul li{font-size:11px;color:var(--mid);display:flex;gap:6px}
+.fc ul li::before{content:'·';color:var(--sky);font-size:16px;line-height:1.1}
+
+/* ════ S7 CLOSING ════ */
+#s7 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.st{background:var(--white);border-radius:14px;border:1px solid var(--sky-light);padding:16px;text-align:center;box-shadow:0 3px 14px rgba(41,188,212,.09)}
+.st .sn{font-size:44px;font-weight:900;color:var(--sky);line-height:1}
+.st .sl{font-size:12px;font-weight:700;color:var(--mid);margin-top:4px}
+.st .si{font-size:26px;margin-bottom:4px}
+.ach-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
+.ach{background:var(--white);border:1px solid var(--sky-light);border-radius:11px;padding:10px 14px;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text)}
+.ach-ok{width:28px;height:28px;border-radius:50%;background:var(--sky);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0}
+.contact-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.cc{background:var(--white);border:1px solid var(--sky-light);border-radius:11px;padding:10px 12px;display:flex;align-items:center;gap:9px}
+.cc-ico{width:34px;height:34px;border-radius:50%;background:var(--sky);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.cc strong{display:block;font-size:11px;color:var(--sky);font-weight:700}
+.cc span{font-size:10px;color:var(--mid)}
+
+/* hint */
+#hint{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);background:rgba(26,46,53,.7);color:#fff;font-size:11px;padding:5px 13px;border-radius:18px;backdrop-filter:blur(6px);pointer-events:none;transition:opacity 1s;z-index:99}
+#hint.off{opacity:0}
+</style>
+</head>
+<body>
+<div id="app">
+
+<nav>
+  <div class="brand">🔗 Friend Finder</div>
+  <div class="controls">
+    <button class="dl" id="dlBtn" onclick="dlHTML()" disabled="">⏳...</button>
+    <span class="counter" id="ctr">1 / 7</span>
+    <button class="nbtn" id="pBtn" onclick="go(-1)" disabled="">→</button>
+    <button class="nbtn" id="nBtn" onclick="go(1)">←</button>
+  </div>
+</nav>
+
+<div id="stage">
+
+<!-- ══ S1: HERO ══ -->
+<div class="slide active" id="s1">
+  <div class="h-top">
+    <div class="h-circle" style="width:200px;height:200px;top:-60px;right:-50px"></div>
+    <div class="h-circle" style="width:130px;height:130px;bottom:-30px;left:80px"></div>
+    <h2>Friend Finder System</h2>
+    <p>تطبيق تواصل اجتماعي متكامل — Full-Stack</p>
+  </div>
+  <div class="h-bot">
+    <div class="h-stack">⚙️ Spring Boot · Spring Security · JWT · Hibernate · MySQL &nbsp;|&nbsp; 🖥️ Angular</div>
+    <div class="tags">
+      <span class="tag">10 جداول</span>
+      <span class="tag">11 Controller</span>
+      <span class="tag">47 API</span>
+      <span class="tag">JWT Auth</span>
+    </div>
+    <div class="h-by">تقديم: Ahmed El-Buhairy — Backend Developer &amp; Java Mentor @ EraaSoft</div>
+  </div>
+</div>
+
+<!-- ══ S2: IDEA ══ -->
+<div class="slide" id="s2">
+  <h1>المشروع <em>إيه؟</em></h1>
+  <div class="idea-box">
+    <h2>💡 الفكرة</h2>
+    <p>
+      Friend Finder هو تطبيق شبكة اجتماعية — فكرته إن كل مستخدم يقدر يتعرف على ناس جديدة بناءً على <strong>الاهتمامات المشتركة</strong>،
+      يبعت طلبات صداقة، يتكلم في رسائل مباشرة، يعمل منشورات ويشوف فيد أصحابه — كل ده بشكل آمن عن طريق JWT.
+    </p>
+  </div>
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="ei">👥</div>
+      <h3>اتعرف على ناس جديدة</h3>
+      <p>نظام مطابقة ذكي بناءً على الاهتمامات المشتركة بين المستخدمين</p>
+    </div>
+    <div class="why-card">
+      <div class="ei">💬</div>
+      <h3>تواصل بحرية</h3>
+      <p>رسائل مباشرة، منشورات، تعليقات، لايكات، وستوريز</p>
+    </div>
+    <div class="why-card">
+      <div class="ei">🔐</div>
+      <h3>بشكل آمن تماماً</h3>
+      <p>تشفير كلمات المرور وحماية كاملة بنظام JWT Authentication</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S3: TECH ══ -->
+<div class="slide" id="s3">
+  <h1>التقنيات <em>المستخدمة</em></h1>
+  <div class="tech-grid">
+    <div class="tc">
+      <div class="tc-head"><div class="ico">⚙️</div><h3>الباك إند</h3></div>
+      <div class="tc-tags">
+        <span class="tt">Spring Boot</span><span class="tt">Spring Security</span>
+        <span class="tt">Spring Data JPA</span><span class="tt">Hibernate</span>
+      </div>
+    </div>
+    <div class="tc">
+      <div class="tc-head"><div class="ico">🗄️</div><h3>قاعدة البيانات</h3></div>
+      <div class="tc-tags">
+        <span class="tt">MySQL</span><span class="tt">Oracle DB</span>
+        <span class="tt">JPA ORM</span>
+      </div>
+    </div>
+    <div class="tc">
+      <div class="tc-head"><div class="ico">🔐</div><h3>الأمان</h3></div>
+      <div class="tc-tags">
+        <span class="tt">JWT</span><span class="tt">BCrypt</span>
+        <span class="tt">CORS</span><span class="tt">RBAC</span>
+      </div>
+    </div>
+    <div class="tc">
+      <div class="tc-head"><div class="ico">📋</div><h3>توثيق الـ API</h3></div>
+      <div class="tc-tags">
+        <span class="tt">Swagger UI</span><span class="tt">OpenAPI 3.0</span>
+      </div>
+    </div>
+    <div class="tc">
+      <div class="tc-head"><div class="ico">🛠️</div><h3>أدوات التطوير</h3></div>
+      <div class="tc-tags">
+        <span class="tt">Maven</span><span class="tt">Lombok</span>
+        <span class="tt">Jakarta Validation</span><span class="tt">JPA Auditing</span>
+      </div>
+    </div>
+    <div class="tc">
+      <div class="tc-head"><div class="ico">🖥️</div><h3>الفرونت إند</h3></div>
+      <div class="tc-tags">
+        <span class="tt">Angular</span><span class="tt">TypeScript</span>
+        <span class="tt">Standalone Components</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S4: DB ══ -->
+<div class="slide" id="s4">
+  <h1>جداول <em>قاعدة البيانات</em></h1>
+  <div class="db-note">كل الجداول ترث من <strong>BaseEntity</strong>: id · createdBy · createdDate · lastModifiedBy · lastModifiedDate &nbsp;(JPA Auditing تلقائي)</div>
+  <div class="db-grid">
+    <div class="db-card">
+      <div class="db-head">👤 User</div>
+      <div class="db-body">username · email · password · firstName · lastName · gender · DOB · bio · country · city · profilePicture</div>
+      <div class="db-foot">الجدول الرئيسي</div>
+    </div>
+    <div class="db-card">
+      <div class="db-head">🤝 Friendship</div>
+      <div class="db-body">user1 · user2 · status<br><em>PENDING / ACCEPTED / REJECTED</em><br>requestedAt · respondedAt</div>
+      <div class="db-foot">Unique (user1+user2)</div>
+    </div>
+    <div class="db-card">
+      <div class="db-head">📝 Post</div>
+      <div class="db-body">content · author · privacy<br><em>PUBLIC / FRIENDS / PRIVATE</em><br>countLikes · countComments</div>
+      <div class="db-foot">مع Media مرتبطة</div>
+    </div>
+    <div class="db-card">
+      <div class="db-head">💬 Messages</div>
+      <div class="db-body">content · isRead<br>sender → User<br>receiver → User</div>
+      <div class="db-foot">رسائل مباشرة</div>
+    </div>
+    <div class="db-card">
+      <div class="db-head">💭 Comments</div>
+      <div class="db-body">content · author · post<br>parentComment<br><em>يدعم الردود المتداخلة</em></div>
+      <div class="db-foot">Threaded Replies</div>
+    </div>
+    <div class="db-card">
+      <div class="db-head">🔔 Notification</div>
+      <div class="db-body">type · content · isRead<br>user · triggeredBy<br>postId</div>
+      <div class="db-foot">أنواع متعددة</div>
+    </div>
+    <div class="db-card">
+      <div class="db-head">👍 Like</div>
+      <div class="db-body">user → User<br>post → Post</div>
+      <div class="db-foot">Unique (user+post)</div>
+    </div>
+    <div class="db-card">
+      <div class="db-head">📸 Stories</div>
+      <div class="db-body">url · type<br><em>IMAGE / VIDEO</em><br>OneToOne ← User</div>
+      <div class="db-foot">ستوري واحدة/مستخدم</div>
+    </div>
+    <div class="db-card">
+      <div class="db-head">🎭 Interests</div>
+      <div class="db-body">name · description<br>ManyToMany ↔ User</div>
+      <div class="db-foot">أساس التوصية</div>
+    </div>
+    <div class="db-card">
+      <div class="db-head">🎖 Roles</div>
+      <div class="db-body">name<br><em>USER / ADMIN</em><br>ManyToMany ↔ User</div>
+      <div class="db-foot">صلاحيات الأدوار</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S5: SECURITY ══ -->
+<div class="slide" id="s5">
+  <h1>طبقة <em>الأمان</em></h1>
+  <div class="flow-box">
+    <div class="fs"><div class="fi2">📱</div><div class="fp lt">Client</div></div>
+    <div class="fa">←</div>
+    <div class="fs"><div class="fi2">📤</div><div class="fp">يبعت Authorization Header</div></div>
+    <div class="fa">←</div>
+    <div class="fs"><div class="fi2">🔒</div><div class="fp">AuthFilter يستقبل الطلب</div></div>
+    <div class="fa">←</div>
+    <div class="fs"><div class="fi2">🔑</div><div class="fp">TokenHandler يتحقق من الـ JWT</div></div>
+    <div class="fa">←</div>
+    <div class="fs"><div class="fi2">✅</div><div class="fp lt">يوصل للـ Controller</div></div>
+  </div>
+  <div class="sec-grid">
+    <div class="sc">
+      <div class="sc-head"><div class="ico" style="width:34px;height:34px;font-size:16px">🛡️</div><h3>JWT Authentication</h3></div>
+      <ul>
+        <li><span>·</span>كل طلب لازم يجيب Bearer Token</li>
+        <li><span>·</span>AuthFilter يورث من OncePerRequestFilter</li>
+        <li><span>·</span>يُخزَّن في SecurityContextHolder</li>
+        <li><span>·</span>Public فقط: /api/auth/** + Swagger</li>
+      </ul>
+    </div>
+    <div class="sc">
+      <div class="sc-head"><div class="ico" style="width:34px;height:34px;font-size:16px">🔒</div><h3>تشفير الباسورد</h3></div>
+      <ul>
+        <li><span>·</span>BCryptPasswordEncoder</li>
+        <li><span>·</span>Salted Hash — مش ممكن تعكسه</li>
+        <li><span>·</span>مش بتتخزن أبداً بشكل نصي</li>
+        <li><span>·</span>طول التخزين 100 حرف</li>
+      </ul>
+    </div>
+    <div class="sc">
+      <div class="sc-head"><div class="ico" style="width:34px;height:34px;font-size:16px">🌐</div><h3>CORS Config</h3></div>
+      <ul>
+        <li><span>·</span>Allowed Origin: localhost:4200</li>
+        <li><span>·</span>GET · POST · PUT · DELETE · OPTIONS</li>
+        <li><span>·</span>Allow Credentials: true</li>
+        <li><span>·</span>Stateless Session</li>
+      </ul>
+    </div>
+    <div class="sc">
+      <div class="sc-head"><div class="ico" style="width:34px;height:34px;font-size:16px">👮</div><h3>Role-Based Access</h3></div>
+      <ul>
+        <li><span>·</span>@PreAuthorize("hasRole('USER')")</li>
+        <li><span>·</span>@EnableMethodSecurity</li>
+        <li><span>·</span>أدوار: USER / ADMIN</li>
+        <li><span>·</span>يتحقق على مستوى كل Method</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S6: FEATURES + APIs ══ -->
+<div class="slide" id="s6">
+  <h1>الـ Features <em>والـ APIs</em></h1>
+  <div class="feat-grid">
+    <div class="fc">
+      <div class="fc-head"><div class="ico" style="width:34px;height:34px;font-size:15px">🔐</div><h3>المصادقة</h3><span class="fc-count">2 API</span></div>
+      <ul>
+        <li>POST /register — تسجيل مستخدم جديد</li>
+        <li>POST /login — تسجيل دخول + JWT</li>
+      </ul>
+    </div>
+    <div class="fc">
+      <div class="fc-head"><div class="ico" style="width:34px;height:34px;font-size:15px">👤</div><h3>المستخدم</h3><span class="fc-count">6 API</span></div>
+      <ul>
+        <li>GET /profile — بروفايل المستخدم الحالي</li>
+        <li>GET /user/{id} — بروفايل أي مستخدم</li>
+        <li>PUT /updateProfile — تعديل البروفايل</li>
+        <li>DELETE /deleteAccount — حذف الحساب</li>
+        <li>GET /search — بحث عن مستخدمين</li>
+      </ul>
+    </div>
+    <div class="fc">
+      <div class="fc-head"><div class="ico" style="width:34px;height:34px;font-size:15px">🤝</div><h3>الصداقة</h3><span class="fc-count">10 API</span></div>
+      <ul>
+        <li>POST /send — إرسال طلب صداقة</li>
+        <li>PUT /accept · /reject — قبول / رفض</li>
+        <li>DELETE /unFriend · /cancel — حذف / إلغاء</li>
+        <li>GET /myFriends · /show · /sent — عرض</li>
+      </ul>
+    </div>
+    <div class="fc">
+      <div class="fc-head"><div class="ico" style="width:34px;height:34px;font-size:15px">📝</div><h3>المنشورات</h3><span class="fc-count">6 API</span></div>
+      <ul>
+        <li>POST /creatPost — إنشاء منشور</li>
+        <li>PUT /updatePost — تعديل منشور</li>
+        <li>DELETE /deletePost — حذف منشور</li>
+        <li>GET /getHomeFeed — الفيد الرئيسي</li>
+      </ul>
+    </div>
+    <div class="fc">
+      <div class="fc-head"><div class="ico" style="width:34px;height:34px;font-size:15px">💬</div><h3>الرسائل</h3><span class="fc-count">9 API</span></div>
+      <ul>
+        <li>POST /send — إرسال رسالة</li>
+        <li>GET /inbox · /sent — الوارد والصادر</li>
+        <li>GET /conversation — محادثة كاملة</li>
+        <li>PUT /markAsRead — تحديد كمقروء</li>
+        <li>GET /unread/count — عدد غير المقروءة</li>
+      </ul>
+    </div>
+    <div class="fc">
+      <div class="fc-head"><div class="ico" style="width:34px;height:34px;font-size:15px">🎯</div><h3>باقي الفيتشرز</h3><span class="fc-count">14 API</span></div>
+      <ul>
+        <li>💭 Comments — إضافة / ردود / حذف</li>
+        <li>👍 Like — Toggle Like على المنشور</li>
+        <li>🔔 Notifications — إشعارات + markAsRead</li>
+        <li>📸 Stories — نشر وعرض الستوريز</li>
+        <li>🎯 Match — توصية أصدقاء بالاهتمامات</li>
+        <li>🎭 Interests — تحديد اهتمامات المستخدم</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S7: CLOSING ══ -->
+<div class="slide" id="s7">
+  <h1>ملخص <em>المشروع</em></h1>
+  <div class="stats-row">
+    <div class="st"><div class="si">📊</div><div class="sn">10</div><div class="sl">جداول في الـ DB</div></div>
+    <div class="st"><div class="si">🎮</div><div class="sn">11</div><div class="sl">REST Controllers</div></div>
+    <div class="st"><div class="si">🔗</div><div class="sn">47</div><div class="sl">API Endpoints</div></div>
+    <div class="st"><div class="si">🛡️</div><div class="sn">JWT</div><div class="sl">طبقة أمان محكمة</div></div>
+  </div>
+  <div class="ach-grid">
+    <div class="ach"><div class="ach-ok">✓</div>Layered Architecture — Controller → Service → Repository → DB</div>
+    <div class="ach"><div class="ach-ok">✓</div>JWT Auth Filter مخصوص + BCrypt تشفير كلمات المرور</div>
+    <div class="ach"><div class="ach-ok">✓</div>Swagger / OpenAPI 3.0 — توثيق كامل لكل الـ 47 Endpoint</div>
+    <div class="ach"><div class="ach-ok">✓</div>خوارزمية توصية ذكية بناءً على الاهتمامات المشتركة</div>
+  </div>
+  <div class="contact-row">
+    <div class="cc"><div class="cc-ico">🌐</div><div><strong>Portfolio</strong><span>ahmedmohamed852.github.io</span></div></div>
+    <div class="cc"><div class="cc-ico">💼</div><div><strong>LinkedIn</strong><span>ahmed-el-bahiry</span></div></div>
+    <div class="cc"><div class="cc-ico">🐙</div><div><strong>GitHub</strong><span>AhmedMohamed852</span></div></div>
+    <div class="cc"><div class="cc-ico">🏢</div><div><strong>EraaSoft</strong><span>القاهرة الجديدة، مصر</span></div></div>
+  </div>
+</div>
+
+</div><!-- /stage -->
+<div id="dots"><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+</div><!-- /app -->
+
+<div id="hint">⌨ استخدم ← → للتنقل</div>
+
+<script>
+const N = 7;
+let cur = 1;
+
+// dots
+const dotsEl = document.getElementById('dots');
+for(let i=1;i<=N;i++){
+  const d=document.createElement('div');
+  d.className='dot'+(i===1?' on':'');
+  d.onclick=()=>goTo(i);
+  dotsEl.appendChild(d);
+}
+
+function goTo(n){
+  if(n<1||n>N)return;
+  document.getElementById('s'+cur).classList.remove('active');
+  document.querySelectorAll('.dot')[cur-1].classList.remove('on');
+  cur=n;
+  document.getElementById('s'+cur).classList.add('active');
+  document.querySelectorAll('.dot')[cur-1].classList.add('on');
+  document.getElementById('ctr').textContent=cur+' / '+N;
+  document.getElementById('pBtn').disabled=cur===1;
+  document.getElementById('nBtn').disabled=cur===N;
+}
+function go(d){goTo(cur+d);}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowLeft')go(1);
+  if(e.key==='ArrowRight')go(-1);
+});
+
+async function dlHTML(){
+  const btn = document.getElementById('dlBtn');
+  btn.textContent = '⏳...';
+  btn.disabled = true;
+  try {
+    const downloads = await claude.use('downloads');
+    if (!downloads) { alert('التحميل غير متاح'); return; }
+    const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+    await downloads.save({
+      filename: 'FriendFinder_Presentation.html',
+      data: new Blob([html], { type: 'text/html;charset=utf-8' })
+    });
+  } catch(e) {
+    if (e?.code !== 'cancelled') alert('فشل التحميل، حاول مرة تانية');
+  } finally {
+    btn.textContent = '⬇ HTML';
+    btn.disabled = false;
+  }
+}
+
+setTimeout(()=>document.getElementById('hint').classList.add('off'),5000);
+</script>
+
+
+</body></html>
