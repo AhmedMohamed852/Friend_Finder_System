@@ -138,8 +138,8 @@ public class User_Service_Impl implements User_Service {
         }
 
         UserDto userDto = userMapper.toDto(user_Repo.findById(userId).orElseThrow(UserEx::userNotFound));
-        userDto.setPassword(null);
-        return userMapper.toDto(user_Repo.findById(userId).orElseThrow(UserEx::userNotFound));
+      //  userDto.setPassword(null);
+        return userDto;
     }
 
 

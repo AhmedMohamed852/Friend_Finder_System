@@ -118,6 +118,8 @@ public class InterestsController {
                     description = "Unauthorized"
             )
     })
+
+    // /api/interests/setListInterests
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/setListInterests")
     public ResponseEntity<Void> setListInterests(
