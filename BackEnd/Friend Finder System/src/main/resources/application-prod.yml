@@ -7,15 +7,15 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://dpg-db910e8n74is73d4gvk0-a.frankfurt-postgres.render.com/friendfinder}
+    username: ${SPRING_DATASOURCE_USERNAME:ahmed}
+    password: ${SPRING_DATASOURCE_PASSWORD:Dmovdx3XSK80GUIlBGXLMERAVQFcvEJ4}
 
   data:
     redis:
-      host: ${REDIS_HOST}
+      host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
-      password: ${REDIS_PASSWORD}
+      password: ${REDIS_PASSWORD:123456}
       client-name: "friend-finder-prod"
 
   jpa:
@@ -25,3 +25,7 @@ spring:
 
 server:
   port: ${PORT:8081}
+
+token:
+  secret: "dsfnfoee94+d8r94SteDSgel4704y5;G8R/,,'RRttWEteWE"
+  expiration: 24h

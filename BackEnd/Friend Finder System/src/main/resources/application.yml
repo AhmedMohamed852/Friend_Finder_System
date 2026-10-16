@@ -7,9 +7,9 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://ep-rapid-hat-b40bbqil-pooler.c-6.us-east-2.aws.neon.tech/friendfinder?sslmode=require&channel_binding=require}
-    username: ${SPRING_DATASOURCE_USERNAME:neondb_owner}
-    password: ${SPRING_DATASOURCE_PASSWORD:npg_gsZjQB68Syir}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://dpg-db910e8n74is73d4gvk0-a.frankfurt-postgres.render.com/friendfinder}
+    username: ${SPRING_DATASOURCE_USERNAME:ahmed}
+    password: ${SPRING_DATASOURCE_PASSWORD:Dmovdx3XSK80GUIlBGXLMERAVQFcvEJ4}
 
   data:
     redis:
