@@ -3,7 +3,7 @@ FROM maven:3.9-eclipse-temurin-17-alpine AS build
 WORKDIR /app
 COPY pom.xml .
 COPY src/ src/
-RUN chmod +x ./mvnw && ./mvnw clean package -DskipTests
+RUN mvn clean package -DskipTests
 
 # Runtime stage
 FROM eclipse-temurin:17-jre-alpine
