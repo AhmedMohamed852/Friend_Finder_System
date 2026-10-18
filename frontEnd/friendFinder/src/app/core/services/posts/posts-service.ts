@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {environment} from '../../../../environments/environment';
 
 // 1️⃣ تعيين واجهة المستخدم (Author Interface)
 export interface Author {
@@ -55,7 +56,10 @@ export interface HomeFeedResponse {
 export class PostService {
 
   private http = inject(HttpClient); // الحقن الحديث والمضمون بنظام الأنجولر
+/*
   private apiUrl = 'http://localhost:8081/api/post';
+*/
+  private readonly apiUrl = `${environment.apiUrl}/post`;
 
 
   getHomeFeed(page: number = 1): Observable<HomeFeedResponse> {

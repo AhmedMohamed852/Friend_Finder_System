@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {environment} from '../../../../environments/environment';
 
 export interface CommentAuthor {
   id: number;
@@ -41,8 +42,10 @@ export interface ReplyRequest {
 export class CommentService {
 
   private http = inject(HttpClient);
+/*
   private readonly API_URL = 'http://localhost:8081/api/comments';
-
+*/
+  private readonly API_URL = `${environment.apiUrl}/comments`;
   getCommentsByPostId(postId: number, pageNumber: number = 1): Observable<CommentDto[]> {
     const params = new HttpParams().set('pageNumber', pageNumber.toString());
     return this.http.get<CommentDto[]>(

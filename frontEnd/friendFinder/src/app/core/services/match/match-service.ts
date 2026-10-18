@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {environment} from '../../../../environments/environment';
 
 export interface Match {
   profilePicture: string;
@@ -17,7 +18,11 @@ export interface Match {
 })
 export class MatchService {
   private http = inject(HttpClient); // 👈 الحقن الحديث المضمون
+/*
   private apiUrl = 'http://localhost:8081/api/matches';
+*/
+  private readonly apiUrl = `${environment.apiUrl}/matches`;
+
 
   findMatches(): Observable<Match[]> {
     return this.http.get<Match[]>(`${this.apiUrl}/find`);

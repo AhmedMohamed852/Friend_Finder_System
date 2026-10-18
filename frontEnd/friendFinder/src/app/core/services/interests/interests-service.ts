@@ -2,13 +2,18 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {InterestsDto} from '../../models/InterestsDto';
+import {environment} from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class InterestsService {
   // يمكنك تغيير هذا المسار الأساسي بحسب ملف الـ environment لديك
+/*
   private readonly baseUrl = 'http://localhost:8081/api/interests';
+*/
+  private readonly baseUrl = `${environment.apiUrl}/interests`;
+
 
   constructor(private http: HttpClient) {}
 

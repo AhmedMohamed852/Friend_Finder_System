@@ -2,14 +2,14 @@ import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap, catchError, throwError } from 'rxjs';
-
+import {environment} from '../../../../environments/environment';
+ environment
 // ── Types ────────────────────────────────────────────────────
 
 export interface LoginRequest {
   username: string;
   password: string;
 }
-
 export interface AuthResponse {
   token: string;
   roles: string[];
@@ -40,7 +40,11 @@ export class AuthService {
 
   private readonly TOKEN_KEY = 'ff_token';
   private readonly USER_KEY  = 'ff_user';
+/*
   private readonly BASE      = 'http://localhost:8081/api';
+*/
+  // private readonly BASE      = 'https://friend-finder-system.onrender.com/api';
+  private readonly BASE = `${environment.apiUrl}`;
 
   // Signal يحمل بيانات اليوزر الحالي — أي component يقدر يقرأ منه
   currentUser = signal<CurrentUser | null>(this.loadUserFromStorage());

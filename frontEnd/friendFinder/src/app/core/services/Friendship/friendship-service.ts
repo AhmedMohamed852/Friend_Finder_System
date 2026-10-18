@@ -1,6 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import {environment} from '../../../../environments/environment';
 
 export interface Friendship {
   Friendship_Id: number;
@@ -34,7 +35,11 @@ export interface UserSimpleDto {
 })
 export class FriendshipService {
   private http = inject(HttpClient);
+/*
   private apiUrl = 'http://localhost:8081/api/v1/friendship';
+*/
+  private readonly apiUrl = `${environment.apiUrl}/v1/friendship`;
+
 
   // ✅ إدارة حالة البحث المركزي باستخدام الـ Signals داخل الخدمة
   searchResults  = signal<UserSimpleDto[]>([]);

@@ -3,13 +3,17 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {SendMessagePayload} from '../../models/SendMessagePayload';
 import {MessagesDto} from '../../models/MessagesDto';
+import {environment} from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MessagesService {
 
+/*
   private readonly BASE = 'http://localhost:8081/api/messages';
+*/
+  private readonly BASE = `${environment.apiUrl}/messages`;
 
   constructor(private http: HttpClient) {}
 
